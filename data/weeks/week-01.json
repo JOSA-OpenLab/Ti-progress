@@ -1,0 +1,65 @@
+{
+  "id": 1,
+  "title": "Git Internals & Modern Workflow",
+  "status": "in-progress",
+  "deadline": "2026-05-16",
+  "report": "/reports/week-01.html",
+  "tasks": [
+    {
+      "id": "git-archaeology",
+      "type": "archaeology",
+      "title": "Git Archaeology",
+      "status": "done",
+      "reflection": "Running git cat-file -p HEAD on my Bayn repo revealed that a commit is not a snapshot of files — it's a pointer. It stores a tree hash, a parent commit hash, and metadata like author and message. When I walked into the tree with git cat-file -p HEAD^{tree}, I could see every file and folder as a list of (type, name, hash) entries. Finally, reading the blob for notes.txt showed just the raw bytes with no metadata. Git builds up a complete picture by chaining three objects — commit → tree → blob — not by copying files.",
+      "commands": [
+        "git rev-parse HEAD",
+        "git cat-file -p HEAD",
+        "git cat-file -p HEAD^{tree}",
+        "git cat-file -p 9bdc6538"
+      ],
+      "output": "tree 1ff31120...\nparent 1a73a6ac...\nauthor ti 1767376516 +0300\nstyle:new Chat UI",
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "reflog-rescue",
+      "type": "reflog",
+      "title": "Reflog Rescue Drill",
+      "status": "pending",
+      "reflection": null,
+      "commands": [
+        "git reset --hard HEAD~5",
+        "git reflog",
+        "git reset --hard 969e531"
+      ],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "conventional-commits",
+      "type": "rebase",
+      "title": "Conventional Commits Refactor",
+      "status": "pending",
+      "reflection": null,
+      "commands": [
+        "git rebase -i HEAD~3",
+        "git push origin feature/clean-history --force-with-lease"
+      ],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "bluf-writing",
+      "type": "soft-skill",
+      "title": "BLUF Writing",
+      "status": "in-progress",
+      "reflection": "Open source is asynchronous. The discipline: lead every message with the conclusion or the ask, then provide context. Three rules: subject line is a contract, show your work not just the conclusion, explicit beats clever.",
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    }
+  ]
+}

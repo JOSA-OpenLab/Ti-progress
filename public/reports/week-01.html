@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JOSA OpenLab — Week 01</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1117;
+      --border:  #21262d;
+      --accent:  #00b4d8;
+      --red:     #ff7b72;
+      --green:   #3fb950;
+      --text:    #e6edf3;
+      --muted:   #6e7681;
+      --sub:     #8b949e;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      color: var(--accent);
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 72px 40px 56px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    .hero-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(30px, 5vw, 52px);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero h2 {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--muted);
+      margin-bottom: 48px;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+
+    .badge {
+      display: flex;
+      border-radius: 4px;
+      overflow: hidden;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .badge-label {
+      background: #161b22;
+      border: 1px solid var(--border);
+      border-right: none;
+      padding: 5px 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 4px 0 0 4px;
+    }
+
+    .badge-value {
+      padding: 5px 10px;
+      font-weight: 600;
+      color: #0d1117;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .badge.blue  .badge-value { background: var(--accent); }
+    .badge.navy  .badge-value { background: #0077b6; }
+    .badge.gold  .badge-value { background: #f59e0b; }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .meta-item {
+      text-align: center;
+      padding: 0 28px;
+    }
+
+    .meta-item + .meta-item {
+      border-left: 1px solid var(--border);
+    }
+
+    .meta-item .label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .meta-item .value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 64px 24px 80px;
+    }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 64px; }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 32px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+
+    .section-header h2 {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -.3px;
+      color: var(--text);
+    }
+
+    /* ── BLOCK (replaces card — just left border) ── */
+    .block {
+      border-left: 2px solid var(--border);
+      padding: 4px 0 4px 24px;
+      margin-bottom: 32px;
+    }
+
+    .block-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* ── CALLOUT ── */
+    .callout {
+      border-left: 2px solid var(--accent);
+      padding: 4px 0 4px 20px;
+      margin-bottom: 32px;
+      font-size: 14px;
+      color: var(--sub);
+    }
+
+    .callout strong { color: var(--text); font-weight: 500; }
+
+    /* ── CODE ── */
+    .code-block {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .code-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; }
+    .dot.y { background: #ffbd2e; }
+    .dot.g { background: #28c840; }
+
+    .code-lang {
+      margin-left: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    pre {
+      padding: 18px 20px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      color: #c9d1d9;
+    }
+
+    .cm  { color: var(--muted); }
+    .cmd { color: #79c0ff; }
+    .out { color: #c9d1d9; }
+    .hsh { color: #f0883e; }
+
+    /* ── REFLECTION ── */
+    .reflection {
+      border-left: 2px solid var(--accent);
+      padding: 6px 0 6px 24px;
+      font-size: 15px;
+      line-height: 1.85;
+      color: var(--sub);
+    }
+
+    .reflection strong { color: var(--text); font-weight: 500; }
+
+    /* ── STEPS ── */
+    .steps { display: flex; flex-direction: column; gap: 20px; }
+
+    .step { display: flex; gap: 18px; align-items: flex-start; }
+
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      width: 22px;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+
+    .step-body strong { display: block; font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+    .step-body p { font-size: 13px; color: var(--sub); }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+    thead { border-bottom: 1px solid var(--border); }
+
+    th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    td { padding: 12px 16px; border-top: 1px solid var(--border); }
+
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 2px 0;
+    }
+
+    .tag.bad  { color: var(--red); }
+    .tag.good { color: var(--green); }
+
+    .row-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── BLUF ── */
+    .bluf-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 580px) { .bluf-grid { grid-template-columns: 1fr; } }
+
+    .bluf-card { border-left: 2px solid; padding: 4px 0 4px 20px; }
+    .bluf-card.bad  { border-color: var(--red); }
+    .bluf-card.good { border-color: var(--green); }
+
+    .bluf-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .bluf-card.bad  .bluf-label { color: var(--red); }
+    .bluf-card.good .bluf-label { color: var(--green); }
+
+    .bluf-card p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--sub);
+      line-height: 1.7;
+    }
+
+    /* ── RULES ── */
+    .rules { display: flex; flex-direction: column; gap: 24px; margin-top: 32px; }
+
+    .rule { border-left: 2px solid var(--border); padding: 2px 0 2px 20px; }
+
+    .rule-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .rule strong { font-size: 14px; font-weight: 500; display: block; margin-bottom: 2px; }
+    .rule p { font-size: 13px; color: var(--sub); }
+
+    /* ── SCREENSHOT ── */
+    .screenshot-box {
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      padding: 40px 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ── PR BOX ── */
+    .pr-box {
+      border-left: 2px solid var(--green);
+      padding: 4px 0 4px 20px;
+      color: var(--sub);
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    /* ── JOURNAL ── */
+    .journal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px 40px;
+    }
+
+    @media (max-width: 580px) { .journal-grid { grid-template-columns: 1fr; } }
+
+    .journal-block { border-left: 2px solid var(--border); padding: 4px 0 4px 20px; }
+
+    .journal-block h3 {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .journal-block ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+    .journal-block ul li {
+      font-size: 13px;
+      color: var(--sub);
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .journal-block ul li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--muted);
+    }
+
+    .placeholder {
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── DIVIDER ── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0 0 32px; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: .3px;
+    }
+
+    footer strong { color: var(--sub); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">OpenLab Apprenticeship 2026</div>
+  <h1>JOSA <span>OpenLab</span></h1>
+  <h2>Week 01 &mdash; Git Internals &amp; Modern Workflow</h2>
+
+  <div class="badges">
+    <div class="badge blue">
+      <span class="badge-label">Week</span>
+      <span class="badge-value">01 of 11</span>
+    </div>
+    <div class="badge navy">
+      <span class="badge-label">Phase</span>
+      <span class="badge-value">Foundations</span>
+    </div>
+    <div class="badge gold">
+      <span class="badge-label">Status</span>
+      <span class="badge-value">In Progress</span>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="label">Apprentice</div>
+      <div class="value">Qutibah Ananzeh</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cohort</div>
+      <div class="value">OpenLab 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Deadline</div>
+      <div class="value">May 16, 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Repo</div>
+      <div class="value">Ti-03/Bayn</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- TASK 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 01</span>
+      <h2>Git Archaeology</h2>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> Walk from a commit object down to a raw blob using <code>git cat-file</code> — understand what Git actually stores under the hood.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Commands Run</div>
+      <div class="code-block">
+        <div class="code-bar">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="code-lang">bash</span>
+        </div>
+        <pre><span class="cm"># Step 1 — get the hash of HEAD</span>
+<span class="cmd">git rev-parse HEAD</span>
+<span class="out">969e531b3f4a2c8e1d0a7b5c...</span>
+
+<span class="cm"># Step 2 — inspect the commit object</span>
+<span class="cmd">git cat-file -p HEAD</span>
+<span class="out">tree   <span class="hsh">1ff31120</span>2b7189776ce88b12843376399061e606
+parent <span class="hsh">1a73a6ac</span>b6375882b0aeed527e6d1d65277be3e3
+author ti &lt;...&gt; 1767376516 +0300
+
+style:new Chat UI</span>
+
+<span class="cm"># Step 3 — walk into the tree</span>
+<span class="cmd">git cat-file -p HEAD^{tree}</span>
+<span class="out">100644 blob <span class="hsh">81e8cf53</span>...  .gitignore
+040000 tree <span class="hsh">0aea480c</span>...  backend/
+040000 tree <span class="hsh">4511d248</span>...  frontend/
+100644 blob <span class="hsh">9bdc6538</span>...  notes.txt</span>
+
+<span class="cm"># Step 4 — read the raw blob</span>
+<span class="cmd">git cat-file -p 9bdc6538</span>
+<span class="out">firebase deploy --only functions
+cd X:/Drive/Projects/BetweenLines/frontend &amp;&amp; npm run build...</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Reflection</div>
+      <div class="reflection">
+        Running <code>git cat-file -p HEAD</code> on my Bayn repo revealed that a commit is not a snapshot of files — it's a pointer. It stores a tree hash, a parent commit hash, and metadata like author and message. When I walked into the tree with <code>git cat-file -p HEAD^{tree}</code>, I could see every file and folder as a list of (type, name, hash) entries — Git doesn't store filenames inside the file content, it stores them in the tree. Finally, reading the blob for <code>notes.txt</code> showed just the raw bytes of the file with no metadata at all. This made it click: Git builds up a complete picture of your project by chaining three objects — <strong>commit → tree → blob</strong> — not by copying files.
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 02</span>
+      <h2>Reflog Rescue Drill</h2>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> Deliberately destroy recent commits, then use <code>git reflog</code> to recover them — proving that nothing committed is ever truly lost.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Steps</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <strong>Wipe the last 5 commits</strong>
+            <p><code>git reset --hard HEAD~5</code></p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <strong>Find the lost state in reflog</strong>
+            <p><code>git reflog</code> — look for the SHA right before the reset</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <strong>Restore to that state</strong>
+            <p><code>git reset --hard 969e531</code></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Recovery Screenshot</div>
+      <div class="screenshot-box">Terminal output of the full recovery will be placed here.</div>
+    </div>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 03</span>
+      <h2>Conventional Commits Refactor</h2>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> Use <code>git rebase -i</code> to rewrite messy commit messages into proper <a href="https://www.conventionalcommits.org">Conventional Commits</a> format.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Before vs After</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Before — Messy</th>
+              <th>After — Conventional</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-num">01</td>
+              <td><span class="tag bad">small files removale</span></td>
+              <td><span class="tag good">chore: remove unused static assets</span></td>
+            </tr>
+            <tr>
+              <td class="row-num">02</td>
+              <td><span class="tag bad">fix chat</span></td>
+              <td><span class="tag good">fix: resolve message rendering bug in chat UI</span></td>
+            </tr>
+            <tr>
+              <td class="row-num">03</td>
+              <td><span class="tag bad">new</span></td>
+              <td><span class="tag good">feat: add initial chat page structure</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Commands Used</div>
+      <div class="code-block">
+        <div class="code-bar">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="code-lang">bash</span>
+        </div>
+        <pre><span class="cm"># Open interactive rebase for last 3 commits</span>
+<span class="cmd">git rebase -i HEAD~3</span>
+
+<span class="cm"># Change "pick" to "reword" for each commit, then save</span>
+<span class="out">reword <span class="hsh">76035ae</span>  →  chore: remove unused static assets
+reword <span class="hsh">a841dc2</span>  →  fix: resolve message rendering bug in chat UI
+reword <span class="hsh">49e1602</span>  →  feat: add initial chat page structure</span>
+
+<span class="cm"># Push the clean branch</span>
+<span class="cmd">git push origin feature/clean-history --force-with-lease</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Pull Request</div>
+      <div class="pr-box">PR link will be added here once opened.</div>
+    </div>
+  </div>
+
+  <!-- SOFT SKILL -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 04</span>
+      <h2>Soft Skill — Written Communication &amp; Async Clarity</h2>
+    </div>
+
+    <div class="callout">
+      <strong>Discipline:</strong> BLUF — Bottom Line Up Front. Lead every message with the conclusion or the ask, then provide context.
+    </div>
+
+    <div class="bluf-grid">
+      <div class="bluf-card bad">
+        <div class="bluf-label">Don't</div>
+        <p>I was working on the parser yesterday and noticed that when you have a deeply nested JSON object with arrays inside arrays, sometimes the indentation looks weird. I thought it might be related to the recent refactor. So I dug into it and...</p>
+      </div>
+      <div class="bluf-card good">
+        <div class="bluf-label">Do</div>
+        <p>The pretty-printer mis-indents arrays nested 3+ levels deep. Repro in linked PR. Root cause: recursive depth counter wasn't passed into the array branch.</p>
+      </div>
+    </div>
+
+    <div class="rules">
+      <div class="rule">
+        <div class="rule-label">R1</div>
+        <strong>Subject line is a contract</strong>
+        <p>Tells the reader what the message is about and what you want from them.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-label">R2</div>
+        <strong>Show your work, don't just state the conclusion</strong>
+        <p>"Fixed it" is unreviewable. "Fixed it in <code>parser.ts:142</code>, reproduced on Node 18.17" is reviewable.</p>
+      </div>
+      <div class="rule">
+        <div class="rule-label">R3</div>
+        <strong>Explicit beats clever</strong>
+        <p>If you want a review, ask for it. Maintainers reading 50 notifications a day cannot afford to guess.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOURNAL -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 05</span>
+      <h2>Weekly Journal</h2>
+    </div>
+
+    <div class="journal-grid">
+      <div class="journal-block">
+        <h3>What I learned</h3>
+        <ul>
+          <li>Git stores objects, not files. A branch is just a file with a hash.</li>
+          <li><code>git reflog</code> is a safety net — nothing committed is ever truly gone.</li>
+          <li>Conventional Commits power automated versioning and changelogs.</li>
+          <li>BLUF writing makes me a better async collaborator.</li>
+        </ul>
+      </div>
+      <div class="journal-block">
+        <h3>What was hardest</h3>
+        <div class="placeholder">To be filled in at end of week.</div>
+      </div>
+      <div class="journal-block">
+        <h3>What's blocking me</h3>
+        <div class="placeholder">To be filled in at end of week.</div>
+      </div>
+      <div class="journal-block">
+        <h3>Questions for Omar</h3>
+        <div class="placeholder">To be filled in before the meeting.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Jordan Open Source Association &nbsp;&middot;&nbsp; <strong>OpenLab 2026</strong> &nbsp;&middot;&nbsp; Qutibah Ananzeh
+</footer>
+
+</body>
+</html>
