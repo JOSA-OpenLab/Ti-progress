@@ -508,27 +508,35 @@
         </div>
         <pre><span class="cm"># Step 1 — get the hash of HEAD</span>
 <span class="cmd">git rev-parse HEAD</span>
-<span class="out">969e531b3f4a2c8e1d0a7b5c...</span>
+<span class="hsh">969e5317038a82f0178cf812bdf4cc1caaae6fd9</span>
 
 <span class="cm"># Step 2 — inspect the commit object</span>
 <span class="cmd">git cat-file -p HEAD</span>
-<span class="out">tree   <span class="hsh">1ff31120</span>2b7189776ce88b12843376399061e606
-parent <span class="hsh">1a73a6ac</span>b6375882b0aeed527e6d1d65277be3e3
-author ti &lt;...&gt; 1767376516 +0300
+<span class="out">tree   <span class="hsh">1ff311202b7189776ce88b12843376399061e606</span>
+parent <span class="hsh">1a73a6acb6375882b0aeed527e6d1d65277be3e3</span>
+author    ti &lt;ququmaker9@gmail.com&gt; 1767376516 +0300
+committer ti &lt;ququmaker9@gmail.com&gt; 1767376516 +0300
 
 style:new Chat UI</span>
 
 <span class="cm"># Step 3 — walk into the tree</span>
 <span class="cmd">git cat-file -p HEAD^{tree}</span>
-<span class="out">100644 blob <span class="hsh">81e8cf53</span>...  .gitignore
-040000 tree <span class="hsh">0aea480c</span>...  backend/
-040000 tree <span class="hsh">4511d248</span>...  frontend/
-100644 blob <span class="hsh">9bdc6538</span>...  notes.txt</span>
+<span class="out">100644 blob <span class="hsh">81e8cf5358e371d518bec21d621f4dea81ca85b1</span>  .gitignore
+040000 tree <span class="hsh">0aea480cb2f3655cff8deb72ac0422ad19356cfe</span>  backend
+100644 blob <span class="hsh">b627249315716c94bc7b0dad366cd4358a1e2175</span>  color palate.xlsx
+040000 tree <span class="hsh">4511d248a53f72fc72615e8ce4b46f14df7e6c50</span>  frontend
+100644 blob <span class="hsh">9bdc65389e988bf7be3e72f917aa22b5779aa421</span>  notes.txt
+040000 tree <span class="hsh">a05d8c5f809a0e1a5f03c5f13b32bd62d5622397</span>  pic
+100644 blob <span class="hsh">d5465afb22b0bad1f9736f6dc783922108a59434</span>  storage.rules</span>
 
 <span class="cm"># Step 4 — read the raw blob</span>
 <span class="cmd">git cat-file -p 9bdc6538</span>
 <span class="out">firebase deploy --only functions
-cd X:/Drive/Projects/BetweenLines/frontend &amp;&amp; npm run build...</span></pre>
+
+
+cd X:/Drive/Projects/BetweenLines/frontend &amp;&amp; npm run build &amp;&amp; firebase deploy --only hosting
+
+cd X:/Drive/Projects/BetweenLines/backend &amp;&amp; npm run build &amp;&amp; firebase deploy --only functions</span></pre>
       </div>
     </div>
 
