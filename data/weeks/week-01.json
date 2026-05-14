@@ -1,7 +1,7 @@
 {
   "id": 1,
   "title": "Git Internals & Modern Workflow",
-  "status": "in-progress",
+  "status": "done",
   "deadline": "2026-05-16",
   "report": "/reports/week-01.html",
   "tasks": [
@@ -57,7 +57,7 @@
       "id": "bluf-writing",
       "type": "soft-skill",
       "title": "BLUF Writing",
-      "status": "in-progress",
+      "status": "done",
       "reflection": "Open source is asynchronous. The discipline: lead every message with the conclusion or the ask, then provide context. Three rules: subject line is a contract, show your work not just the conclusion, explicit beats clever.",
       "commands": [],
       "output": null,
