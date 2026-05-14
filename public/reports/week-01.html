@@ -595,8 +595,54 @@ cd X:/Drive/Projects/BetweenLines/backend &amp;&amp; npm run build &amp;&amp; fi
     </div>
 
     <div class="block">
-      <div class="block-title">Recovery Screenshot</div>
-      <div class="screenshot-box">Terminal output of the full recovery will be placed here.</div>
+      <div class="block-title">Full Terminal Output</div>
+      <div class="code-block">
+        <div class="code-bar">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="code-lang">bash</span>
+        </div>
+        <pre><span class="cm"># Before — confirm 8 commits exist</span>
+<span class="cmd">git log --oneline -8</span>
+<span class="hsh">969e531</span> <span class="out">(HEAD -> main, origin/main) style:new Chat UI</span>
+<span class="hsh">1a73a6a</span> <span class="out">style:mobile header style</span>
+<span class="hsh">deacd47</span> <span class="out">style:add buttons and styling to the chat page</span>
+<span class="hsh">50351ff</span> <span class="out">small files removale</span>
+<span class="hsh">76035ae</span> <span class="out">rm some small files</span>
+<span class="hsh">e4d40bd</span> <span class="out">small files</span>
+<span class="hsh">a841dc2</span> <span class="out">fix chat</span>
+<span class="hsh">49e1602</span> <span class="out">new</span>
+
+<span class="cm"># Destroy the top 5 commits</span>
+<span class="cmd">git reset --hard HEAD~5</span>
+<span class="out">HEAD is now at e4d40bd small files</span>
+
+<span class="cm"># Reflog shows exactly where HEAD has been</span>
+<span class="cmd">git reflog</span>
+<span class="hsh">e4d40bd</span> <span class="out">(HEAD -> main) HEAD@{0}: reset: moving to HEAD~5</span>
+<span class="hsh">969e531</span> <span class="out">(origin/main) HEAD@{1}: clone: from https://github.com/Ti-03/Bayn.git</span>
+
+<span class="cm"># Recover — reset back to the "lost" commit</span>
+<span class="cmd">git reset --hard 969e531</span>
+<span class="out">HEAD is now at 969e531 style:new Chat UI</span>
+
+<span class="cm"># After — all 8 commits restored</span>
+<span class="cmd">git log --oneline -8</span>
+<span class="hsh">969e531</span> <span class="out">(HEAD -> main, origin/main) style:new Chat UI</span>
+<span class="hsh">1a73a6a</span> <span class="out">style:mobile header style</span>
+<span class="hsh">deacd47</span> <span class="out">style:add buttons and styling to the chat page</span>
+<span class="hsh">50351ff</span> <span class="out">small files removale</span>
+<span class="hsh">76035ae</span> <span class="out">rm some small files</span>
+<span class="hsh">e4d40bd</span> <span class="out">small files</span>
+<span class="hsh">a841dc2</span> <span class="out">fix chat</span>
+<span class="hsh">49e1602</span> <span class="out">new</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Reflection</div>
+      <div class="reflection">
+        Running <code>git reset --hard HEAD~5</code> made it look like 5 commits were permanently gone — the log only showed <code>e4d40bd</code> and below. But <code>git reflog</code> revealed the full history of where HEAD has been, not just the commit chain. The lost commit <code>969e531</code> was sitting right there at <code>HEAD@{1}</code>. One <code>reset --hard</code> to that hash and everything was back, identical to before. The key insight: <strong>git reset doesn't delete objects, it just moves a pointer.</strong> The reflog tracks every pointer move, so nothing committed is ever truly lost.
+      </div>
     </div>
   </div>
 

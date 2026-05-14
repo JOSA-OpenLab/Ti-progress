@@ -25,14 +25,16 @@
       "id": "reflog-rescue",
       "type": "reflog",
       "title": "Reflog Rescue Drill",
-      "status": "pending",
-      "reflection": null,
+      "status": "done",
+      "reflection": "Running git reset --hard HEAD~5 made it look like 5 commits were permanently gone — the log only showed e4d40bd and below. But git reflog revealed the full history of where HEAD has been, not just the commit chain. The lost commit 969e531 was sitting right there at HEAD@{1}. One reset --hard to that hash and everything was back, identical to before. The key insight: git reset doesn't delete objects, it just moves a pointer. The reflog tracks every pointer move, so nothing committed is ever truly lost.",
       "commands": [
+        "git log --oneline -8",
         "git reset --hard HEAD~5",
         "git reflog",
-        "git reset --hard 969e531"
+        "git reset --hard 969e531",
+        "git log --oneline -8"
       ],
-      "output": null,
+      "output": "$ git log --oneline -8\n969e531 (HEAD -> main, origin/main) style:new Chat UI\n1a73a6a style:mobile header style\ndeacd47 style:add buttons and styling to the chat page\n50351ff small files removale\n76035ae rm some small files\ne4d40bd small files\na841dc2  fix chat\n49e1602 new\n\n$ git reset --hard HEAD~5\nHEAD is now at e4d40bd small files\n\n$ git reflog\ne4d40bd (HEAD -> main) HEAD@{0}: reset: moving to HEAD~5\n969e531 (origin/main, origin/HEAD) HEAD@{1}: clone: from https://github.com/Ti-03/Bayn.git\n\n$ git reset --hard 969e531\nHEAD is now at 969e531 style:new Chat UI\n\n$ git log --oneline -8\n969e531 (HEAD -> main, origin/main) style:new Chat UI\n1a73a6a style:mobile header style\ndeacd47 style:add buttons and styling to the chat page\n50351ff small files removale\n76035ae rm some small files\ne4d40bd small files\na841dc2  fix chat\n49e1602 new",
       "screenshot": null,
       "pr": null
     },
