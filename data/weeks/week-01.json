@@ -50,7 +50,7 @@
         "git push origin feature/clean-history"
       ],
       "output": "$ git log --oneline -8 --reverse\na344ead style:new Chat UI\n7e901c4  fix: resolve message rendering bug in chat UI\n2ccc6ad small files\ne6baeb0 rm some small files\n9c74eb8 chore: remove unused static assets\n551a1a5 style:add buttons and styling to the chat page\n47aef26 style:mobile header style\nf54d024 (HEAD -> feature/clean-history) feat: add initial chat page structure\n\n$ git push origin feature/clean-history\n* [new branch] feature/clean-history -> feature/clean-history",
-      "screenshot": null,
+      "screenshot": "/screenshots/week-01-pr.png",
       "pr": "https://github.com/Ti-03/Bayn/pull/1"
     },
     {
