@@ -715,6 +715,58 @@ reword <span class="hsh">49e1602</span>  →  feat: add initial chat page struct
     </div>
 
     <div class="block">
+      <div class="block-title">Obstacles &amp; Fixes</div>
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <strong>Terminal froze inside vi/vim</strong>
+            <p>Running <code>git rebase -i HEAD~8</code> opened vi/vim by default. The terminal lagged and became unresponsive — couldn't type or navigate. Exited by force.</p>
+            <p style="margin-top:6px;color:var(--green);font-size:13px;">Fix: <code>git config --global core.editor "nano"</code> — switched to nano permanently.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <strong>Rebase already in progress after forced exit</strong>
+            <p>After exiting the frozen editor, tried running <code>git rebase -i</code> again. Got: <em>"fatal: It seems that there is already a rebase-merge directory"</em>. Then ran <code>git rebase --continue</code> too early which triggered merge conflicts across 5 files.</p>
+            <p style="margin-top:6px;color:var(--green);font-size:13px;">Fix: <code>git rebase --abort</code> — cancels the whole rebase and returns to a clean state.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <strong>Typo in the rebase todo file — <code>reowrd</code> instead of <code>reword</code></strong>
+            <p>In nano, accidentally typed <code>reowrd</code> on 3 lines. Git rejected the entire todo file with: <em>"error: invalid command 'reowrd'"</em>. Running <code>git rebase --edit-todo</code> showed the same errors again and couldn't proceed.</p>
+            <p style="margin-top:6px;color:var(--green);font-size:13px;">Fix: <code>git rebase --abort</code> and start over, typing <code>reword</code> carefully this time.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <strong>Rebase succeeded but messages were unchanged</strong>
+            <p>The rebase ran cleanly but the 3 commit messages still showed the old names. Nano had opened 3 separate times (once per <code>reword</code> commit), but each was saved without editing the message text.</p>
+            <p style="margin-top:6px;color:var(--green);font-size:13px;">Fix: Redo the rebase. When nano opens for each commit — clear the existing line completely, then type the new conventional message before saving.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">05</div>
+          <div class="step-body">
+            <strong><code>git commit --amend</code> went to the wrong commit</strong>
+            <p>The rebase had a typo: <code>feat: add initial chat page structre</code>. Running <code>git commit --amend</code> was supposed to fix the bottom commit — but HEAD was pointing at <code>style:new Chat UI</code> (the top commit), so amend renamed that one instead. This left both the typo and a wrongly-renamed top commit.</p>
+            <p style="margin-top:6px;color:var(--green);font-size:13px;">Fix: Another <code>git rebase -i HEAD~8</code> marking both the wrongly-renamed top commit and the typo commit as <code>reword</code> — fixed both in one pass.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="block">
       <div class="block-title">Pull Request</div>
       <div class="pr-box">
         <a href="https://github.com/Ti-03/Bayn/pull/1">github.com/Ti-03/Bayn/pull/1</a>
