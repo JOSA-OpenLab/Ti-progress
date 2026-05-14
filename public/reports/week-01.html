@@ -716,7 +716,17 @@ reword <span class="hsh">49e1602</span>  →  feat: add initial chat page struct
 
     <div class="block">
       <div class="block-title">Pull Request</div>
-      <div class="pr-box">PR link will be added here once opened.</div>
+      <div class="pr-box">
+        <a href="https://github.com/Ti-03/Bayn/pull/1">github.com/Ti-03/Bayn/pull/1</a>
+        &nbsp;—&nbsp; refactor: rewrite messy commits to Conventional Commits format
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Reflection</div>
+      <div class="reflection">
+        Used <code>git rebase -i HEAD~8</code> to reach three messy commits deep in history and reword them. The key lesson: <code>rebase -i</code> doesn't just let you squash — it lets you rewrite any commit message in a range by marking it as <strong>reword</strong>. Git replays each commit one by one and pauses at each reword to let you change the message. The result is a clean, readable history that any maintainer can parse at a glance. <code>--force-with-lease</code> is safer than <code>--force</code> because it refuses to overwrite if someone else pushed to the branch since you last fetched.
+      </div>
     </div>
   </div>
 
