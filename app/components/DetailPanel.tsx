@@ -1,9 +1,47 @@
 "use client"
 
+import { useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { CodeBlock } from "./ui/code-block"
 import { EdgeBlur } from "./ui/edge-blur"
 import { BorderBeamButton } from "./ui/border-beam-button"
+
+function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, zIndex: 200,
+        background: "rgba(0,0,0,0.92)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        cursor: "zoom-out", padding: 24,
+      }}
+    >
+      <motion.img
+        src={src}
+        initial={{ scale: 0.92, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.92, opacity: 0 }}
+        transition={{ type: "spring", damping: 26, stiffness: 300 }}
+        onClick={e => e.stopPropagation()}
+        style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: 10, cursor: "default", boxShadow: "0 0 80px rgba(0,0,0,0.8)" }}
+      />
+      <button
+        onClick={onClose}
+        style={{
+          position: "fixed", top: 20, right: 20,
+          background: "none", border: "1px solid #444",
+          color: "#aaa", width: 32, height: 32, borderRadius: 8,
+          cursor: "pointer", fontSize: 18,
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}
+      >×</button>
+    </motion.div>
+  )
+}
 
 type Task = {
   id: string; type: string; title: string; status: string
@@ -29,57 +67,60 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export function DetailPanel({ selected, onClose }: { selected: Selected | null; onClose: () => void }) {
+  const [lightbox, setLightbox] = useState<string | null>(null)
+
   return (
-    <AnimatePresence>
-      {selected && (
-        <>
-          <motion.div
-            key="backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            style={{ position: "fixed", inset: 0, zIndex: 40 }}
-          />
-          <motion.div
-            key="panel"
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 28, stiffness: 260 }}
-            style={{
-              position: "fixed", top: 0, right: 0, bottom: 0,
-              width: 440, zIndex: 50,
-              background: "#0d1117",
-              borderLeft: "1px solid #21262d",
-              overflowY: "auto",
-            }}
-          >
-            {/* edge blur inside panel */}
-            <EdgeBlur position="bottom" height={60} />
+    <>
+      <AnimatePresence>
+        {selected && (
+          <>
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={onClose}
+              style={{ position: "fixed", inset: 0, zIndex: 40 }}
+            />
+            <motion.div
+              key="panel"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 28, stiffness: 260 }}
+              style={{
+                position: "fixed", top: 0, right: 0, bottom: 0,
+                width: 440, zIndex: 50,
+                background: "#0d1117",
+                borderLeft: "1px solid #21262d",
+                overflowY: "auto",
+              }}
+            >
+              <EdgeBlur position="bottom" height={60} />
+              <div style={{ padding: "32px 28px 80px" }}>
+                <button
+                  onClick={onClose}
+                  style={{
+                    position: "absolute", top: 20, right: 20,
+                    background: "none", border: "1px solid #21262d",
+                    color: "#6e7681", width: 28, height: 28,
+                    borderRadius: 6, cursor: "pointer", fontSize: 16,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}
+                >×</button>
 
-            <div style={{ padding: "32px 28px 80px" }}>
-              {/* close */}
-              <button
-                onClick={onClose}
-                style={{
-                  position: "absolute", top: 20, right: 20,
-                  background: "none", border: "1px solid #21262d",
-                  color: "#6e7681", width: 28, height: 28,
-                  borderRadius: 6, cursor: "pointer", fontSize: 16,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}
-              >
-                ×
-              </button>
+                {selected.kind === "week" && <WeekDetail week={selected.week} />}
+                {selected.kind === "task" && <TaskDetail task={selected.task} week={selected.week} onLightbox={setLightbox} />}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
-              {selected.kind === "week" && <WeekDetail week={selected.week} />}
-              {selected.kind === "task" && <TaskDetail task={selected.task} week={selected.week} />}
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+      <AnimatePresence>
+        {lightbox && <Lightbox src={lightbox} onClose={() => setLightbox(null)} />}
+      </AnimatePresence>
+    </>
   )
 }
 
@@ -165,7 +206,7 @@ function WeekDetail({ week }: { week: Week }) {
   )
 }
 
-function TaskDetail({ task, week }: { task: Task; week: Week }) {
+function TaskDetail({ task, week, onLightbox }: { task: Task; week: Week; onLightbox: (src: string) => void }) {
   const color = typeColor[task.type] ?? "#6e7681"
   const sc = statusColor[task.status] ?? "#6e7681"
 
@@ -226,7 +267,12 @@ function TaskDetail({ task, week }: { task: Task; week: Week }) {
       {task.screenshot && (
         <div>
           <SectionLabel>Screenshot</SectionLabel>
-          <img src={(process.env.NEXT_PUBLIC_BASE_PATH ?? "") + task.screenshot} alt="screenshot" style={{ width: "100%", borderRadius: 8, border: "1px solid #21262d" }} />
+          <img
+            src={(process.env.NEXT_PUBLIC_BASE_PATH ?? "") + task.screenshot}
+            alt="screenshot"
+            onClick={() => onLightbox((process.env.NEXT_PUBLIC_BASE_PATH ?? "") + task.screenshot!)}
+            style={{ width: "100%", borderRadius: 8, border: "1px solid #21262d", cursor: "zoom-in", display: "block" }}
+          />
         </div>
       )}
 

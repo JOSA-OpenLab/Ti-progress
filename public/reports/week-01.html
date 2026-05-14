@@ -858,5 +858,22 @@ reword <span class="hsh">49e1602</span>  →  feat: add initial chat page struct
   Jordan Open Source Association &nbsp;&middot;&nbsp; <strong>OpenLab 2026</strong> &nbsp;&middot;&nbsp; Qutibah Ananzeh
 </footer>
 
+<div id="lb" onclick="this.style.display='none'" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;cursor:zoom-out;padding:24px;">
+  <img id="lb-img" style="max-width:100%;max-height:100%;border-radius:10px;cursor:default;box-shadow:0 0 80px rgba(0,0,0,0.8);" onclick="event.stopPropagation()" />
+  <button onclick="document.getElementById('lb').style.display='none'" style="position:fixed;top:20px;right:20px;background:none;border:1px solid #444;color:#aaa;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">×</button>
+</div>
+<script>
+  document.querySelectorAll('img').forEach(img => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', () => {
+      const lb = document.getElementById('lb');
+      document.getElementById('lb-img').src = img.src;
+      lb.style.display = 'flex';
+    });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.getElementById('lb').style.display = 'none';
+  });
+</script>
 </body>
 </html>
