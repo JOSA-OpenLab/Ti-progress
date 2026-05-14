@@ -226,7 +226,7 @@ function TaskDetail({ task, week }: { task: Task; week: Week }) {
       {task.screenshot && (
         <div>
           <SectionLabel>Screenshot</SectionLabel>
-          <img src={task.screenshot} alt="screenshot" style={{ width: "100%", borderRadius: 8, border: "1px solid #21262d" }} />
+          <img src={(process.env.NEXT_PUBLIC_BASE_PATH ?? "") + task.screenshot} alt="screenshot" style={{ width: "100%", borderRadius: 8, border: "1px solid #21262d" }} />
         </div>
       )}
 
