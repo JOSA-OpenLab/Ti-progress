@@ -35,7 +35,7 @@
         "git log --oneline -8"
       ],
       "output": "$ git log --oneline -8\n969e531 (HEAD -> main, origin/main) style:new Chat UI\n1a73a6a style:mobile header style\ndeacd47 style:add buttons and styling to the chat page\n50351ff small files removale\n76035ae rm some small files\ne4d40bd small files\na841dc2  fix chat\n49e1602 new\n\n$ git reset --hard HEAD~5\nHEAD is now at e4d40bd small files\n\n$ git reflog\ne4d40bd (HEAD -> main) HEAD@{0}: reset: moving to HEAD~5\n969e531 (origin/main, origin/HEAD) HEAD@{1}: clone: from https://github.com/Ti-03/Bayn.git\n\n$ git reset --hard 969e531\nHEAD is now at 969e531 style:new Chat UI\n\n$ git log --oneline -8\n969e531 (HEAD -> main, origin/main) style:new Chat UI\n1a73a6a style:mobile header style\ndeacd47 style:add buttons and styling to the chat page\n50351ff small files removale\n76035ae rm some small files\ne4d40bd small files\na841dc2  fix chat\n49e1602 new",
-      "screenshot": null,
+      "screenshot": "/screenshots/week-01-reflog-rescue.png",
       "pr": null
     },
     {
