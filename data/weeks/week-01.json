@@ -17,7 +17,7 @@
         "git cat-file -p HEAD^{tree}",
         "git cat-file -p 9bdc6538"
       ],
-      "output": "tree 1ff31120...\nparent 1a73a6ac...\nauthor ti 1767376516 +0300\nstyle:new Chat UI",
+      "output": "$ git rev-parse HEAD\n969e5317038a82f0178cf812bdf4cc1caaae6fd9\n\n$ git cat-file -p HEAD\ntree 1ff311202b7189776ce88b12843376399061e606\nparent 1a73a6acb6375882b0aeed527e6d1d65277be3e3\nauthor ti <ququmaker9@gmail.com> 1767376516 +0300\ncommitter ti <ququmaker9@gmail.com> 1767376516 +0300\n\nstyle:new Chat UI\n\n$ git cat-file -p HEAD^{tree}\n100644 blob 81e8cf5358e371d518bec21d621f4dea81ca85b1\t.gitignore\n040000 tree 0aea480cb2f3655cff8deb72ac0422ad19356cfe\tbackend\n100644 blob b627249315716c94bc7b0dad366cd4358a1e2175\tcolor palate.xlsx\n040000 tree 4511d248a53f72fc72615e8ce4b46f14df7e6c50\tfrontend\n100644 blob 9bdc65389e988bf7be3e72f917aa22b5779aa421\tnotes.txt\n040000 tree a05d8c5f809a0e1a5f03c5f13b32bd62d5622397\tpic\n100644 blob d5465afb22b0bad1f9736f6dc783922108a59434\tstorage.rules\n\n$ git cat-file -p 9bdc6538\nfirebase deploy --only functions\n\n\ncd X:/Drive/Projects/BetweenLines/frontend && npm run build && firebase deploy --only hosting\n\ncd X:/Drive/Projects/BetweenLines/backend && npm run build && firebase deploy --only functions",
       "screenshot": null,
       "pr": null
     },
