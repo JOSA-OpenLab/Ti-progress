@@ -30,7 +30,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          NEXT_PUBLIC_BASE_PATH: /JOSA-OpenSource
+          NEXT_PUBLIC_BASE_PATH: /Ti-progress
 
       - name: Add .nojekyll
         run: touch out/.nojekyll

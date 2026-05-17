@@ -118,6 +118,27 @@ export function Graph({ weeks }: { weeks: Week[] }) {
       </ReactFlow>
 
       <DetailPanel selected={selected} onClose={onClose} />
+
+      {/* Personal site footer */}
+      <div style={{
+        position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 50,
+        paddingBottom: 14, textAlign: "center", pointerEvents: "none",
+      }}>
+        <a
+          href="http://ti0.me"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            fontSize: 10, color: "#3d444d",
+            fontFamily: "monospace", letterSpacing: 3, textTransform: "uppercase",
+            textDecoration: "none", transition: "color 0.2s", pointerEvents: "auto",
+          }}
+          onMouseEnter={e => (e.currentTarget.style.color = "#00b4d8")}
+          onMouseLeave={e => (e.currentTarget.style.color = "#3d444d")}
+        >
+          Qutibah Ananzeh · ti0.me ↗
+        </a>
+      </div>
     </div>
   )
 }

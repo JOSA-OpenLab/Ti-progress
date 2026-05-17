@@ -177,7 +177,7 @@ export function HeroPage({ onEnter }: { onEnter: () => void }) {
 
       </div>
 
-      {/* Footer name */}
+      {/* Footer */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -185,11 +185,19 @@ export function HeroPage({ onEnter }: { onEnter: () => void }) {
         style={{
           position: "relative", zIndex: 10,
           paddingBottom: 28, textAlign: "center",
-          fontSize: 10, color: "#3d444d",
           fontFamily: "monospace", letterSpacing: 3, textTransform: "uppercase",
         }}
       >
-        Qutibah Ananzeh
+        <a
+          href="http://ti0.me"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ fontSize: 10, color: "#3d444d", textDecoration: "none", transition: "color 0.2s" }}
+          onMouseEnter={e => (e.currentTarget.style.color = "#00b4d8")}
+          onMouseLeave={e => (e.currentTarget.style.color = "#3d444d")}
+        >
+          Qutibah Ananzeh · ti0.me ↗
+        </a>
       </motion.div>
 
       <BottomBlur height={80} />
