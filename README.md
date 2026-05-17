@@ -1,6 +1,6 @@
-# JOSA OpenLab
+# Ti's Progress
 
-Progress tracker for the JOSA OpenLab apprenticeship — 11 weeks, real contributions, open source.
+My progress through the JOSA OpenLab apprenticeship — see it update week by week.
 
 <p align="center">
   <a href="https://josa-openlab.github.io/Ti-progress">
@@ -14,12 +14,3 @@ Progress tracker for the JOSA OpenLab apprenticeship — 11 weeks, real contribu
     <td><img src="public/app-screenshot.png" alt="Dashboard" /></td>
   </tr>
 </table>
-
-## Running locally
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
