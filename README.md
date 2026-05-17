@@ -8,7 +8,12 @@ Progress tracker for the JOSA OpenLab apprenticeship — 11 weeks, real contribu
   </a>
 </p>
 
-![App screenshot](public/app-screenshot.png)
+<table>
+  <tr>
+    <td><img src="public/hero-screenshot.png" alt="Hero page" /></td>
+    <td><img src="public/app-screenshot.png" alt="Dashboard" /></td>
+  </tr>
+</table>
 
 ## Running locally
 
