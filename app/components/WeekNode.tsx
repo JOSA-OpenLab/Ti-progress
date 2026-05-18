@@ -31,7 +31,7 @@ export function WeekNode({ data }: NodeProps) {
         border: `1px solid #30363d`,
         borderRadius: 8,
         padding: "14px 18px",
-        minWidth: 200,
+        width: 220,
         boxShadow: `0 0 0 1px ${color}22`,
         transition: "box-shadow 0.2s",
       }}
@@ -57,7 +57,9 @@ export function WeekNode({ data }: NodeProps) {
           {d.doneCount}/{d.taskCount}
         </span>
       </div>
-      <Handle type="source" position={Position.Right} style={{ background: "#30363d", border: "none", width: 8, height: 8 }} />
+      <Handle type="target" position={Position.Top}    id="top"    style={{ background: "#30363d", border: "none", width: 6, height: 6 }} />
+      <Handle type="source" position={Position.Right}  id="tasks"  style={{ background: "#30363d", border: "none", width: 8, height: 8 }} />
+      <Handle type="source" position={Position.Bottom} id="bottom" style={{ background: "#30363d", border: "none", width: 6, height: 6 }} />
     </div>
   );
 }

@@ -1,0 +1,42 @@
+{
+  "id": 2,
+  "title": "PR Etiquette & Maintainer Friendly Contributions",
+  "status": "in-progress",
+  "deadline": "2026-05-23",
+  "report": "/reports/week-02.html",
+  "tasks": [
+    {
+      "id": "two-prs",
+      "type": "pr",
+      "title": "Two Well-Formed PRs",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "practice-review",
+      "type": "review",
+      "title": "Practice Review",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "asking-questions",
+      "type": "soft-skill",
+      "title": "Asking Good Questions",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    }
+  ]
+}

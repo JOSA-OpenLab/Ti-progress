@@ -23,18 +23,32 @@ type Task = {
 type Week = { id: number; title: string; status: "done" | "in-progress" | "pending"; deadline: string; tasks: Task[] }
 type Selected = { kind: "week"; week: Week } | { kind: "task"; task: Task; week: Week }
 
+const TASK_GAP = 110
+const WEEK_GROUP_GAP = 80
+const TASK_X = 320
+
 function buildGraph(weeks: Week[], onSelect: (s: Selected) => void): { nodes: Node[]; edges: Edge[] } {
   const nodes: Node[] = []
   const edges: Edge[] = []
 
+  // Pre-compute row start Y for each week
+  const rowStartY: number[] = []
+  let y = 0
   weeks.forEach((week, wi) => {
-    const weekX = wi * 380
+    rowStartY[wi] = y
+    y += Math.max(1, week.tasks.length) * TASK_GAP + WEEK_GROUP_GAP
+  })
+
+  weeks.forEach((week, wi) => {
     const weekNodeId = `week-${week.id}`
     const done = week.tasks.filter(t => t.status === "done").length
+    const taskCount = Math.max(1, week.tasks.length)
+    const groupHeight = (taskCount - 1) * TASK_GAP
+    const weekNodeY = rowStartY[wi] + groupHeight / 2
 
     nodes.push({
       id: weekNodeId, type: "week",
-      position: { x: weekX, y: 0 },
+      position: { x: 0, y: weekNodeY },
       data: {
         week: week.id, title: week.title, status: week.status,
         deadline: week.deadline, taskCount: week.tasks.length, doneCount: done,
@@ -44,10 +58,9 @@ function buildGraph(weeks: Week[], onSelect: (s: Selected) => void): { nodes: No
 
     week.tasks.forEach((task, ti) => {
       const taskNodeId = `task-${week.id}-${task.id}`
-      const taskY = (ti - (week.tasks.length - 1) / 2) * 100
       nodes.push({
         id: taskNodeId, type: "task",
-        position: { x: weekX + 280, y: taskY },
+        position: { x: TASK_X, y: rowStartY[wi] + ti * TASK_GAP },
         data: {
           title: task.title, type: task.type, status: task.status,
           onClick: () => onSelect({ kind: "task", task, week }),
@@ -56,10 +69,23 @@ function buildGraph(weeks: Week[], onSelect: (s: Selected) => void): { nodes: No
       edges.push({
         id: `e-${weekNodeId}-${taskNodeId}`,
         source: weekNodeId, target: taskNodeId,
+        sourceHandle: "tasks",
         animated: task.status === "in-progress",
         style: { stroke: "#21262d", strokeWidth: 1, strokeDasharray: "4 4" },
       })
     })
+
+    // Timeline spine: connect consecutive weeks top-to-bottom
+    if (wi > 0) {
+      const prevWeekNodeId = `week-${weeks[wi - 1].id}`
+      edges.push({
+        id: `e-timeline-${wi}`,
+        source: prevWeekNodeId, target: weekNodeId,
+        sourceHandle: "bottom", targetHandle: "top",
+        style: { stroke: "#30363d", strokeWidth: 1.5 },
+        type: "smoothstep",
+      })
+    }
   })
 
   return { nodes, edges }

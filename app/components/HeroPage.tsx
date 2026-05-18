@@ -6,8 +6,8 @@ import { BottomBlur } from "./ui/edge-blur"
 import { Dithering } from "@paper-design/shaders-react"
 
 const weeks = [
-  { n: "01", status: "in-progress" },
-  { n: "02", status: "pending" },
+  { n: "01", status: "done" },
+  { n: "02", status: "in-progress" },
   { n: "03", status: "pending" },
   { n: "04", status: "pending" },
   { n: "05", status: "pending" },
@@ -54,7 +54,8 @@ export function HeroPage({ onEnter }: { onEnter: () => void }) {
         position: "relative", zIndex: 10,
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
-        flex: 1, padding: "0 24px", textAlign: "center",
+        flex: 1, padding: "0 32px", textAlign: "center",
+        paddingTop: "14vh",
       }}>
 
         {/* Eyebrow */}
@@ -82,12 +83,14 @@ export function HeroPage({ onEnter }: { onEnter: () => void }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.1 }}
           style={{
-            fontSize: "clamp(40px, 7vw, 80px)",
+            fontSize: "clamp(36px, 7vw, 80px)",
             fontWeight: 700,
             letterSpacing: "-2.5px",
             lineHeight: 1.0,
             color: "#ffffff",
             marginBottom: 14,
+            textAlign: "center",
+            width: "100%",
           }}
         >
           JOSA{" "}
@@ -100,9 +103,10 @@ export function HeroPage({ onEnter }: { onEnter: () => void }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.18 }}
           style={{
-            fontSize: 14, color: "#8b949e",
-            marginBottom: 40, maxWidth: 340,
-            fontFamily: "monospace", letterSpacing: 1,
+            fontSize: 13, color: "#8b949e",
+            marginBottom: 40, maxWidth: 460,
+            fontFamily: "monospace", letterSpacing: 2,
+            textAlign: "center",
           }}
         >
           11 weeks · real contributions · open source
@@ -130,7 +134,7 @@ export function HeroPage({ onEnter }: { onEnter: () => void }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          style={{ display: "flex", gap: 10, marginTop: 52, flexWrap: "wrap", justifyContent: "center", maxWidth: 400 }}
+          style={{ display: "flex", gap: 10, marginTop: 52, flexWrap: "wrap", justifyContent: "center", width: "100%", maxWidth: 400 }}
         >
           {weeks.map((w, i) => (
             <motion.div
@@ -161,7 +165,7 @@ export function HeroPage({ onEnter }: { onEnter: () => void }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.1 }}
-          style={{ display: "flex", gap: 24, marginTop: 18 }}
+          style={{ display: "flex", gap: 24, marginTop: 18, justifyContent: "center", width: "100%" }}
         >
           {[
             { color: "#3fb950", label: "done" },
