@@ -450,11 +450,14 @@
       <div class="block-title">PR 1</div>
       <div class="pr-box">
         <div class="pr-header">
-          <span class="pr-number">—</span>
-          <span class="pr-title placeholder">Title to be filled in</span>
+          <span class="pr-number">#22564</span>
+          <span class="pr-title">docs(ar/echo): add Arabic translation</span>
         </div>
         <div class="pr-body">
-          <p class="placeholder">Link and description to be filled in after PR is opened.</p>
+          <p><strong>Repo:</strong> <a href="https://github.com/tldr-pages/tldr" target="_blank">tldr-pages/tldr</a> &nbsp;&middot;&nbsp; <a href="https://github.com/tldr-pages/tldr/pull/22564" target="_blank">View PR →</a></p>
+          <p style="margin-top:10px;"><strong>What:</strong> Adds <code>pages.ar/common/echo.md</code> — Arabic translation of the <code>echo</code> page.</p>
+          <p style="margin-top:6px;"><strong>Why:</strong> The Arabic locale is missing ~700 common pages. <code>echo</code> is one of the most fundamental Unix commands, yet it had no Arabic translation.</p>
+          <p style="margin-top:6px;"><strong>How:</strong> Translated all example descriptions into natural Arabic following the existing style in <code>pages.ar</code>. Avoided word-for-word translation — kept technical terms like <code>terminal</code> and <code>stdin</code> in English.</p>
         </div>
       </div>
     </div>
@@ -464,18 +467,23 @@
       <div class="block-title">PR 2</div>
       <div class="pr-box">
         <div class="pr-header">
-          <span class="pr-number">—</span>
-          <span class="pr-title placeholder">Title to be filled in</span>
+          <span class="pr-number">#22565</span>
+          <span class="pr-title">docs(ar/cp): add Arabic translation</span>
         </div>
         <div class="pr-body">
-          <p class="placeholder">Link and description to be filled in after PR is opened.</p>
+          <p><strong>Repo:</strong> <a href="https://github.com/tldr-pages/tldr" target="_blank">tldr-pages/tldr</a> &nbsp;&middot;&nbsp; <a href="https://github.com/tldr-pages/tldr/pull/22565" target="_blank">View PR →</a></p>
+          <p style="margin-top:10px;"><strong>What:</strong> Adds <code>pages.ar/common/cp.md</code> — Arabic translation of the <code>cp</code> page.</p>
+          <p style="margin-top:6px;"><strong>Why:</strong> <code>cp</code> is one of the most essential Unix commands for file management, yet it had no Arabic translation in the project.</p>
+          <p style="margin-top:6px;"><strong>How:</strong> Same approach as PR 1 — natural Arabic phrasing, behavior described instead of flag names (e.g. "مع عرض اسم كل ملف أثناء نسخه" instead of "verbose mode"). Verified against the official translation templates.</p>
         </div>
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="placeholder">To be filled in after completing the PRs.</div>
+      <div class="reflection">
+        Before writing a single line, I verified both files didn't exist using a direct GitHub API call — a 404 check, not a keyword search. I read <code>CONTRIBUTING.md</code> and the style guide, compared against recently merged Arabic PRs like <code>docker.md</code>, and used the official translation templates for standard phrases like <code>انظر أيضًا</code>. The main lesson from this task: <strong>a maintainer-friendly PR is small, one logical change, and its description answers What/Why/How/Test before anyone has to ask.</strong> Keeping technical terms in English (<code>terminal</code>, <code>headers</code>, <code>proxy</code>) instead of forcing formal Arabic translations made the output feel natural rather than machine-generated — and that matters because the maintainers will close PRs that look AI-generated without genuine human review.
+      </div>
     </div>
   </div>
 
