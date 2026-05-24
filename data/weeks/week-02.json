@@ -11,22 +11,14 @@
       "title": "Two Well-Formed PRs",
       "status": "done",
       "reflection": "Contributed two Arabic translations to tldr-pages/tldr — echo.md and cp.md — both submitted as separate PRs. Before writing anything, I verified the files didn't exist in pages.ar/common/ using the GitHub API directly (404 check), not just a search. I also read CONTRIBUTING.md and the style guide, compared against merged Arabic pages like git.md and docker.md, and used the official translation templates for phrases like انظر أيضًا. The main lesson: a maintainer-friendly PR is small, one logical change, and has a description that answers What/Why/How/Test before anyone has to ask. Keeping technical terms in English (terminal, headers, proxy) instead of forcing formal Arabic translations made the output feel natural rather than machine-generated.",
-      "commands": [
-        "git clone https://github.com/Ti-03/tldr.git",
-        "git checkout -b ar/add-echo",
-        "cp echo.md pages.ar/common/echo.md",
-        "git add pages.ar/common/echo.md",
-        "git commit -m 'docs(ar/echo): add Arabic translation'",
-        "git push origin ar/add-echo",
-        "git checkout main && git checkout -b ar/add-cp",
-        "cp cp.md pages.ar/common/cp.md",
-        "git add pages.ar/common/cp.md",
-        "git commit -m 'docs(ar/cp): add Arabic translation'",
-        "git push origin ar/add-cp"
-      ],
-      "output": "PR #1 — echo\nhttps://github.com/tldr-pages/tldr/pull/22564\n\nPR #2 — cp\nhttps://github.com/tldr-pages/tldr/pull/22565",
+      "commands": [],
+      "output": null,
       "screenshot": null,
-      "pr": "https://github.com/tldr-pages/tldr/pull/22564"
+      "pr": null,
+      "prs": [
+        { "label": "docs(ar/echo): add Arabic translation", "url": "https://github.com/tldr-pages/tldr/pull/22564" },
+        { "label": "docs(ar/cp): add Arabic translation", "url": "https://github.com/tldr-pages/tldr/pull/22565" }
+      ]
     },
     {
       "id": "practice-review",

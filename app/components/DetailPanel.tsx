@@ -46,13 +46,13 @@ function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
 type Task = {
   id: string; type: string; title: string; status: string
   reflection: string | null; commands: string[]; output: string | null
-  screenshot: string | null; pr: string | null
+  screenshot: string | null; pr: string | null; prs?: { label: string; url: string }[]
 }
 type Week = { id: number; title: string; status: string; deadline: string; report?: string | null; tasks: Task[] }
 type Selected = { kind: "week"; week: Week } | { kind: "task"; task: Task; week: Week }
 
 const typeColor: Record<string, string> = {
-  archaeology: "#00b4d8", reflog: "#f59e0b", rebase: "#3fb950", "soft-skill": "#8b5cf6",
+  archaeology: "#00b4d8", reflog: "#f59e0b", rebase: "#3fb950", "soft-skill": "#8b5cf6", pr: "#00b4d8", review: "#3fb950",
 }
 const statusColor: Record<string, string> = {
   done: "#3fb950", "in-progress": "#f59e0b", pending: "#6e7681",
@@ -276,7 +276,23 @@ function TaskDetail({ task, week, onLightbox }: { task: Task; week: Week; onLigh
         </div>
       )}
 
-      {task.pr && (
+      {task.prs && task.prs.length > 0 ? (
+        <div>
+          <SectionLabel>Pull Requests</SectionLabel>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {task.prs.map(({ label, url }) => (
+              <a key={url} href={url} target="_blank" rel="noreferrer"
+                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", background: "#111318", border: "1px solid #21262d", borderRadius: 8, textDecoration: "none", transition: "border-color 0.15s" }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = color)}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = "#21262d")}
+              >
+                <span style={{ fontSize: 12, color: "#c9d1d9", fontWeight: 600 }}>{label}</span>
+                <span style={{ fontSize: 11, color, fontFamily: "monospace" }}>#{url.split("/").pop()} →</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ) : task.pr ? (
         <div>
           <SectionLabel>Pull Request</SectionLabel>
           <a href={task.pr} target="_blank" rel="noreferrer"
@@ -284,7 +300,7 @@ function TaskDetail({ task, week, onLightbox }: { task: Task; week: Week; onLigh
             {task.pr} →
           </a>
         </div>
-      )}
+      ) : null}
 
       {task.status === "pending" && (
         <div style={{ borderLeft: "2px solid #21262d", paddingLeft: 16, fontSize: 13, color: "#6e7681", fontStyle: "italic" }}>
