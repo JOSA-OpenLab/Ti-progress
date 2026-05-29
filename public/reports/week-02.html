@@ -500,26 +500,37 @@
 
     <div class="block">
       <div class="block-title">PR Reviewed</div>
-      <p class="placeholder">Link to reviewed PR to be filled in.</p>
+      <div class="pr-box">
+        <div class="pr-header">
+          <span class="pr-number">#22625</span>
+          <span class="pr-title">docs(foremost): add foremost command page</span>
+        </div>
+        <div class="pr-body">
+          <p><strong>Repo:</strong> <a href="https://github.com/tldr-pages/tldr" target="_blank">tldr-pages/tldr</a> &nbsp;&middot;&nbsp; <a href="https://github.com/tldr-pages/tldr/pull/22625" target="_blank">View PR →</a></p>
+          <p style="margin-top:6px;"><strong>My review:</strong> <a href="https://github.com/tldr-pages/tldr/pull/22625#pullrequestreview-4391543152" target="_blank">View review →</a></p>
+        </div>
+      </div>
     </div>
 
     <div class="block">
       <div class="block-title">Comments Left</div>
       <div class="cc-list">
         <div class="cc-item">
-          <div class="cc-label suggestion">suggestion</div>
-          <p class="placeholder">Comment to be filled in.</p>
+          <div class="cc-label" style="color:#f59e0b;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;margin-bottom:6px;">nitpick</div>
+          <p>The value <code>100</code> in <code>-s 100</code> should be wrapped in placeholder syntax: <code>-s {{100}}</code>. Per the style guide, all user-provided values must use <code>{{placeholder}}</code> so tldr clients can highlight them for the user.</p>
         </div>
-        <div class="cc-item">
-          <div class="cc-label question">question</div>
-          <p class="placeholder">Comment to be filled in.</p>
+        <div class="cc-item" style="margin-top:16px;">
+          <div class="cc-label" style="color:#00b4d8;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;margin-bottom:6px;">suggestion</div>
+          <p>The description says "Recover only JPEG files" but the command uses <code>{{jpg}}</code> as a placeholder — meaning the file type is variable, not fixed to JPEG. Consider rephrasing to "Recover only a specific file type, skipping the first N blocks:" so the description matches the generic placeholder.</p>
         </div>
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="placeholder">To be filled in after completing the review.</div>
+      <div class="reflection">
+        Reviewed PR #22625 in tldr-pages/tldr — a new page for the <code>foremost</code> command. Reading the diff carefully revealed two issues: a hardcoded value that should have been a <code>{{placeholder}}</code>, and a description that contradicted its own generic placeholder. The main lesson from this task: <strong>good review comments separate what is required to fix from what is a preference.</strong> Using Conventional Comments labels (<code>nitpick</code>, <code>suggestion</code>) made it immediately clear which comment was blocking and which was optional — so the author doesn't have to guess severity.
+      </div>
     </div>
   </div>
 

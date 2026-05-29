@@ -24,12 +24,12 @@
       "id": "practice-review",
       "type": "review",
       "title": "Practice Review",
-      "status": "pending",
-      "reflection": null,
+      "status": "done",
+      "reflection": "Reviewed PR #22625 in tldr-pages/tldr — a new page for the foremost command. Reading the diff carefully, I found two issues: a hardcoded value that should have been a placeholder, and a description that contradicted its own generic placeholder. The main lesson: good review comments separate what is required to fix from what is a preference. Using Conventional Comments labels (nitpick, suggestion) made it clear which comment was blocking and which was optional — so the author doesn't have to guess.",
       "commands": [],
-      "output": null,
+      "output": "nitpick: `-s 100` → should be `-s {{100}}` per style guide\nsuggestion: description says \"JPEG files\" but placeholder `{{jpg}}` is generic — rephrase to match",
       "screenshot": null,
-      "pr": null
+      "pr": "https://github.com/tldr-pages/tldr/pull/22625#pullrequestreview-4391543152"
     },
     {
       "id": "asking-questions",
