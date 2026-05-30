@@ -1,0 +1,64 @@
+{
+  "id": 3,
+  "title": "Issue Triage & Bug Reproduction",
+  "status": "pending",
+  "deadline": "2026-05-30",
+  "report": "/reports/week-03.html",
+  "tasks": [
+    {
+      "id": "reproduce-issue",
+      "type": "triage",
+      "title": "Reproduce One Issue",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "build-mcve",
+      "type": "mcve",
+      "title": "Build One MCVE",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "git-bisect",
+      "type": "bisect",
+      "title": "Run a Bisect",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "triage-issue",
+      "type": "triage",
+      "title": "Triage an Issue",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "active-listening",
+      "type": "soft-skill",
+      "title": "Active Listening",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    }
+  ]
+}

@@ -52,7 +52,8 @@ type Week = { id: number; title: string; status: string; deadline: string; repor
 type Selected = { kind: "week"; week: Week } | { kind: "task"; task: Task; week: Week }
 
 const typeColor: Record<string, string> = {
-  archaeology: "#00b4d8", reflog: "#f59e0b", rebase: "#3fb950", "soft-skill": "#8b5cf6", pr: "#00b4d8", review: "#3fb950",
+  archaeology: "#00b4d8", reflog: "#f59e0b", rebase: "#3fb950", "soft-skill": "#8b5cf6",
+  pr: "#00b4d8", review: "#3fb950", triage: "#f59e0b", mcve: "#ff7b72", bisect: "#3fb950",
 }
 const statusColor: Record<string, string> = {
   done: "#3fb950", "in-progress": "#f59e0b", pending: "#6e7681",
