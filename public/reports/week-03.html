@@ -152,22 +152,56 @@
 
     <div class="block">
       <div class="block-title">Issue Reproduced</div>
-      <p class="placeholder">Link to the issue to be filled in.</p>
+      <p><strong>Repo:</strong> <a href="https://github.com/httpie/cli" target="_blank">httpie/cli</a> &nbsp;&middot;&nbsp; <a href="https://github.com/httpie/cli/issues/1640" target="_blank">Issue #1640 →</a> &nbsp;&middot;&nbsp; <a href="https://github.com/httpie/cli/issues/1640#issuecomment-4628686732" target="_blank">My comment →</a></p>
+      <p style="margin-top:10px;"><strong>Bug:</strong> <code>Content-Type: application/json</code> is dropped from a POST when <strong>exactly one</strong> custom header is present alongside JSON data items.</p>
     </div>
 
     <div class="block">
       <div class="block-title">Environment</div>
-      <p class="placeholder">OS, language version, package versions to be filled in.</p>
+      <p>macOS (Darwin 25.5.0), Apple Silicon &nbsp;&middot;&nbsp; HTTPie <code>3.2.4</code> &nbsp;&middot;&nbsp; Requests <code>2.34.2</code> &nbsp;&middot;&nbsp; Python <code>3.13.13</code> &nbsp;&middot;&nbsp; isolated <code>uv venv</code> — the only variable changed between runs was <code>multidict</code>.</p>
     </div>
 
     <div class="block">
       <div class="block-title">Steps & Outcome</div>
-      <p class="placeholder">Commands run and actual result to be filled in.</p>
+      <p style="margin-bottom:12px;">A fresh install <em>didn't</em> reproduce — the clue that the bug lived in a dependency, not in httpie. Pinning the yanked <code>multidict==6.5.0</code> isolated the exact trigger.</p>
+      <div class="code-block">
+        <div class="code-bar">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="code-lang">bash</span>
+        </div>
+        <pre><span class="cm"># Isolated env, then pin the yanked/buggy dependency</span>
+<span class="cmd">uv venv httpie-repro && source httpie-repro/bin/activate && uv pip install httpie</span>
+<span class="cmd">uv pip install 'multidict==6.5.0'</span>
+
+<span class="cm"># One header -> Content-Type MISSING (bug)</span>
+<span class="cmd">http --print=H --ignore-stdin post pie.dev/post 'header1: xyz' x=1</span>
+
+<span class="cm"># Two headers -> Content-Type present (works)</span>
+<span class="cmd">http --print=H --ignore-stdin post pie.dev/post 'header1: xyz' 'header2: abc' x=1</span>
+
+<span class="cm"># Upgrade the dependency -> 6.7.1, single-header case fixed</span>
+<span class="cmd">uv pip install -U multidict</span></pre>
+      </div>
+      <div class="code-block" style="margin-top:14px;">
+        <div class="code-bar">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="code-lang">result</span>
+        </div>
+        <pre><span class="out">Boundary under multidict 6.5.0 — is Content-Type: application/json present?
+  0 headers: PRESENT
+  1 header:  MISSING   <- bug
+  2 headers: PRESENT
+  3 headers: PRESENT</span>
+
+<span class="cm"># pie.dev echoed back no Content-Type for the 1-header request,</span>
+<span class="cm"># confirming it was genuinely not sent (not a display quirk).</span>
+<span class="cm"># After upgrading multidict to 6.7.1: 1-header case PRESENT (fixed).</span></pre>
+      </div>
     </div>
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="placeholder">To be filled in after completing the task.</div>
+      <div>A fresh install couldn't reproduce the bug — and that "can't reproduce" was itself the finding. The only difference between my machine and the reporter's was a single transitive dependency: <code>multidict</code>. Pinning the yanked <code>6.5.0</code> in an isolated venv and changing nothing else proved the root cause, and the boundary turned out to be exact — only a <strong>single</strong> custom header drops <code>Content-Type</code>, while 0, 2, and 3 keep it. I confirmed the request was genuinely sent without the header by checking what pie.dev echoed back, rather than trusting HTTPie's own display. The lesson: when a bug won't reproduce on a clean install, suspect the dependency tree before the project's own code.</div>
     </div>
   </div>
 
@@ -184,17 +218,32 @@
 
     <div class="block">
       <div class="block-title">Issue</div>
-      <p class="placeholder">Link to the issue or comment to be filled in.</p>
+      <p><strong>Repo:</strong> <a href="https://github.com/httpie/cli" target="_blank">httpie/cli</a> &nbsp;&middot;&nbsp; <a href="https://github.com/httpie/cli/issues/1640" target="_blank">Issue #1640 →</a> &nbsp;&middot;&nbsp; <a href="https://github.com/httpie/cli/issues/1640#issuecomment-4628686732" target="_blank">MCVE comment →</a></p>
+      <p style="margin-top:10px;"><strong>Reduced from:</strong> a <code>uv venv</code> + httpie install + a live POST to pie.dev &nbsp;→&nbsp; <strong>to:</strong> 3 lines of pure Python, only <code>multidict</code>, no network.</p>
     </div>
 
     <div class="block">
       <div class="block-title">MCVE</div>
-      <p class="placeholder">The reduced reproduction code to be filled in.</p>
+      <div class="code-block">
+        <div class="code-bar">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="code-lang">python</span>
+        </div>
+        <pre><span class="cm"># Fails (exit 1) on multidict==6.5.0; passes (exit 0) on 6.5.1+</span>
+<span class="out">from multidict import CIMultiDict
+
+md = CIMultiDict({"a":"1","b":"2","c":"3","d":"4","e":"5"})
+md.popone("a")            <span class="cm"># remove the first key</span>
+md.update([("a","1")])    <span class="cm"># add it back</span>
+
+assert set(md.keys()) == {"a","b","c","d","e"}  <span class="cm"># drops a key on 6.5.0</span></span></pre>
+      </div>
+      <p style="margin-top:12px;"><strong>Minimum:</strong> exactly 5 keys (4 and 6 don't trigger it — it's a hash-table internals bug). <strong>Complete:</strong> only needs <code>multidict</code>. <strong>Verifiable:</strong> self-checking <code>assert</code> + exit code. Matches the upstream regression test in <a href="https://github.com/aio-libs/multidict/pull/1196" target="_blank">aio-libs/multidict#1196</a>.</p>
     </div>
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="placeholder">To be filled in after completing the task.</div>
+      <div>I reduced the sprawling #1640 reproduction (a venv, an httpie install, and a live network call) to three lines of pure Python that need only <code>multidict</code>. The path was mechanical: trace httpie's <code>apply_missing_repeated_headers()</code> to the operation it relies on — <code>popone()</code> then <code>update()</code> — reproduce that directly on a <code>CIMultiDict</code>, then minimize the input. The minimization was the interesting part: <strong>exactly</strong> 5 keys triggers it while 4 and 6 don't, which told me this is a hash-table internals bug, not a logic error. Making it self-verifying with an <code>assert</code> and an exit code means it doubles as a bisect/CI probe. The lesson: a good MCVE deletes everything that isn't the bug — here that meant removing httpie and the network entirely and landing on the single <code>multidict</code> call that actually fails.</div>
     </div>
   </div>
 
@@ -211,22 +260,49 @@
 
     <div class="block">
       <div class="block-title">Project & Behavior</div>
-      <p class="placeholder">Repo and what changed to be filled in.</p>
+      <p><strong>Repo:</strong> <a href="https://github.com/aio-libs/multidict" target="_blank">aio-libs/multidict</a> &nbsp;&middot;&nbsp; the dependency behind <a href="https://github.com/httpie/cli/issues/1640" target="_blank">httpie/cli#1640</a> from Tasks 1&amp;2.</p>
+      <p style="margin-top:10px;"><strong>What changed:</strong> the Task 2 MCVE (a <code>popone()</code> then <code>update()</code> on a 5-key <code>CIMultiDict</code>) silently drops a key. The version window is exact — <code>6.4.4</code> works, <code>6.5.0</code> breaks, <code>6.5.1</code> works again — so the regression lived in <strong>exactly one release</strong>, which is why <code>6.5.0</code> was yanked from PyPI.</p>
+      <p style="margin-top:10px;"><strong>Twist:</strong> the bug only exists in multidict's compiled C extension. With <code>MULTIDICT_NO_EXTENSIONS=1</code> the pure-Python fallback is correct on every version — so there was no Python line to bisect, and every step had to rebuild the extension.</p>
     </div>
 
     <div class="block">
       <div class="block-title">Bisect Session</div>
-      <p class="placeholder">Command sequence and output to be filled in.</p>
+      <p style="margin-bottom:12px;">A <code>git bisect run</code> script builds the C extension in place and runs the MCVE, returning <code>0</code>=good / <code>1</code>=bad (and <code>125</code> to skip any commit that won't compile). 7 commits in the window resolved in 3 automated builds — <strong>O(log n)</strong>.</p>
+      <div class="code-block">
+        <div class="code-bar">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="code-lang">bash</span>
+        </div>
+        <pre><span class="cm"># probe builds the C ext, then runs Task 2's 5-key MCVE (exit 0/1, 125=skip)</span>
+<span class="cmd">git clone https://github.com/aio-libs/multidict.git && cd multidict</span>
+<span class="cmd">git bisect start v6.5.0 v6.4.4</span>   <span class="cm"># bad = 6.5.0 (yanked), good = 6.4.4</span>
+<span class="cmd">git bisect run bash bisect_test.sh</span>
+<span class="cmd">git bisect reset</span></pre>
+      </div>
+      <div class="code-block" style="margin-top:14px;">
+        <div class="code-bar">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="code-lang">result</span>
+        </div>
+        <pre><span class="out">Reproducer signal (C extension):  6.4.4 GOOD | 6.5.0 BAD | 6.5.1 GOOD
+(pure-Python fallback is GOOD on every version)
+
+Bisecting v6.4.4..v6.5.0 — 7 commits, ~3 steps:</span>
+<span class="out">  good  </span><span class="hsh">87c76b8</span><span class="out">  Fix failed spelling task (#1168)</span>
+<span class="out">  good  </span><span class="hsh">bdbbc48</span><span class="out">  Bump pytest-cov from 6.0.0 to 6.1.0 (#1119)</span>
+<span class="out">  bad   </span><span class="hsh">9d3c53f</span><span class="out">  Replace pair_list with hash table (#1128)  &lt;- first bad</span></pre>
+      </div>
     </div>
 
     <div class="block">
       <div class="block-title">Culprit Commit</div>
-      <p class="placeholder">The commit identified and what it changed to be filled in.</p>
+      <p><a href="https://github.com/aio-libs/multidict/commit/9d3c53f28c4c18b1a032af45d013a0bbe12821b9" target="_blank"><code>9d3c53f</code> — "Replace pair_list with hash table (#1128)" →</a> &nbsp;&middot;&nbsp; Andrew Svetlov, 2025-06-17 &nbsp;&middot;&nbsp; parent <code>bdbbc48</code> confirmed good.</p>
+      <p style="margin-top:10px;">This commit swapped multidict's internal storage from a linked <strong>pair-list</strong> to a CPython-<code>dict</code>-style <strong>hash table</strong> for O(1) lookups. The new tombstone/index bookkeeping mishandled the delete-then-reinsert pattern (<code>popone</code> then <code>update</code>), dropping a sibling key. Severe enough to yank <code>6.5.0</code>; fixed in <code>6.5.1</code>.</p>
     </div>
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="placeholder">To be filled in after completing the task.</div>
+      <div>I bisected the exact commit behind the same bug as Tasks 1 and 2, feeding the bisect my 5-key MCVE as the good/bad probe. Two things made it more than a mechanical run. First, the bug lives only in multidict's <strong>compiled C extension</strong> — with <code>MULTIDICT_NO_EXTENSIONS=1</code> every version is correct — so there was no Python line to bisect and each step had to rebuild the extension, with the script returning <code>125</code> to skip uncompilable commits. Second, the window was unusually sharp: the regression existed in <strong>exactly one release</strong>. Bisecting 7 commits took 3 automated builds and landed on <code>9d3c53f</code>, the rewrite of multidict's internal storage from a pair-list to a hash table. The lesson: "which <em>version</em> broke it" and "which <em>commit</em> broke it" are different questions — <code>git bisect run</code> answers the second mechanically, but only once you have a reproducer that emits a clean good/bad signal, and here that first meant discovering the bug was in C, not Python.</div>
     </div>
   </div>
 
@@ -243,17 +319,34 @@
 
     <div class="block">
       <div class="block-title">Issue Triaged</div>
-      <p class="placeholder">Link to the issue to be filled in.</p>
+      <p><strong>Repo:</strong> <a href="https://github.com/t3-oss/create-t3-app" target="_blank">t3-oss/create-t3-app</a> &nbsp;&middot;&nbsp; <a href="https://github.com/t3-oss/create-t3-app/issues/2215" target="_blank">Issue #2215 →</a> &nbsp;&middot;&nbsp; <a href="https://github.com/t3-oss/create-t3-app/issues/2215#issuecomment-4628828443" target="_blank">My triage comment →</a></p>
+      <p style="margin-top:10px;"><strong>Bug:</strong> the <code>--import-alias</code> flag crashes with <code>TypeError: i.replace is not a function</code> when used in CI mode. A different repo from #1640 — chosen for breadth.</p>
     </div>
 
     <div class="block">
       <div class="block-title">Triage Action</div>
-      <p class="placeholder">What you did — confirmed, closed, asked for info, etc. — to be filled in.</p>
+      <p style="margin-bottom:12px;"><strong>Confirmed</strong> on the current npm <code>latest</code> (<code>create-t3-app@7.40.0</code>) — ran it twice and read the released dist — with environment, steps, outcome, a precise root cause, and a polite correction to the original analysis.</p>
+      <div class="code-block">
+        <div class="code-bar">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+          <span class="code-lang">result</span>
+        </div>
+        <pre><span class="cm"># Confirmed: create-t3-app@7.40.0 · Node 26.0.0 · npm 11.12.1 · macOS (Darwin 25.5.0)</span>
+<span class="cmd">npx create-t3-app@7.40.0 my-app --CI --tailwind --appRouter --eslint --import-alias "@/"</span>
+<span class="out">-> scaffolds, then crashes: TypeError: i.replace is not a function</span>
+
+<span class="cm"># Root cause in the RELEASED build:</span>
+<span class="out">.option('-i, --import-alias', '...', '~/')   # registered as a BOOLEAN — no [alias] placeholder
+  -> Commander discards "@/" and sets importAlias = true
+  -> guard `if (importAlias !== '~/')` passes  (true !== '~/')
+  -> setImportAlias() calls .replace() on a boolean -> crash</span></pre>
+      </div>
+      <p style="margin-top:12px;"><strong>Correction issued:</strong> the original analysis assumed an optional <code>[alias]</code> resolving to <code>true</code> — but the released build has <strong>no value placeholder at all</strong>, so the flag never accepts a value. The current <code>main</code> source does use <code>-i, --import-alias [alias]</code>, which wouldn't crash, but that isn't in <code>7.40.0</code>.</p>
     </div>
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="placeholder">To be filled in after completing the task.</div>
+      <div>I triaged an unconfirmed bug in a different repo for breadth, and the key discipline was triaging <strong>the artifact the reporter actually ran</strong> — the published <code>7.40.0</code> dist — not the repo's HEAD. The two had diverged: <code>main</code> registers the flag as <code>-i, --import-alias [alias]</code> (which accepts a value and wouldn't crash), while the released build registers it as a plain boolean with no value placeholder, so Commander sets <code>importAlias = true</code> and <code>setImportAlias()</code> later calls <code>.replace()</code> on a boolean. Reading HEAD alone would have produced a wrong "cannot reproduce." I confirmed it, gave a precise root cause, and politely corrected the original analysis rather than just agreeing with it. The lesson: a confirmation is only as trustworthy as the build you ran it against.</div>
     </div>
   </div>
 
