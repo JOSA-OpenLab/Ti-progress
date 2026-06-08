@@ -1,7 +1,7 @@
 {
   "id": 3,
   "title": "Issue Triage & Bug Reproduction",
-  "status": "pending",
+  "status": "done",
   "deadline": "2026-05-30",
   "report": "/reports/week-03.html",
   "tasks": [
@@ -73,7 +73,7 @@
       "id": "active-listening",
       "type": "soft-skill",
       "title": "Active Listening",
-      "status": "pending",
+      "status": "done",
       "reflection": null,
       "commands": [],
       "output": null,

@@ -1,7 +1,7 @@
 {
   "id": 2,
   "title": "PR Etiquette & Maintainer Friendly Contributions",
-  "status": "in-progress",
+  "status": "done",
   "deadline": "2026-05-23",
   "report": "/reports/week-02.html",
   "tasks": [
@@ -35,7 +35,7 @@
       "id": "asking-questions",
       "type": "soft-skill",
       "title": "Asking Good Questions",
-      "status": "pending",
+      "status": "done",
       "reflection": null,
       "commands": [],
       "output": null,

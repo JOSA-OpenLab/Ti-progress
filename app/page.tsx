@@ -6,8 +6,9 @@ import { Graph } from "./components/Graph"
 import week01 from "../data/weeks/week-01.json"
 import week02 from "../data/weeks/week-02.json"
 import week03 from "../data/weeks/week-03.json"
+import week04 from "../data/weeks/week-04.json"
 
-const weeks = [week01, week02, week03]
+const weeks = [week01, week02, week03, week04]
 
 export default function Home() {
   const [view, setView] = useState<"hero" | "graph">("hero")

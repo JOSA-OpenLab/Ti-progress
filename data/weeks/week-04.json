@@ -1,0 +1,64 @@
+{
+  "id": 4,
+  "title": "Code Review & the Maintainer Mindset",
+  "status": "in-progress",
+  "deadline": "2026-06-06",
+  "report": "/reports/week-04.html",
+  "tasks": [
+    {
+      "id": "two-reviews",
+      "type": "review",
+      "title": "Two Real Reviews",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "self-review",
+      "type": "writeup",
+      "title": "Self-Review Write-up",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "over-engineering",
+      "type": "analysis",
+      "title": "Spot the Over-Engineering",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "read-merged-prs",
+      "type": "reading",
+      "title": "Read Merged PRs in One Project",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "feedback-without-ego",
+      "type": "soft-skill",
+      "title": "Giving & Receiving Feedback Without Ego",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    }
+  ]
+}

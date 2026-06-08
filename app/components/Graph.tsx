@@ -1,10 +1,10 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 import {
   ReactFlow, Background, BackgroundVariant,
   useNodesState, useEdgesState,
-  type Node, type Edge,
+  type Node, type Edge, type ReactFlowInstance,
 } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
 
@@ -93,10 +93,53 @@ function buildGraph(weeks: Week[], onSelect: (s: Selected) => void): { nodes: No
 
 export function Graph({ weeks }: { weeks: Week[] }) {
   const [selected, setSelected] = useState<Selected | null>(null)
-  const { nodes: init, edges: initE } = buildGraph(weeks, setSelected)
+  const rf = useRef<ReactFlowInstance | null>(null)
+
+  // The week to open on: the one in progress, otherwise the latest.
+  const currentWeek = useMemo(
+    () => weeks.find(w => w.status === "in-progress") ?? weeks[weeks.length - 1],
+    [weeks],
+  )
+  const focusNodes = useMemo(() => {
+    if (!currentWeek) return []
+    return [
+      { id: `week-${currentWeek.id}` },
+      ...currentWeek.tasks.map(t => ({ id: `task-${currentWeek.id}-${t.id}` })),
+    ]
+  }, [currentWeek])
+
+  // Smoothly center a single node, nudged left so the detail panel doesn't cover it.
+  const focusNode = useCallback((id: string) => {
+    const inst = rf.current
+    if (!inst) return
+    const n = inst.getNode(id)
+    if (!n) return
+    const zoom = Math.max(inst.getZoom(), 0.85)
+    const w = n.measured?.width ?? 200
+    const h = n.measured?.height ?? 60
+    inst.setCenter(n.position.x + w / 2 + 200 / zoom, n.position.y + h / 2, { zoom, duration: 650 })
+  }, [])
+
+  const handleSelect = useCallback((s: Selected) => {
+    setSelected(s)
+    const id = s.kind === "week" ? `week-${s.week.id}` : `task-${s.week.id}-${s.task.id}`
+    focusNode(id)
+  }, [focusNode])
+
+  const { nodes: init, edges: initE } = useMemo(() => buildGraph(weeks, handleSelect), [weeks, handleSelect])
   const [nodes, , onNodesChange] = useNodesState(init)
   const [edges, , onEdgesChange] = useEdgesState(initE)
   const onClose = useCallback(() => setSelected(null), [])
+
+  // Intro: hold the full overview for a beat, then glide-zoom into the current week.
+  const handleInit = useCallback((inst: ReactFlowInstance) => {
+    rf.current = inst
+    inst.fitView({ padding: 0.4, duration: 0 })
+    if (focusNodes.length === 0) return
+    window.setTimeout(() => {
+      inst.fitView({ nodes: focusNodes, padding: 0.6, maxZoom: 1, duration: 1500 })
+    }, 700)
+  }, [focusNodes])
 
   const totalDone = weeks.flatMap(w => w.tasks).filter(t => t.status === "done").length
   const total = weeks.flatMap(w => w.tasks).length
@@ -135,7 +178,7 @@ export function Graph({ weeks }: { weeks: Week[] }) {
         nodes={nodes} edges={edges}
         onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
-        fitView fitViewOptions={{ padding: 0.35 }}
+        onInit={handleInit}
         minZoom={0.3} maxZoom={2}
         proOptions={{ hideAttribution: true }}
         style={{ background: "#0a0a0a" }}
