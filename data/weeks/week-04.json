@@ -28,12 +28,18 @@
       "id": "self-review",
       "type": "writeup",
       "title": "Self-Review Write-up",
-      "status": "pending",
-      "reflection": null,
-      "commands": [],
-      "output": null,
+      "status": "done",
+      "reflection": "Self-reviewed my own remainders#30 — a 4,461-line PR titled just 'Dev' that merged a whole dev branch bundling an admin dashboard, auth, a Ko-fi payment webhook, file uploads and caching. Reviewing it as a hostile stranger surfaced one genuine correctness bug I'd missed at the time: the webhook lowercases the donor email and queries Firestore with it, but signup stores user.email un-normalized, so a case-sensitive equality means already-registered users with any uppercase in their email silently miss their paid Pro grant. The bigger lesson was about asserting carefully even against my own code: my first pass claimed the user 'never gets Pro', but tracing applyPendingKofiGrant proved that's overstated — donate-before-signup is rescued and there's a manual fallback field, so the accurate scope is narrower. I also nearly flagged 'no webhook verification' before reading the handler, which actually does a timing-safe token compare and fails closed. Doing the work the author should have done (self-review before requesting review really does catch ~30%) and writing it up honestly — including correcting my own overstatement — was the point.",
+      "commands": [
+        "gh pr view 30 --repo Ti-03/remainders --json files   # 33 files / +4461 across ~5 concerns = should have been ~5 PRs",
+        "gh api repos/Ti-03/remainders/contents/app/api/webhooks/kofi/route.ts?ref=main   # read the payment path",
+        "gh api .../lib/firebase.ts  # saveUserProfile stores email verbatim (line 239)",
+        "gh api .../app/dashboard/page.tsx  # caller passes user.email RAW (line 370); applyPendingKofiGrant only at signup (line 47)",
+        "# traced end-to-end before asserting: stored-raw vs queried-lowercased + Firestore == is case-sensitive"
+      ],
+      "output": "Self-review of remainders#30 'Dev' (merged 2026-03-27):\n\nblocking (correctness): webhook lowercases donorEmail + queries where('email','==',donorEmail), but signup stores user.email un-normalized (dashboard:370 -> firebase.ts:239). Firestore == is case-sensitive -> an already-registered user with any uppercase in their email silently misses the auto Pro grant (filed pending_signup; auto-apply only fires at username creation). Fix: lowercase email at signup, as username already is.\nblocking (scope): 4,461 lines titled 'Dev' bundling admin route-protection + users page + payment webhook + background uploads + wallpaper caching. Should have been ~5 scoped PRs.\nsuggestion (security): no replay/idempotency guard; kofi_transaction_id is never checked, so a retried/replayed valid payload resets planExpiresAt to now+30d.\nquestion: each payment overwrites planExpiresAt to now+30d rather than extending — a subscriber paying early loses remaining days. Intended?\npraise: webhook security basics are solid — timing-safe token compare + length guard, fail-closed (503) when unconfigured, every event logged, tolerant of Ko-fi content-type quirks.\n\nVerification: dropped 1 false claim (webhook 'no verification'); corrected 1 overstatement (email bug is not 'never gets Pro' — donate-before-signup + manual fallback recover it); 3 findings confirmed to specific lines.",
       "screenshot": null,
-      "pr": null
+      "pr": "https://github.com/Ti-03/remainders/pull/30"
     },
     {
       "id": "over-engineering",

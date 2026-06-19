@@ -231,12 +231,36 @@
 
     <div class="block">
       <div class="block-title">PR Under Review</div>
-      <p class="placeholder">To be filled in — link to my past PR and the review I'd give it now.</p>
+      <p><strong><a href="https://github.com/Ti-03/remainders/pull/30" target="_blank">Ti-03/remainders#30 — "Dev"</a></strong> &nbsp;·&nbsp; +4,461 / −105 across 33 files, merged. A whole <code>dev</code> branch merged into <code>main</code> under a one-word title — the honest "least proud of" choice: it breaks nearly every rule this week teaches.</p>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The Review I'd Leave Now (as a hostile stranger)</div>
+      <ul class="checklist">
+        <li><strong>blocking (correctness):</strong> the Ko-fi webhook lowercases <code>donorEmail</code> and queries <code>where('email','==', donorEmail)</code>, but signup stores <code>user.email</code> un-normalized (<code>dashboard:370</code> → <code>firebase.ts:239</code>). Firestore equality is case-sensitive, so an <em>already-registered</em> user with any uppercase in their email silently misses their paid Pro grant (filed <code>pending_signup</code>; auto-apply only fires at username creation). Fix: lowercase email at signup — as <code>username</code> already is.</li>
+        <li><strong>blocking (scope):</strong> 4,461 lines titled "Dev" bundling ~5 unrelated features — admin route-protection, a users page, a payment webhook, background uploads, and wallpaper caching. Unreviewable as one unit; the payment path alone deserved its own PR.</li>
+        <li><strong>suggestion (security):</strong> no replay/idempotency guard — <code>kofi_transaction_id</code> exists for dedup but is never checked, so a retried or replayed valid payload re-runs the grant and resets <code>planExpiresAt</code> to now+30d.</li>
+        <li><strong>question:</strong> each payment <em>overwrites</em> <code>planExpiresAt</code> to now+30d rather than extending it — a subscriber paying before expiry loses remaining days. Intended?</li>
+        <li><strong>praise:</strong> the webhook security basics are genuinely solid — timing-safe token compare with a length guard, fail-closed (503) when unconfigured, every event logged, and tolerant of Ko-fi's content-type quirks.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Verification — even on my own code</div>
+      <div class="code-block">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">trace-before-assert</span></div>
+        <pre><span class="cm"># Every claim traced to specific lines before it went in this report.</span>
+<span class="out">dropped:</span>    "webhook has no verification"   <span class="cm"># false — it does a timing-safe token compare</span>
+<span class="out">corrected:</span>  "user never gets Pro"           <span class="cm"># overstated — donate-before-signup + manual</span>
+                                            <span class="cm"># fallback recover it; bug hits already-registered</span>
+                                            <span class="cm"># users with mixed-case emails</span>
+<span class="out">confirmed:</span>  email-case bug · scope · replay gap · expiry overwrite</pre>
+      </div>
     </div>
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="placeholder">To be filled in after completing the task.</div>
+      <div class="reflection">Reviewing my own PR as a stranger caught a real payment bug I shipped and never noticed — and the harder discipline was being <strong>honest about severity</strong>. My first instinct was "users never get the Pro they paid for"; tracing <code>applyPendingKofiGrant</code> showed that's only true for one sub-case, so I narrowed the claim instead of keeping the scarier version. Self-review before requesting review really does catch a chunk of issues — but only if you read the code as adversarially as you'd read a stranger's, and resist the urge to either defend it or over-dramatize it. The "Dev" title and 4,000-line scope are their own lesson: I made that PR un-reviewable, which is a failure of <em>my</em> craft, not the reviewer's patience.</div>
     </div>
   </div>
 
