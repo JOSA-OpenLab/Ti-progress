@@ -173,13 +173,48 @@
     </div>
 
     <div class="block">
-      <div class="block-title">Reviews</div>
-      <p class="placeholder">To be filled in — repo, PR link, the comments I left, and the labels I used.</p>
+      <div class="block-title">Reviews — posted as <code>Ti-03</code>, all non-blocking (COMMENTED)</div>
+
+      <p style="margin-bottom:18px;"><strong>1. <a href="https://github.com/excalidraw/excalidraw/pull/11510" target="_blank">excalidraw/excalidraw#11510</a></strong> — minimal fix for invalid hex-color feedback (issue #9527).</p>
+      <ul class="checklist" style="margin-bottom:28px;">
+        <li><strong>suggestion:</strong> error text is surfaced only via the <code>title</code> attribute — hover-only, inconsistent for screen readers, and the red border is a color-only cue (WCAG 1.4.1). Render a visible message and link it with <code>aria-describedby</code>.</li>
+        <li><strong>nit (non-blocking):</strong> <code>invalidColorTitle</code> wraps a single-boolean ternary in <code>useMemo</code> — needless ceremony for a trivial <code>t()</code> lookup.</li>
+        <li><strong>praise:</strong> nice empty-input handling (<code>value.trim().length&nbsp;&gt;&nbsp;0</code>) and clearing the state on blur.</li>
+      </ul>
+
+      <p style="margin-bottom:18px;"><strong>2. <a href="https://github.com/excalidraw/excalidraw/pull/11514" target="_blank">excalidraw/excalidraw#11514</a></strong> — the thorough competing fix for the <em>same</em> issue #9527.</p>
+      <ul class="checklist" style="margin-bottom:28px;">
+        <li><strong>suggestion:</strong> the message <code>"Use a format like #RRGGBB"</code> is narrower than what <code>normalizeInputColor</code> actually accepts — short hex (<code>#fff</code>), named colors (<code>red</code>), and <code>rgb()</code>/<code>hsl()</code> all pass through <code>tinycolor</code>.</li>
+        <li><strong>suggestion:</strong> the <code>value === ""</code> branch (empty = valid) is new logic with no test covering it.</li>
+        <li><strong>praise:</strong> correct accessibility pattern (<code>aria-invalid</code> + <code>aria-describedby</code> → visible <code>role="alert"</code>) and tests that go beyond the happy path.</li>
+      </ul>
+
+      <p style="margin-bottom:18px;"><strong>3. <a href="https://github.com/calcom/cal.com/pull/29603" target="_blank">calcom/cal.com#29603</a></strong> — enforce booking limits across all occurrences of a recurring series.</p>
+      <ul class="checklist">
+        <li><strong>question:</strong> <code>_checkBookingLimitsForRecurringBooking</code> near-duplicates <code>_checkBookingLimits</code> (verbatim <code>catch</code>) — fold the period-grouping + <code>offset</code> into the existing method instead?</li>
+        <li><strong>question:</strong> for a recurring <em>reschedule</em>, can a request that doesn't change the occurrence count be over-counted against the limit (since the offset counts every requested date)?</li>
+        <li><strong>praise:</strong> atomic up-front validation; the test asserting <code>bookingCount === 0</code> targets exactly the PENDING-bypass case.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Verification &amp; Smoke Tests</div>
+      <div class="code-block">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">verify-before-asserting</span></div>
+        <pre><span class="cm"># For every claim: cloned the repo, read the real source, ran an isolated smoke test BEFORE posting.</span>
+<span class="cmd">git clone</span> --depth 1 excalidraw &amp;&amp; <span class="cmd">gh pr checkout</span> 11510
+<span class="cmd">node</span> -e 'tinycolor("red").isValid()'   <span class="cm"># =&gt; true: normalizeInputColor DOES accept color names</span>
+
+<span class="cm"># Two tempting Cal.com "bugs" — both verified FALSE, so dropped:</span>
+<span class="out">  401 status "regression"   -&gt; pre-existing; the regular method already wraps to 401</span>
+<span class="out">  dropped includeManagedEvents -&gt; regular path omits it too (consistent, not a gap)</span>
+<span class="cm"># Per Google eng-practices, pre-existing patterns belong in a separate issue, not this CL.</span></pre>
+      </div>
     </div>
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="placeholder">To be filled in after completing the task.</div>
+      <div class="reflection">The most valuable part of this task wasn't writing comments — it was <strong>refusing to post any claim I hadn't verified against the real code</strong>. Reading a diff is enough to <em>suspect</em> something; it is not enough to <em>assert</em> it. Cloning each repo and running a tiny smoke test killed three comments that looked right on the diff but were wrong in reality — including a Cal.com "status regression" and an Excalidraw "does it even accept color names?" that <code>tinycolor</code> immediately disproved. That maps directly onto the week's principle: <strong>ask before stating</strong>. Where I genuinely didn't know (the recurring-reschedule offset), I asked a question instead of asserting a bug, and where the issue was real but pre-existing, I left it out of the CL rather than blocking on it. Pairing each review with honest praise made the critical notes land as collaboration, not attack.</div>
     </div>
   </div>
 

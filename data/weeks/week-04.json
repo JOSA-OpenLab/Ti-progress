@@ -9,12 +9,20 @@
       "id": "two-reviews",
       "type": "review",
       "title": "Two Real Reviews",
-      "status": "pending",
-      "reflection": null,
-      "commands": [],
-      "output": null,
+      "status": "done",
+      "reflection": "Left substantive design/correctness reviews on three open PRs using Conventional Comments labels — two on Excalidraw (#11510 and #11514, the competing fixes for the same invalid-hex-color issue #9527) and one on Cal.com (#29603, enforcing booking limits across a recurring series). The rule I held to was verify-before-asserting: for every claim I cloned the repo, read the actual source, and ran an isolated smoke test before posting. That paid off most on Cal.com, where two tempting 'bugs' both turned out to be false — a 401 status 'regression' that the existing method already does, and a 'dropped' includeManagedEvents arg that the regular path also omits. Per Google's guide those are pre-existing/consistent behavior and belong in a separate issue, not the CL, so I dropped them. On Excalidraw a 'does it accept color names?' question I almost posted was killed by a tinycolor smoke test (it does), which would have made me look like I hadn't read the lib. Each review paired a real note with genuine praise and a clearly-labelled non-blocking tag, and I asked 'is there a reason X?' rather than asserting wherever I wasn't certain.",
+      "commands": [
+        "gh pr diff 11510 --repo excalidraw/excalidraw   # read the change before judging it",
+        "git clone --depth 1 excalidraw && gh pr checkout 11510   # verify claims against real source",
+        "node -e 'tinycolor(\"red\").isValid()'   # smoke test: normalizeInputColor DOES accept named colors -> dropped a wrong comment",
+        "gh pr review 11510 --repo excalidraw/excalidraw --comment --body '...'   # a11y suggestion + useMemo nit + praise",
+        "gh pr review 11514 --repo excalidraw/excalidraw --comment --body '...'   # msg-accuracy + test-gap + praise",
+        "gh api .../checkBookingLimits.ts?ref=$HEAD   # confirmed 401-wrap is pre-existing, not a regression",
+        "gh pr review 29603 --repo calcom/cal.com --comment --body '...'   # duplication Q + reschedule Q + praise"
+      ],
+      "output": "3 reviews posted as Ti-03 (all type COMMENTED — non-blocking):\n\n1. excalidraw/excalidraw#11510 (minimal invalid-hex fix)\n   suggestion: error text is title-only (hover/SR-inconsistent) + color-only cue; add a visible msg + aria-describedby\n   nit:        useMemo over a one-line ternary is needless ceremony\n   praise:     empty-input guard (value.trim().length > 0) + clears on blur\n\n2. excalidraw/excalidraw#11514 (thorough invalid-hex fix, same issue #9527)\n   suggestion: message 'Use a format like #RRGGBB' is narrower than what tinycolor accepts (#fff, named, rgb/hsl)\n   suggestion: the value === '' branch is new logic with no test\n   praise:     correct a11y pattern (aria-invalid + aria-describedby + role=alert) and tests beyond the happy path\n\n3. calcom/cal.com#29603 (recurring-booking limit enforcement)\n   question:   _checkBookingLimitsForRecurringBooking near-duplicates _checkBookingLimits (verbatim catch) — fold in?\n   question:   recurring reschedule + offset (requestedInPeriod - 1) — can a no-op reschedule be over-counted?\n   praise:     atomic up-front validation; test asserts bookingCount === 0 for the PENDING bypass case\n\nKilled before posting (verified false): 401 'regression' (pre-existing), dropped includeManagedEvents (regular path omits it too), 'accepts color names?' (smoke test: it does).",
       "screenshot": null,
-      "pr": null
+      "pr": "https://github.com/calcom/cal.com/pull/29603#pullrequestreview"
     },
     {
       "id": "self-review",
