@@ -1,7 +1,7 @@
 {
   "id": 4,
   "title": "Code Review & the Maintainer Mindset",
-  "status": "in-progress",
+  "status": "done",
   "deadline": "2026-06-06",
   "report": "/reports/week-04.html",
   "tasks": [
@@ -77,8 +77,8 @@
       "id": "feedback-without-ego",
       "type": "soft-skill",
       "title": "Giving & Receiving Feedback Without Ego",
-      "status": "pending",
-      "reflection": null,
+      "status": "done",
+      "reflection": "The principle that landed hardest was separating self from work, and I felt it most on my own code: self-reviewing my 4,400-line 'Dev' PR meant reading my past self as a stranger and naming a payment bug I'd shipped, then walking back my own overstated first claim once I traced the code. As a reviewer the discipline was leading with the code not the person, tagging severity so a nit doesn't read as a blocker, and asking 'is there a reason X?' instead of asserting (verifying first killed three confident-but-wrong claims before they ever reached an author). As an author, low-ego meant respecting the reviewer's attention: on palmier-pro I opened an issue first, kept the PR tiny and test-backed, and offered to close it. Receiving feedback is the same muscle pointed inward, which Rust modeled when a reviewer who doubted the author tested on BrowserStack and reversed himself in public. My code is not me, and the fastest way to look good is to be the first to say 'you're right'.",
       "commands": [],
       "output": null,
       "screenshot": null,

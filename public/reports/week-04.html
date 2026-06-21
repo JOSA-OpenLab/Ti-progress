@@ -109,7 +109,7 @@
     </div>
     <div class="badge amber">
       <span class="badge-label">Status</span>
-      <span class="badge-value">In Progress</span>
+      <span class="badge-value" style="background: var(--green);">Completed</span>
     </div>
   </div>
 
@@ -373,7 +373,9 @@
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="placeholder">To be filled in after completing the week.</div>
+      <div class="reflection">The principle that landed hardest was <strong>separating self from work</strong>, and I felt it most on my own code. Self-reviewing my 4,400-line "Dev" PR meant reading my past self as a hostile stranger and naming a payment bug I'd shipped, then walking back my own overstated first claim ("users never get Pro") once I traced the code. The scarier finding isn't the more honest one.</div>
+      <div class="reflection" style="margin-top:16px;"><strong>As a reviewer:</strong> lead with the code, not the person, and tag severity so a preference doesn't read as a blocker (a <code>nit</code> and a <code>blocking</code> are different promises). And ask before stating: where I wasn't sure I asked "is there a reason X?" instead of asserting, which mattered, because verifying first killed three confident-but-wrong claims before they reached an author. A wrong "blocking" costs a maintainer time and trust.</div>
+      <div class="reflection" style="margin-top:16px;"><strong>As an author:</strong> low-ego is mostly respecting the reviewer's attention. On palmier-pro I opened an issue first, kept the PR tiny and test-backed, and said "happy to close if it's not worth it." <strong>Receiving</strong> feedback is the same muscle pointed inward, which Rust modeled when a reviewer who doubted the author tested on BrowserStack and reversed himself in public ("I take it back"). My code is not me, and the fastest way to look good is to be the first to say "you're right".</div>
     </div>
   </div>
 
@@ -387,15 +389,25 @@
     <div class="journal-grid">
       <div class="journal-block">
         <h3>What I learned</h3>
-        <p class="placeholder">To be filled in.</p>
+        <ul>
+          <li>Google's bar isn't "perfect", it's "does this improve code health". Block on real harm, raise the rest as non-blocking.</li>
+          <li>Verify before asserting: reading a diff is enough to <em>suspect</em>, not to <em>claim</em>.</li>
+          <li>A strong review culture automates everything that isn't judgment (merge queue, perf, style, assignment).</li>
+        </ul>
       </div>
       <div class="journal-block">
         <h3>What was hardest</h3>
-        <p class="placeholder">To be filled in.</p>
+        <ul>
+          <li>Walking back my own overstated finding during the self-review. The scarier claim felt more impressive, but the narrower, honest one was correct.</li>
+          <li>Resisting the urge to post confident "bugs" before tracing the code; three turned out to be wrong.</li>
+        </ul>
       </div>
       <div class="journal-block">
         <h3>What's blocking me</h3>
-        <p class="placeholder">To be filled in.</p>
+        <ul>
+          <li>Nothing blocking.</li>
+          <li>palmier-pro issue #71 and PR #72 are open and awaiting maintainer review, which is out of my hands.</li>
+        </ul>
       </div>
     </div>
   </div>
