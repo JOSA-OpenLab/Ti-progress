@@ -61,12 +61,17 @@
       "id": "read-merged-prs",
       "type": "reading",
       "title": "Read Merged PRs in One Project",
-      "status": "pending",
-      "reflection": null,
-      "commands": [],
-      "output": null,
+      "status": "done",
+      "reflection": "Read the discussion on four recently-merged rust-lang/rust PRs (#158042, #158026, #158137, #158122) to learn its review norms. The biggest takeaway is how much of the culture is ritualized into explicit commands and bots so humans only spend attention on judgment: approval isn't a vibe, it's '@bors r+' and nothing merges except through bors' merge queue (the 'not rocket science rule' that keeps main always-green. Performance isn't argued, it's measured — perf-sensitive PRs get '@bors try @rust-timer queue' + an 'S-waiting-on-perf' label before anyone approves. The most instructive human moment was a disagreement on the clipboard PR (#158137): a reviewer doubted the author's 'I couldn't reproduce' claim, but instead of insisting, went and tested across browsers on BrowserStack and publicly updated his position ('I take it back, I wasn't testing the right thing') — disagreement resolved by evidence, not authority, with light banter ('Dark magic.') keeping it human. I also saw a reviewer decline gracefully ('I'm not familiar with this code, feel free to reassign') — admitting expertise limits is normalized, not a loss of face. What gets flagged: perf regressions, commit-message hygiene (a bot nags to move issue links out of commits), and unverified reproduction claims. What slides: style/formatting is delegated to tidy + bots so reviewers don't bikeshed it; reviewers approve when a change clearly improves code health even with open follow-up questions.",
+      "commands": [
+        "gh search prs --repo rust-lang/rust --merged --json number,title,commentsCount   # find PRs with real discussion",
+        "gh pr view 158137 --repo rust-lang/rust --json comments,reviews   # the clipboard PR: disagreement settled by BrowserStack testing",
+        "gh pr view 158042 --repo rust-lang/rust --json reviews   # perf: @bors try @rust-timer queue + S-waiting-on-perf before r+",
+        "gh pr view 158026 --repo rust-lang/rust   # reviewer: 'not familiar with this code, feel free to reassign' -> @rustbot author"
+      ],
+      "output": "Review norms observed in rust-lang/rust (4 merged PRs read):\n\nSTRUCTURE / GATEKEEPING\n- Approval is a command, not a vibe: '@bors r+' (approve+queue), 'r=me', 'r+ rollup' (allow batching). Nothing merges except via the bors merge queue ('not rocket science rule' -> main is always green).\n- Reviewer assignment is explicit + tracked: rustbot auto-assigns ('within two weeks or reassign'); 'r? compiler' picks a team. State tracked via labels/commands: @rustbot author (waiting on author), @rustbot ready, S-waiting-on-perf.\n- Rollups batch small approved PRs into one CI run for throughput.\n\nWHAT GETS FLAGGED\n- Perf: measured, not argued -> '@bors try @rust-timer queue' runs a benchmark before approval (#158042, #158122).\n- Commit hygiene: a bot nags to move issue links out of commit messages (avoid spamming issues).\n- Unverified claims: a 'couldn't reproduce' was challenged and tested.\n- Spurious vs real CI: reviewers triage ('the CI failure is spurious').\n\nWHAT SLIDES\n- Formatting/style delegated to tidy + bots -> no human bikeshedding.\n- PRs approved when they clearly improve code health even with open follow-up questions ('glad to see this ugly workaround removed').\n\nDISAGREEMENT RESOLUTION (#158137)\n- Reviewer doubted author's no-repro claim -> went and tested on BrowserStack across browsers -> publicly reversed ('I take it back, I wasn't testing the right thing'). Evidence > authority, with friendly banter ('Dark magic.').\n- Reviewers admit limits without ego: 'I'm not familiar with this code, feel free to reassign.'",
       "screenshot": null,
-      "pr": null
+      "pr": "https://github.com/rust-lang/rust/pull/158137"
     },
     {
       "id": "feedback-without-ego",

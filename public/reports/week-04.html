@@ -322,13 +322,41 @@
     </div>
 
     <div class="block">
-      <div class="block-title">Project &amp; Norms</div>
-      <p class="placeholder">To be filled in — the project, the PRs I read, and a summary of their review norms.</p>
+      <div class="block-title">Project &amp; PRs Read</div>
+      <p><strong><a href="https://github.com/rust-lang/rust" target="_blank">rust-lang/rust</a></strong> — read the full discussion on four recently-merged PRs:
+      <a href="https://github.com/rust-lang/rust/pull/158042" target="_blank">#158042</a> (perf),
+      <a href="https://github.com/rust-lang/rust/pull/158026" target="_blank">#158026</a> (borrow-checker tweak),
+      <a href="https://github.com/rust-lang/rust/pull/158137" target="_blank">#158137</a> (rustdoc clipboard),
+      <a href="https://github.com/rust-lang/rust/pull/158122" target="_blank">#158122</a> (a revert).</p>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Structure &amp; Gatekeeping</div>
+      <ul class="checklist">
+        <li><strong>Approval is a command, not a vibe.</strong> <code>@bors r+</code> approves and queues; <code>r=me</code>, <code>r+ rollup</code> for batching. Nothing merges except through the <strong>bors merge queue</strong> (the "not rocket science rule" — <code>main</code> is always green).</li>
+        <li><strong>Assignment + state are explicit.</strong> <code>rustbot</code> auto-assigns a reviewer ("within two weeks or reassign"); <code>r? compiler</code> picks a team. State is tracked by labels/commands: <code>@rustbot author</code>, <code>@rustbot ready</code>, <code>S-waiting-on-perf</code>.</li>
+        <li><strong>Rollups</strong> batch small approved PRs into one CI run for throughput.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">What Gets Flagged vs. What Slides</div>
+      <ul class="checklist">
+        <li><strong>Flagged — perf:</strong> measured, not argued. <code>@bors try @rust-timer queue</code> runs a benchmark <em>before</em> approval (#158042, #158122).</li>
+        <li><strong>Flagged — commit hygiene:</strong> a bot nags to move issue links out of commit messages (avoid spamming issues).</li>
+        <li><strong>Flagged — unverified claims &amp; flaky CI:</strong> a "couldn't reproduce" was challenged and tested; reviewers triage "the CI failure is spurious."</li>
+        <li><strong>Slides:</strong> formatting/style is delegated to <code>tidy</code> + bots — no human bikeshedding. PRs are approved when they clearly improve code health even with open follow-up questions ("glad to see this ugly workaround removed").</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">How Disagreements Resolve (#158137)</div>
+      <div class="reflection">A reviewer doubted the author's "I couldn't reproduce the bug" claim. Instead of pulling rank, he went and <strong>tested across browsers on BrowserStack</strong>, then publicly reversed himself: <em>"I take it back, I wasn't testing the right thing."</em> Disagreement settled by <strong>evidence, not authority</strong> — with light banter (<em>"Dark magic." / "Dark magic intensifies."</em>) keeping it human. Elsewhere a reviewer declined without ego — <em>"I'm not familiar with this code, feel free to reassign"</em> — showing that admitting the limits of your expertise is normalized, not a loss of face.</div>
     </div>
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="placeholder">To be filled in after completing the task.</div>
+      <div class="reflection">Rust's lesson is that a great review culture <strong>automates everything that isn't judgment</strong>. Merge-queue (bors), perf benchmarks (rust-timer), style (tidy), and assignment/state (rustbot) are all mechanical — so the humans spend their attention only on design and correctness, and disagreements get resolved by data rather than seniority. It's the same principle as the rest of this week, scaled up: block on real harm, measure instead of arguing, and keep the person separate from the code.</div>
     </div>
   </div>
 
