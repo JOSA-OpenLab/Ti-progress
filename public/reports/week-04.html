@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JOSA OpenLab — Week 04</title>
+  <title>JOSA OpenLab, Week 04</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -96,7 +96,7 @@
 <div class="hero">
   <div class="hero-eyebrow">OpenLab Apprenticeship 2026</div>
   <h1>JOSA <span>OpenLab</span></h1>
-  <h2>Week 04 &mdash; Code Review &amp; the Maintainer Mindset</h2>
+  <h2>Week 04: Code Review &amp; the Maintainer Mindset</h2>
 
   <div class="badges">
     <div class="badge blue">
@@ -140,7 +140,7 @@
     </div>
 
     <div class="callout">
-      <strong>The senior principle (per Google eng-practices):</strong> reviewers should favor approving a Change List once it definitely improves the overall code health of the system, even if it isn't perfect. The bar isn't "perfect" — it's <em>is the codebase better with this merged than without it?</em> Block only on real harm; raise style and polish as non-blocking notes.
+      <strong>The senior principle (per Google eng-practices):</strong> reviewers should favor approving a Change List once it definitely improves the overall code health of the system, even if it isn't perfect. The bar isn't "perfect", it's <em>is the codebase better with this merged than without it?</em> Block only on real harm; raise style and polish as non-blocking notes.
     </div>
 
     <div class="block">
@@ -173,25 +173,25 @@
     </div>
 
     <div class="block">
-      <div class="block-title">Reviews — posted as <code>Ti-03</code>, all non-blocking (COMMENTED)</div>
+      <div class="block-title">Reviews, posted as <code>Ti-03</code>, all non-blocking (COMMENTED)</div>
 
-      <p style="margin-bottom:18px;"><strong>1. <a href="https://github.com/excalidraw/excalidraw/pull/11510" target="_blank">excalidraw/excalidraw#11510</a></strong> — minimal fix for invalid hex-color feedback (issue #9527).</p>
+      <p style="margin-bottom:18px;"><strong>1. <a href="https://github.com/excalidraw/excalidraw/pull/11510" target="_blank">excalidraw/excalidraw#11510</a></strong>, minimal fix for invalid hex-color feedback (issue #9527).</p>
       <ul class="checklist" style="margin-bottom:28px;">
-        <li><strong>suggestion:</strong> error text is surfaced only via the <code>title</code> attribute — hover-only, inconsistent for screen readers, and the red border is a color-only cue (WCAG 1.4.1). Render a visible message and link it with <code>aria-describedby</code>.</li>
-        <li><strong>nit (non-blocking):</strong> <code>invalidColorTitle</code> wraps a single-boolean ternary in <code>useMemo</code> — needless ceremony for a trivial <code>t()</code> lookup.</li>
+        <li><strong>suggestion:</strong> error text is surfaced only via the <code>title</code> attribute, hover-only, inconsistent for screen readers, and the red border is a color-only cue (WCAG 1.4.1). Render a visible message and link it with <code>aria-describedby</code>.</li>
+        <li><strong>nit (non-blocking):</strong> <code>invalidColorTitle</code> wraps a single-boolean ternary in <code>useMemo</code>, needless ceremony for a trivial <code>t()</code> lookup.</li>
         <li><strong>praise:</strong> nice empty-input handling (<code>value.trim().length&nbsp;&gt;&nbsp;0</code>) and clearing the state on blur.</li>
       </ul>
 
-      <p style="margin-bottom:18px;"><strong>2. <a href="https://github.com/excalidraw/excalidraw/pull/11514" target="_blank">excalidraw/excalidraw#11514</a></strong> — the thorough competing fix for the <em>same</em> issue #9527.</p>
+      <p style="margin-bottom:18px;"><strong>2. <a href="https://github.com/excalidraw/excalidraw/pull/11514" target="_blank">excalidraw/excalidraw#11514</a></strong>, the thorough competing fix for the <em>same</em> issue #9527.</p>
       <ul class="checklist" style="margin-bottom:28px;">
-        <li><strong>suggestion:</strong> the message <code>"Use a format like #RRGGBB"</code> is narrower than what <code>normalizeInputColor</code> actually accepts — short hex (<code>#fff</code>), named colors (<code>red</code>), and <code>rgb()</code>/<code>hsl()</code> all pass through <code>tinycolor</code>.</li>
+        <li><strong>suggestion:</strong> the message <code>"Use a format like #RRGGBB"</code> is narrower than what <code>normalizeInputColor</code> actually accepts, short hex (<code>#fff</code>), named colors (<code>red</code>), and <code>rgb()</code>/<code>hsl()</code> all pass through <code>tinycolor</code>.</li>
         <li><strong>suggestion:</strong> the <code>value === ""</code> branch (empty = valid) is new logic with no test covering it.</li>
         <li><strong>praise:</strong> correct accessibility pattern (<code>aria-invalid</code> + <code>aria-describedby</code> → visible <code>role="alert"</code>) and tests that go beyond the happy path.</li>
       </ul>
 
-      <p style="margin-bottom:18px;"><strong>3. <a href="https://github.com/calcom/cal.com/pull/29603" target="_blank">calcom/cal.com#29603</a></strong> — enforce booking limits across all occurrences of a recurring series.</p>
+      <p style="margin-bottom:18px;"><strong>3. <a href="https://github.com/calcom/cal.com/pull/29603" target="_blank">calcom/cal.com#29603</a></strong>, enforce booking limits across all occurrences of a recurring series.</p>
       <ul class="checklist">
-        <li><strong>question:</strong> <code>_checkBookingLimitsForRecurringBooking</code> near-duplicates <code>_checkBookingLimits</code> (verbatim <code>catch</code>) — fold the period-grouping + <code>offset</code> into the existing method instead?</li>
+        <li><strong>question:</strong> <code>_checkBookingLimitsForRecurringBooking</code> near-duplicates <code>_checkBookingLimits</code> (verbatim <code>catch</code>), fold the period-grouping + <code>offset</code> into the existing method instead?</li>
         <li><strong>question:</strong> for a recurring <em>reschedule</em>, can a request that doesn't change the occurrence count be over-counted against the limit (since the offset counts every requested date)?</li>
         <li><strong>praise:</strong> atomic up-front validation; the test asserting <code>bookingCount === 0</code> targets exactly the PENDING-bypass case.</li>
       </ul>
@@ -205,7 +205,7 @@
 <span class="cmd">git clone</span> --depth 1 excalidraw &amp;&amp; <span class="cmd">gh pr checkout</span> 11510
 <span class="cmd">node</span> -e 'tinycolor("red").isValid()'   <span class="cm"># =&gt; true: normalizeInputColor DOES accept color names</span>
 
-<span class="cm"># Two tempting Cal.com "bugs" — both verified FALSE, so dropped:</span>
+<span class="cm"># Two tempting Cal.com "bugs", both verified FALSE, so dropped:</span>
 <span class="out">  401 status "regression"   -&gt; pre-existing; the regular method already wraps to 401</span>
 <span class="out">  dropped includeManagedEvents -&gt; regular path omits it too (consistent, not a gap)</span>
 <span class="cm"># Per Google eng-practices, pre-existing patterns belong in a separate issue, not this CL.</span></pre>
@@ -214,7 +214,7 @@
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="reflection">The most valuable part of this task wasn't writing comments — it was <strong>refusing to post any claim I hadn't verified against the real code</strong>. Reading a diff is enough to <em>suspect</em> something; it is not enough to <em>assert</em> it. Cloning each repo and running a tiny smoke test killed three comments that looked right on the diff but were wrong in reality — including a Cal.com "status regression" and an Excalidraw "does it even accept color names?" that <code>tinycolor</code> immediately disproved. That maps directly onto the week's principle: <strong>ask before stating</strong>. Where I genuinely didn't know (the recurring-reschedule offset), I asked a question instead of asserting a bug, and where the issue was real but pre-existing, I left it out of the CL rather than blocking on it. Pairing each review with honest praise made the critical notes land as collaboration, not attack.</div>
+      <div class="reflection">The most valuable part of this task wasn't writing comments, it was <strong>refusing to post any claim I hadn't verified against the real code</strong>. Reading a diff is enough to <em>suspect</em> something; it is not enough to <em>assert</em> it. Cloning each repo and running a tiny smoke test killed three comments that looked right on the diff but were wrong in reality, including a Cal.com "status regression" and an Excalidraw "does it even accept color names?" that <code>tinycolor</code> immediately disproved. That maps directly onto the week's principle: <strong>ask before stating</strong>. Where I genuinely didn't know (the recurring-reschedule offset), I asked a question instead of asserting a bug, and where the issue was real but pre-existing, I left it out of the CL rather than blocking on it. Pairing each review with honest praise made the critical notes land as collaboration, not attack.</div>
     </div>
   </div>
 
@@ -226,32 +226,32 @@
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> Take one of my own past PRs — the one I'm least proud of. Pretend I'm the reviewer and write what I would have said.
+      <strong>Goal:</strong> Take one of my own past PRs, the one I'm least proud of. Pretend I'm the reviewer and write what I would have said.
     </div>
 
     <div class="block">
       <div class="block-title">PR Under Review</div>
-      <p><strong><a href="https://github.com/Ti-03/remainders/pull/30" target="_blank">Ti-03/remainders#30 — "Dev"</a></strong> &nbsp;·&nbsp; +4,461 / −105 across 33 files, merged. A whole <code>dev</code> branch merged into <code>main</code> under a one-word title — the honest "least proud of" choice: it breaks nearly every rule this week teaches.</p>
+      <p><strong><a href="https://github.com/Ti-03/remainders/pull/30" target="_blank">Ti-03/remainders#30, "Dev"</a></strong> &nbsp;·&nbsp; +4,461 / −105 across 33 files, merged. A whole <code>dev</code> branch merged into <code>main</code> under a one-word title, the honest "least proud of" choice: it breaks nearly every rule this week teaches.</p>
     </div>
 
     <div class="block">
       <div class="block-title">The Review I'd Leave Now (as a hostile stranger)</div>
       <ul class="checklist">
-        <li><strong>blocking (correctness):</strong> the Ko-fi webhook lowercases <code>donorEmail</code> and queries <code>where('email','==', donorEmail)</code>, but signup stores <code>user.email</code> un-normalized (<code>dashboard:370</code> → <code>firebase.ts:239</code>). Firestore equality is case-sensitive, so an <em>already-registered</em> user with any uppercase in their email silently misses their paid Pro grant (filed <code>pending_signup</code>; auto-apply only fires at username creation). Fix: lowercase email at signup — as <code>username</code> already is.</li>
-        <li><strong>blocking (scope):</strong> 4,461 lines titled "Dev" bundling ~5 unrelated features — admin route-protection, a users page, a payment webhook, background uploads, and wallpaper caching. Unreviewable as one unit; the payment path alone deserved its own PR.</li>
-        <li><strong>suggestion (security):</strong> no replay/idempotency guard — <code>kofi_transaction_id</code> exists for dedup but is never checked, so a retried or replayed valid payload re-runs the grant and resets <code>planExpiresAt</code> to now+30d.</li>
-        <li><strong>question:</strong> each payment <em>overwrites</em> <code>planExpiresAt</code> to now+30d rather than extending it — a subscriber paying before expiry loses remaining days. Intended?</li>
-        <li><strong>praise:</strong> the webhook security basics are genuinely solid — timing-safe token compare with a length guard, fail-closed (503) when unconfigured, every event logged, and tolerant of Ko-fi's content-type quirks.</li>
+        <li><strong>blocking (correctness):</strong> the Ko-fi webhook lowercases <code>donorEmail</code> and queries <code>where('email','==', donorEmail)</code>, but signup stores <code>user.email</code> un-normalized (<code>dashboard:370</code> → <code>firebase.ts:239</code>). Firestore equality is case-sensitive, so an <em>already-registered</em> user with any uppercase in their email silently misses their paid Pro grant (filed <code>pending_signup</code>; auto-apply only fires at username creation). Fix: lowercase email at signup, as <code>username</code> already is.</li>
+        <li><strong>blocking (scope):</strong> 4,461 lines titled "Dev" bundling ~5 unrelated features, admin route-protection, a users page, a payment webhook, background uploads, and wallpaper caching. Unreviewable as one unit; the payment path alone deserved its own PR.</li>
+        <li><strong>suggestion (security):</strong> no replay/idempotency guard, <code>kofi_transaction_id</code> exists for dedup but is never checked, so a retried or replayed valid payload re-runs the grant and resets <code>planExpiresAt</code> to now+30d.</li>
+        <li><strong>question:</strong> each payment <em>overwrites</em> <code>planExpiresAt</code> to now+30d rather than extending it, a subscriber paying before expiry loses remaining days. Intended?</li>
+        <li><strong>praise:</strong> the webhook security basics are genuinely solid, timing-safe token compare with a length guard, fail-closed (503) when unconfigured, every event logged, and tolerant of Ko-fi's content-type quirks.</li>
       </ul>
     </div>
 
     <div class="block">
-      <div class="block-title">Verification — even on my own code</div>
+      <div class="block-title">Verification, even on my own code</div>
       <div class="code-block">
         <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">trace-before-assert</span></div>
         <pre><span class="cm"># Every claim traced to specific lines before it went in this report.</span>
-<span class="out">dropped:</span>    "webhook has no verification"   <span class="cm"># false — it does a timing-safe token compare</span>
-<span class="out">corrected:</span>  "user never gets Pro"           <span class="cm"># overstated — donate-before-signup + manual</span>
+<span class="out">dropped:</span>    "webhook has no verification"   <span class="cm"># false, it does a timing-safe token compare</span>
+<span class="out">corrected:</span>  "user never gets Pro"           <span class="cm"># overstated, donate-before-signup + manual</span>
                                             <span class="cm"># fallback recover it; bug hits already-registered</span>
                                             <span class="cm"># users with mixed-case emails</span>
 <span class="out">confirmed:</span>  email-case bug · scope · replay gap · expiry overwrite</pre>
@@ -260,7 +260,7 @@
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="reflection">Reviewing my own PR as a stranger caught a real payment bug I shipped and never noticed — and the harder discipline was being <strong>honest about severity</strong>. My first instinct was "users never get the Pro they paid for"; tracing <code>applyPendingKofiGrant</code> showed that's only true for one sub-case, so I narrowed the claim instead of keeping the scarier version. Self-review before requesting review really does catch a chunk of issues — but only if you read the code as adversarially as you'd read a stranger's, and resist the urge to either defend it or over-dramatize it. The "Dev" title and 4,000-line scope are their own lesson: I made that PR un-reviewable, which is a failure of <em>my</em> craft, not the reviewer's patience.</div>
+      <div class="reflection">Reviewing my own PR as a stranger caught a real payment bug I shipped and never noticed, and the harder discipline was being <strong>honest about severity</strong>. My first instinct was "users never get the Pro they paid for"; tracing <code>applyPendingKofiGrant</code> showed that's only true for one sub-case, so I narrowed the claim instead of keeping the scarier version. Self-review before requesting review really does catch a chunk of issues, but only if you read the code as adversarially as you'd read a stranger's, and resist the urge to either defend it or over-dramatize it. The "Dev" title and 4,000-line scope are their own lesson: I made that PR un-reviewable, which is a failure of <em>my</em> craft, not the reviewer's patience.</div>
     </div>
   </div>
 
@@ -272,21 +272,21 @@
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> Find a real PR (open or merged) in a major project showing over-engineering or premature abstraction. Analyze: what's premature, the simpler alternative, and what would make the abstraction actually justified. The discipline is <strong>YAGNI</strong> — generalize when you have at least two real callers, not before.
+      <strong>Goal:</strong> Find a real PR (open or merged) in a major project showing over-engineering or premature abstraction. Analyze: what's premature, the simpler alternative, and what would make the abstraction actually justified. The discipline is <strong>YAGNI</strong>, generalize when you have at least two real callers, not before.
     </div>
 
     <div class="block">
       <div class="block-title">PR Analyzed</div>
-      <p><strong><a href="https://github.com/microsoft/vscode/pull/298676" target="_blank">microsoft/vscode#298676</a></strong> — "Introduce FoldingPreferences foundation and 'includeClosures' compatibility layer" &nbsp;·&nbsp; +829 / −242 across 9 files, open.</p>
-      <p style="margin-top:10px;">In one sentence: someone wanted code folding to optionally include the closing <code>}</code> line — and the PR builds an entire generic preferences <em>framework</em> to deliver that one behavior.</p>
+      <p><strong><a href="https://github.com/microsoft/vscode/pull/298676" target="_blank">microsoft/vscode#298676</a></strong>, "Introduce FoldingPreferences foundation and 'includeClosures' compatibility layer" &nbsp;·&nbsp; +829 / −242 across 9 files, open.</p>
+      <p style="margin-top:10px;">In one sentence: someone wanted code folding to optionally include the closing <code>}</code> line, and the PR builds an entire generic preferences <em>framework</em> to deliver that one behavior.</p>
     </div>
 
     <div class="block">
       <div class="block-title">What's Premature (verified, not opinion)</div>
       <ul class="checklist">
-        <li><code>CompatibilityAdjuster&lt;P&gt;</code> — an abstract generic base class with <strong>exactly one</strong> subclass, <code>CompatibilityAdjusterIncludeClosures</code>. The code even comments <em>"if multiple adjusters are active…"</em> — but there is only one.</li>
-        <li><code>FoldingPreferencesCapabilities</code> — an interface for providers to declare native support, yet <strong>every</strong> provider ships an empty <code>{}</code> (both <code>IndentRangeProvider</code> and <code>SyntaxRangeProvider</code>). The fancy interface is unused.</li>
-        <li>A new public <code>editor.foldingPreferences</code> API that leaks into <code>monaco.d.ts</code> + <code>standaloneEnums.ts</code> — <strong>829 lines</strong> of surface for a single preference.</li>
+        <li><code>CompatibilityAdjuster&lt;P&gt;</code>, an abstract generic base class with <strong>exactly one</strong> subclass, <code>CompatibilityAdjusterIncludeClosures</code>. The code even comments <em>"if multiple adjusters are active…"</em>, but there is only one.</li>
+        <li><code>FoldingPreferencesCapabilities</code>, an interface for providers to declare native support, yet <strong>every</strong> provider ships an empty <code>{}</code> (both <code>IndentRangeProvider</code> and <code>SyntaxRangeProvider</code>). The fancy interface is unused.</li>
+        <li>A new public <code>editor.foldingPreferences</code> API that leaks into <code>monaco.d.ts</code> + <code>standaloneEnums.ts</code>, <strong>829 lines</strong> of surface for a single preference.</li>
         <li>The author's own words: <em>"only partially implemented and represented by placeholders."</em></li>
       </ul>
     </div>
@@ -299,14 +299,14 @@
     <div class="block">
       <div class="block-title">Simpler Alternative &amp; the Justification Test</div>
       <ul class="checklist">
-        <li><strong>Simpler:</strong> add <code>includeClosures</code> as a setting on the one folding provider that needs it (e.g. the TS folding strategy) — no foundation, no capabilities interface, no compatibility/adjuster layer, no public-API change. A handful of lines instead of 829.</li>
+        <li><strong>Simpler:</strong> add <code>includeClosures</code> as a setting on the one folding provider that needs it (e.g. the TS folding strategy), no foundation, no capabilities interface, no compatibility/adjuster layer, no public-API change. A handful of lines instead of 829.</li>
         <li><strong>What would justify the abstraction:</strong> ≥2 real preferences that genuinely share a language-agnostic meaning <em>and</em> multiple providers natively supporting them. With <strong>1 preference, 1 adjuster, 0 native supporters</strong>, the "two real callers" (YAGNI) test fails → premature.</li>
       </ul>
     </div>
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="reflection">The test for premature abstraction isn't <em>"is this clean?"</em> — this PR is tidy and well-documented — it's <strong>"where's the second real caller?"</strong> With one preference, one adjuster, and every provider declaring zero native capabilities, the whole framework is built for a future that hasn't arrived. The most useful realization was that the verdict is checkable, not a matter of taste: I confirmed the single subclass, the empty <code>{}</code> capabilities, and the public-API change directly in the diff — and the folding owner independently reached the same conclusion (<em>"specific settings per provider"</em>). YAGNI in one line: generalize when you have two real callers, not before.</div>
+      <div class="reflection">The test for premature abstraction isn't <em>"is this clean?"</em>, this PR is tidy and well-documented, it's <strong>"where's the second real caller?"</strong> With one preference, one adjuster, and every provider declaring zero native capabilities, the whole framework is built for a future that hasn't arrived. The most useful realization was that the verdict is checkable, not a matter of taste: I confirmed the single subclass, the empty <code>{}</code> capabilities, and the public-API change directly in the diff, and the folding owner independently reached the same conclusion (<em>"specific settings per provider"</em>). YAGNI in one line: generalize when you have two real callers, not before.</div>
     </div>
   </div>
 
@@ -318,12 +318,12 @@
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> Pick a project with a strong review culture (Rust, Kubernetes, VS Code, Django). Read the discussion on multiple merged PRs and summarize their review norms — what gets flagged, what doesn't, and how disagreements get resolved.
+      <strong>Goal:</strong> Pick a project with a strong review culture (Rust, Kubernetes, VS Code, Django). Read the discussion on multiple merged PRs and summarize their review norms, what gets flagged, what doesn't, and how disagreements get resolved.
     </div>
 
     <div class="block">
       <div class="block-title">Project &amp; PRs Read</div>
-      <p><strong><a href="https://github.com/rust-lang/rust" target="_blank">rust-lang/rust</a></strong> — read the full discussion on four recently-merged PRs:
+      <p><strong><a href="https://github.com/rust-lang/rust" target="_blank">rust-lang/rust</a></strong>, read the full discussion on four recently-merged PRs:
       <a href="https://github.com/rust-lang/rust/pull/158042" target="_blank">#158042</a> (perf),
       <a href="https://github.com/rust-lang/rust/pull/158026" target="_blank">#158026</a> (borrow-checker tweak),
       <a href="https://github.com/rust-lang/rust/pull/158137" target="_blank">#158137</a> (rustdoc clipboard),
@@ -333,7 +333,7 @@
     <div class="block">
       <div class="block-title">Structure &amp; Gatekeeping</div>
       <ul class="checklist">
-        <li><strong>Approval is a command, not a vibe.</strong> <code>@bors r+</code> approves and queues; <code>r=me</code>, <code>r+ rollup</code> for batching. Nothing merges except through the <strong>bors merge queue</strong> (the "not rocket science rule" — <code>main</code> is always green).</li>
+        <li><strong>Approval is a command, not a vibe.</strong> <code>@bors r+</code> approves and queues; <code>r=me</code>, <code>r+ rollup</code> for batching. Nothing merges except through the <strong>bors merge queue</strong> (the "not rocket science rule", <code>main</code> is always green).</li>
         <li><strong>Assignment + state are explicit.</strong> <code>rustbot</code> auto-assigns a reviewer ("within two weeks or reassign"); <code>r? compiler</code> picks a team. State is tracked by labels/commands: <code>@rustbot author</code>, <code>@rustbot ready</code>, <code>S-waiting-on-perf</code>.</li>
         <li><strong>Rollups</strong> batch small approved PRs into one CI run for throughput.</li>
       </ul>
@@ -342,21 +342,21 @@
     <div class="block">
       <div class="block-title">What Gets Flagged vs. What Slides</div>
       <ul class="checklist">
-        <li><strong>Flagged — perf:</strong> measured, not argued. <code>@bors try @rust-timer queue</code> runs a benchmark <em>before</em> approval (#158042, #158122).</li>
-        <li><strong>Flagged — commit hygiene:</strong> a bot nags to move issue links out of commit messages (avoid spamming issues).</li>
-        <li><strong>Flagged — unverified claims &amp; flaky CI:</strong> a "couldn't reproduce" was challenged and tested; reviewers triage "the CI failure is spurious."</li>
-        <li><strong>Slides:</strong> formatting/style is delegated to <code>tidy</code> + bots — no human bikeshedding. PRs are approved when they clearly improve code health even with open follow-up questions ("glad to see this ugly workaround removed").</li>
+        <li><strong>Flagged (perf):</strong> measured, not argued. <code>@bors try @rust-timer queue</code> runs a benchmark <em>before</em> approval (#158042, #158122).</li>
+        <li><strong>Flagged (commit hygiene):</strong> a bot nags to move issue links out of commit messages (avoid spamming issues).</li>
+        <li><strong>Flagged (unverified claims &amp; flaky CI):</strong> a "couldn't reproduce" was challenged and tested; reviewers triage "the CI failure is spurious."</li>
+        <li><strong>Slides:</strong> formatting/style is delegated to <code>tidy</code> + bots, no human bikeshedding. PRs are approved when they clearly improve code health even with open follow-up questions ("glad to see this ugly workaround removed").</li>
       </ul>
     </div>
 
     <div class="block">
       <div class="block-title">How Disagreements Resolve (#158137)</div>
-      <div class="reflection">A reviewer doubted the author's "I couldn't reproduce the bug" claim. Instead of pulling rank, he went and <strong>tested across browsers on BrowserStack</strong>, then publicly reversed himself: <em>"I take it back, I wasn't testing the right thing."</em> Disagreement settled by <strong>evidence, not authority</strong> — with light banter (<em>"Dark magic." / "Dark magic intensifies."</em>) keeping it human. Elsewhere a reviewer declined without ego — <em>"I'm not familiar with this code, feel free to reassign"</em> — showing that admitting the limits of your expertise is normalized, not a loss of face.</div>
+      <div class="reflection">A reviewer doubted the author's "I couldn't reproduce the bug" claim. Instead of pulling rank, he went and <strong>tested across browsers on BrowserStack</strong>, then publicly reversed himself: <em>"I take it back, I wasn't testing the right thing."</em> Disagreement settled by <strong>evidence, not authority</strong>, with light banter (<em>"Dark magic." / "Dark magic intensifies."</em>) keeping it human. Elsewhere a reviewer declined without ego, <em>"I'm not familiar with this code, feel free to reassign"</em>, showing that admitting the limits of your expertise is normalized, not a loss of face.</div>
     </div>
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="reflection">Rust's lesson is that a great review culture <strong>automates everything that isn't judgment</strong>. Merge-queue (bors), perf benchmarks (rust-timer), style (tidy), and assignment/state (rustbot) are all mechanical — so the humans spend their attention only on design and correctness, and disagreements get resolved by data rather than seniority. It's the same principle as the rest of this week, scaled up: block on real harm, measure instead of arguing, and keep the person separate from the code.</div>
+      <div class="reflection">Rust's lesson is that a great review culture <strong>automates everything that isn't judgment</strong>. Merge-queue (bors), perf benchmarks (rust-timer), style (tidy), and assignment/state (rustbot) are all mechanical, so the humans spend their attention only on design and correctness, and disagreements get resolved by data rather than seniority. It's the same principle as the rest of this week, scaled up: block on real harm, measure instead of arguing, and keep the person separate from the code.</div>
     </div>
   </div>
 
@@ -364,11 +364,11 @@
   <div class="section">
     <div class="section-header">
       <span class="section-number">// 05</span>
-      <h2>Soft Skill — Giving &amp; Receiving Feedback Without Ego</h2>
+      <h2>Soft Skill, Giving &amp; Receiving Feedback Without Ego</h2>
     </div>
 
     <div class="callout">
-      <strong>Discipline:</strong> Code review is a series of small criticisms. As the reviewer — lead with the code not the person, tag severity, offer real praise, ask before stating. As the author — default to charity, distinguish "I disagree" from "I don't want the work", say "you're right, fixed" out loud. The deeper principle: <strong>separate self from work</strong> — your code is not you.
+      <strong>Discipline:</strong> Code review is a series of small criticisms. As the reviewer, lead with the code not the person, tag severity, offer real praise, ask before stating. As the author, default to charity, distinguish "I disagree" from "I don't want the work", say "you're right, fixed" out loud. The deeper principle: <strong>separate self from work</strong>, your code is not you.
     </div>
 
     <div class="block">
