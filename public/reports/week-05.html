@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JOSA OpenLab, Week 05</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1117;
+      --border:  #21262d;
+      --accent:  #00b4d8;
+      --red:     #ff7b72;
+      --green:   #3fb950;
+      --amber:   #f59e0b;
+      --text:    #e6edf3;
+      --muted:   #6e7681;
+      --sub:     #8b949e;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.75; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .hero { padding: 72px 40px 56px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 10px; }
+    .hero h1 span { color: var(--accent); }
+    .hero h2 { font-size: 15px; font-weight: 400; color: var(--muted); margin-bottom: 48px; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
+    .badge { display: flex; border-radius: 4px; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; }
+    .badge-label { background: #161b22; border: 1px solid var(--border); border-right: none; padding: 5px 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-radius: 4px 0 0 4px; }
+    .badge-value { padding: 5px 10px; font-weight: 600; color: #0d1117; border-radius: 0 4px 4px 0; }
+    .badge.blue  .badge-value { background: var(--accent); }
+    .badge.navy  .badge-value { background: #0077b6; }
+    .badge.amber .badge-value { background: var(--amber); }
+    .badge.gray  .badge-value { background: var(--muted); color: var(--text); }
+
+    .meta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+    .meta-item { text-align: center; padding: 0 28px; }
+    .meta-item + .meta-item { border-left: 1px solid var(--border); }
+    .meta-item .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .meta-item .value { font-size: 14px; font-weight: 500; color: var(--text); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 64px 24px 80px; }
+    .section { margin-bottom: 64px; }
+    .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .section-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; }
+    .section-header h2 { font-size: 18px; font-weight: 600; letter-spacing: -.3px; color: var(--text); }
+    .section-header .tag { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--amber); border: 1px solid var(--amber); border-radius: 4px; padding: 2px 8px; }
+
+    .block { border-left: 2px solid var(--border); padding: 4px 0 4px 24px; margin-bottom: 32px; }
+    .block-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 32px; font-size: 14px; color: var(--sub); }
+    .callout strong { color: var(--text); font-weight: 500; }
+
+    .code-block { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .code-bar { display: flex; align-items: center; gap: 6px; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #ffbd2e; } .dot.g { background: #28c840; }
+    .code-lang { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+    pre { padding: 18px 20px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; color: #c9d1d9; white-space: pre; scrollbar-width: thin; scrollbar-color: #2d333b transparent; }
+    .cm { color: var(--muted); } .cmd { color: #79c0ff; } .out { color: #c9d1d9; } .hsh { color: #f0883e; } .key { color: #ff7b72; } .str { color: #a5d6ff; }
+
+    .reflection { border-left: 2px solid var(--accent); padding: 6px 0 6px 24px; font-size: 15px; line-height: 1.85; color: var(--sub); }
+    .reflection strong { color: var(--text); font-weight: 500; }
+
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .checklist li { list-style: none; font-size: 13px; color: var(--sub); padding-left: 22px; position: relative; line-height: 1.6; }
+    .checklist li::before { content: '○'; position: absolute; left: 0; color: var(--muted); }
+    .checklist li strong { color: var(--text); font-weight: 500; }
+
+    .journal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 580px) { .journal-grid { grid-template-columns: 1fr; } }
+    .journal-block { border-left: 2px solid var(--border); padding: 4px 0 4px 20px; }
+    .journal-block h3 { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+    .journal-block ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .journal-block ul li { font-size: 13px; color: var(--sub); padding-left: 14px; position: relative; }
+    .journal-block ul li::before { content: '–'; position: absolute; left: 0; color: var(--muted); }
+
+    .placeholder { font-size: 13px; color: var(--muted); font-style: italic; }
+    .todo { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--amber); border: 1px dashed var(--amber); border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .3px; }
+    footer strong { color: var(--sub); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">OpenLab Apprenticeship 2026</div>
+  <h1>JOSA <span>OpenLab</span></h1>
+  <h2>Week 05: Testing, CI/CD &amp; GitHub Actions</h2>
+
+  <div class="badges">
+    <div class="badge blue">
+      <span class="badge-label">Week</span>
+      <span class="badge-value">05 of 11</span>
+    </div>
+    <div class="badge navy">
+      <span class="badge-label">Phase</span>
+      <span class="badge-value">Foundations</span>
+    </div>
+    <div class="badge amber">
+      <span class="badge-label">Status</span>
+      <span class="badge-value">In Progress</span>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="label">Apprentice</div>
+      <div class="value">Qutibah Ananzeh</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cohort</div>
+      <div class="value">OpenLab 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Deadline</div>
+      <div class="value">Jun 13, 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- THE STANDARD -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 00</span>
+      <h2>The Standard</h2>
+    </div>
+
+    <div class="callout">
+      <strong>The unifying principle:</strong> write the <em>cheapest</em> test that meaningfully exercises the behavior. A pure function gets a unit test. A function that talks to a database gets an integration test against a real (test) database, not a mocked one. A user-facing flow gets one happy-path E2E test.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Test Pyramid &amp; Testing Trophy</div>
+      <ul class="checklist">
+        <li><strong>Pyramid (Cohn).</strong> Many fast unit tests at the bottom, fewer integration tests, very few slow E2E tests on top. The geometry is a cost model: a unit test runs in milliseconds; an E2E test can take minutes.</li>
+        <li><strong>Trophy (Dodds).</strong> For modern frontend, lean on integration tests for the highest confidence per dollar, on a base of static analysis (TypeScript, ESLint).</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Anatomy of a Good Unit Test</div>
+      <ul class="checklist">
+        <li><strong>Arrange / Act / Assert.</strong> One logical assertion per test, so a failure points at one thing.</li>
+        <li><strong>Name the behavior, not the function.</strong> <code>test_parser_handles_trailing_comma</code>, not <code>test_parse</code>.</li>
+        <li><strong>Deterministic.</strong> No unseeded randomness, no real <code>now()</code> (inject a clock), no real network (inject a transport).</li>
+        <li><strong>Fakes &gt; mocks.</strong> Mock external services you don't own (Stripe, SendGrid); don't mock your own database, run a real one in CI.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Suggested Repositories</div>
+      <p>Any project with a red CI badge &nbsp;&middot;&nbsp; <a href="https://github.com/sdras/awesome-actions" target="_blank">sdras/awesome-actions</a> &nbsp;&middot;&nbsp; one of my own repos for the workflow task.</p>
+    </div>
+  </div>
+
+  <!-- TASK 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 01</span>
+      <h2>Add Tests Where There Are None</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> Scout for untested code in a GitHub repo. Write a test file (or extend an existing one) with well-structured <strong>Arrange / Act / Assert</strong> tests, then submit a PR.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <ul class="checklist">
+        <li><span class="todo">todo</span>Pick a repo with thin coverage and identify a pure-ish function or module that has no tests.</li>
+        <li><span class="todo">todo</span>Write A/A/A tests covering the happy path plus at least one edge case.</li>
+        <li><span class="todo">todo</span>Open a PR and link it here.</li>
+      </ul>
+      <p class="placeholder" style="margin-top:14px;">Reflection, commands, and PR link to be filled in once the work is done.</p>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 02</span>
+      <h2>Build a Real CI Workflow</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> Add a complete <code>.github/workflows/ci.yml</code> to one of my repos with lint, test, a matrix over 2+ versions, dependency caching, and a status badge in the README.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Reference Shape</div>
+      <div class="code-block">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">.github/workflows/ci.yml</span></div>
+        <pre><span class="key">name</span>: CI
+<span class="key">on</span>:
+  <span class="key">push</span>: { <span class="key">branches</span>: [main] }
+  <span class="key">pull_request</span>:
+<span class="key">jobs</span>:
+  <span class="key">test</span>:
+    <span class="key">runs-on</span>: <span class="str">${{ matrix.os }}</span>
+    <span class="key">strategy</span>:
+      <span class="key">fail-fast</span>: false
+      <span class="key">matrix</span>:
+        <span class="key">os</span>: [ubuntu-latest, macos-latest]
+        <span class="key">node</span>: [20, 22]
+    <span class="key">steps</span>:
+      - <span class="key">uses</span>: actions/checkout@v4
+      - <span class="key">uses</span>: actions/setup-node@v4
+        <span class="key">with</span>: { <span class="key">node-version</span>: <span class="str">${{ matrix.node }}</span>, <span class="key">cache</span>: npm }
+      - <span class="key">run</span>: npm ci
+      - <span class="key">run</span>: npm run lint
+      - <span class="key">run</span>: npm test</pre>
+      </div>
+      <ul class="checklist" style="margin-top:16px;">
+        <li><span class="todo">todo</span>Pick the target repo and wire in lint + test scripts.</li>
+        <li><span class="todo">todo</span>Add the matrix + <code>cache: npm</code>, then add the status badge to the README.</li>
+      </ul>
+      <p class="placeholder" style="margin-top:14px;">Final workflow, badge, and reflection to be filled in once it's green on a real repo.</p>
+    </div>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 03</span>
+      <h2>Run It Locally with act</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> Reproduce the workflow locally with <a href="https://github.com/nektos/act" target="_blank">act</a> before pushing, and document any differences from the hosted runners in the journal.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <ul class="checklist">
+        <li><span class="todo">todo</span>Install <code>act</code> and run the <code>test</code> job locally (<code>act -j test</code>).</li>
+        <li><span class="todo">todo</span>Note where local diverges from hosted (Windows runners unsupported, action quirks, secrets via <code>--secret-file</code>).</li>
+      </ul>
+      <p class="placeholder" style="margin-top:14px;">Local run output and the list of differences to be filled in.</p>
+    </div>
+  </div>
+
+  <!-- SOFT SKILL -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 04</span>
+      <h2>Soft Skill, Time Management &amp; Deep Work</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Discipline:</strong> testing and CI work reward uninterrupted focus. <strong>Time-box</strong> debugging sessions ("90 minutes, then re-evaluate"), and do <strong>one thing at a time</strong>, task-switching costs ~25 minutes to reload context. An OSS-relevant habit: batch code-review responses once or twice a day instead of replying to every comment as it lands.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Reflection</div>
+      <p class="placeholder">To be written at the end of the week.</p>
+    </div>
+  </div>
+
+  <!-- JOURNAL -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 05</span>
+      <h2>Weekly Journal</h2>
+    </div>
+
+    <div class="journal-grid">
+      <div class="journal-block">
+        <h3>What I learned</h3>
+        <ul><li class="placeholder">To be filled in.</li></ul>
+      </div>
+      <div class="journal-block">
+        <h3>What was hardest</h3>
+        <ul><li class="placeholder">To be filled in.</li></ul>
+      </div>
+      <div class="journal-block">
+        <h3>What's blocking me</h3>
+        <ul><li class="placeholder">To be filled in.</li></ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Jordan Open Source Association &nbsp;&middot;&nbsp; <strong>OpenLab 2026</strong> &nbsp;&middot;&nbsp; Qutibah Ananzeh
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+{
+  "id": 5,
+  "title": "Testing, CI/CD & GitHub Actions",
+  "status": "in-progress",
+  "deadline": "2026-06-13",
+  "report": "/reports/week-05.html",
+  "tasks": [
+    {
+      "id": "add-tests",
+      "type": "test",
+      "title": "Add Tests Where There Are None",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "build-workflow",
+      "type": "ci",
+      "title": "Build a Real CI Workflow",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "run-act",
+      "type": "tooling",
+      "title": "Run It Locally with act",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "deep-work",
+      "type": "soft-skill",
+      "title": "Time Management & Deep Work",
+      "status": "pending",
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    }
+  ]
+}
