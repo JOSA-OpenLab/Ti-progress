@@ -277,12 +277,36 @@
 
     <div class="block">
       <div class="block-title">PR Analyzed</div>
-      <p class="placeholder">To be filled in — the PR, what's premature, the simpler alternative, and the justification test.</p>
+      <p><strong><a href="https://github.com/microsoft/vscode/pull/298676" target="_blank">microsoft/vscode#298676</a></strong> — "Introduce FoldingPreferences foundation and 'includeClosures' compatibility layer" &nbsp;·&nbsp; +829 / −242 across 9 files, open.</p>
+      <p style="margin-top:10px;">In one sentence: someone wanted code folding to optionally include the closing <code>}</code> line — and the PR builds an entire generic preferences <em>framework</em> to deliver that one behavior.</p>
+    </div>
+
+    <div class="block">
+      <div class="block-title">What's Premature (verified, not opinion)</div>
+      <ul class="checklist">
+        <li><code>CompatibilityAdjuster&lt;P&gt;</code> — an abstract generic base class with <strong>exactly one</strong> subclass, <code>CompatibilityAdjusterIncludeClosures</code>. The code even comments <em>"if multiple adjusters are active…"</em> — but there is only one.</li>
+        <li><code>FoldingPreferencesCapabilities</code> — an interface for providers to declare native support, yet <strong>every</strong> provider ships an empty <code>{}</code> (both <code>IndentRangeProvider</code> and <code>SyntaxRangeProvider</code>). The fancy interface is unused.</li>
+        <li>A new public <code>editor.foldingPreferences</code> API that leaks into <code>monaco.d.ts</code> + <code>standaloneEnums.ts</code> — <strong>829 lines</strong> of surface for a single preference.</li>
+        <li>The author's own words: <em>"only partially implemented and represented by placeholders."</em></li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The Maintainer's Pushback = the Analysis</div>
+      <div class="callout"><strong>aeschli</strong> (owns folding on the VS Code team): <em>"There's no language-agnostic way of describing what you want. Each language is different. Such a general setting will just cause more confusion than benefits… It doesn't help if only a few providers support it… the right answer is specific settings per folding provider."</em></div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Simpler Alternative &amp; the Justification Test</div>
+      <ul class="checklist">
+        <li><strong>Simpler:</strong> add <code>includeClosures</code> as a setting on the one folding provider that needs it (e.g. the TS folding strategy) — no foundation, no capabilities interface, no compatibility/adjuster layer, no public-API change. A handful of lines instead of 829.</li>
+        <li><strong>What would justify the abstraction:</strong> ≥2 real preferences that genuinely share a language-agnostic meaning <em>and</em> multiple providers natively supporting them. With <strong>1 preference, 1 adjuster, 0 native supporters</strong>, the "two real callers" (YAGNI) test fails → premature.</li>
+      </ul>
     </div>
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <div class="placeholder">To be filled in after completing the task.</div>
+      <div class="reflection">The test for premature abstraction isn't <em>"is this clean?"</em> — this PR is tidy and well-documented — it's <strong>"where's the second real caller?"</strong> With one preference, one adjuster, and every provider declaring zero native capabilities, the whole framework is built for a future that hasn't arrived. The most useful realization was that the verdict is checkable, not a matter of taste: I confirmed the single subclass, the empty <code>{}</code> capabilities, and the public-API change directly in the diff — and the folding owner independently reached the same conclusion (<em>"specific settings per provider"</em>). YAGNI in one line: generalize when you have two real callers, not before.</div>
     </div>
   </div>
 

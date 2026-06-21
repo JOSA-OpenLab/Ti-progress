@@ -45,12 +45,17 @@
       "id": "over-engineering",
       "type": "analysis",
       "title": "Spot the Over-Engineering",
-      "status": "pending",
-      "reflection": null,
-      "commands": [],
-      "output": null,
+      "status": "done",
+      "reflection": "Analyzed vscode#298676 — a PR that builds a generic 'FoldingPreferences foundation' (a public settings API, a FoldingPreferencesCapabilities interface, an abstract generic CompatibilityAdjuster<P> base class, and a compatibility layer) just to deliver ONE folding behavior: include the closing brace line. The over-engineering is verifiable, not opinion: the generic adjuster base has exactly one subclass, every provider ships an empty {} capabilities object so the fancy interface is unused, the code comments 'if multiple adjusters are active' when there's only one, and it even changes the public monaco.d.ts API — 829 lines for a single preference. The clincher is that the folding owner (aeschli) pushed back with the exact YAGNI argument: 'there's no language-agnostic way of describing what you want... the right answer is specific settings per folding provider.' The lesson that stuck: the test for premature abstraction isn't 'is this clean?', it's 'where's the second real caller?' — with one preference, one adjuster, and zero providers declaring native support, there isn't one, so the framework is speculative. The simpler version is a single setting on the one provider that needs it; the abstraction only earns its keep once two real preferences share a genuine language-agnostic meaning.",
+      "commands": [
+        "gh pr view 298676 --repo microsoft/vscode --json title,additions,deletions,changedFiles,body   # +829/-242, 9 files, 1 preference",
+        "gh pr diff 298676 --repo microsoft/vscode | grep 'class CompatibilityAdjuster'   # abstract base + exactly ONE subclass",
+        "gh pr diff 298676 | grep 'FoldingPreferencesCapabilities = {}'   # every provider's capabilities are empty placeholders",
+        "gh pr view 298676 --json comments   # maintainer aeschli: 'the right answer is specific settings per folding provider'"
+      ],
+      "output": "Over-engineering: vscode#298676 'Introduce FoldingPreferences foundation and includeClosures compatibility layer' (OPEN, +829/-242, 9 files).\n\nWHAT'S PREMATURE:\n- CompatibilityAdjuster<P extends keyof EditorFoldingPreferences>: abstract generic base with exactly ONE subclass (CompatibilityAdjusterIncludeClosures).\n- FoldingPreferencesCapabilities interface for providers to declare native support -> every provider ships an EMPTY {} (IndentRangeProvider + SyntaxRangeProvider). Zero real capabilities.\n- Code comments 'if multiple adjusters are active' -> there is only one.\n- New public editor.foldingPreferences API leaks into monaco.d.ts + standaloneEnums.ts -> for a single preference.\n- Author's own words: 'only partially implemented and represented by placeholders.'\n\nSIMPLER ALTERNATIVE (per maintainer aeschli, who owns folding): a specific setting on the one folding provider that needs it (e.g. the TS folding strategy). No foundation, no capabilities interface, no compatibility/adjuster layer, no public-API change. ~a handful of lines vs 829.\n\nWHAT WOULD JUSTIFY IT: >=2 real preferences sharing a genuine language-agnostic meaning AND multiple providers natively supporting them. With 1 preference / 1 adjuster / 0 native supporters, the 'two real callers' (YAGNI) test fails -> premature.\n\nMaintainer quote: 'There's no language-agnostic way of describing what you want. Each language is different... the right answer is specific settings per folding provider.'",
       "screenshot": null,
-      "pr": null
+      "pr": "https://github.com/microsoft/vscode/pull/298676"
     },
     {
       "id": "read-merged-prs",
