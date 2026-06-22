@@ -32,6 +32,16 @@
       "summary": "One-line fix + regression test so hex colors with a trailing newline parse instead of returning nil. Merged."
     },
     {
+      "id": "palmier-71",
+      "kind": "issue",
+      "title": "RGBA(hex:) rejects a trailing newline",
+      "repo": "palmier-io/palmier-pro",
+      "status": "closed",
+      "date": "2026-06-21",
+      "url": "https://github.com/palmier-io/palmier-pro/issues/71",
+      "summary": "Reported the bug that PR #72 fixes: a hex color with a surrounding newline returned nil instead of parsing."
+    },
+    {
       "id": "excalidraw-11510",
       "kind": "review",
       "title": "Review: invalid-hex feedback (minimal fix)",
@@ -55,10 +65,10 @@
       "id": "calcom-29603",
       "kind": "review",
       "title": "Review: recurring booking-limit enforcement",
-      "repo": "calcom/cal.com",
+      "repo": "calcom/cal.diy",
       "status": "open",
       "date": "2026-06-19",
-      "url": "https://github.com/calcom/cal.com/pull/29603",
+      "url": "https://github.com/calcom/cal.diy/pull/29603",
       "summary": "Dropped two tempting-but-false 'bugs' after cloning + smoke-testing; left two real questions and genuine praise."
     },
     {
@@ -130,6 +140,16 @@
       "date": "2026-04-06",
       "url": "https://github.com/ancsemi/Haven/pull/5226",
       "summary": "Disconnect a user from voice automatically when the channel they're in gets deleted. Merged into Haven."
+    },
+    {
+      "id": "paperclip-2978",
+      "kind": "issue",
+      "title": "Helped a user locate agent output files",
+      "repo": "paperclipai/paperclip",
+      "status": "open",
+      "date": "2026-04-06",
+      "url": "https://github.com/paperclipai/paperclip/issues/2978",
+      "summary": "Answered another user on a 71k-star OSS project: where completed agent runs save files (the 'Working dir' path), with a screenshot."
     }
   ]
 }
