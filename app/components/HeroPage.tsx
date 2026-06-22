@@ -33,7 +33,7 @@ const statusColor: Record<string, string> = {
   pending: "rgba(255,255,255,0.14)",
 }
 
-export function HeroPage({ onEnter }: { onEnter: () => void }) {
+export function HeroPage({ onEnter, onStats }: { onEnter: () => void; onStats: () => void }) {
   return (
     <div style={{ position: "relative", width: "100%", height: "100vh", overflow: "hidden", background: "#000", display: "flex", flexDirection: "column" }}>
 
@@ -123,6 +123,7 @@ export function HeroPage({ onEnter }: { onEnter: () => void }) {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.32 }}
+          style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}
         >
           <BgAnimateButton
             gradient="cyan"
@@ -132,6 +133,15 @@ export function HeroPage({ onEnter }: { onEnter: () => void }) {
             onClick={onEnter}
           >
             View Progress
+          </BgAnimateButton>
+          <BgAnimateButton
+            gradient="cyan"
+            animation="spin-slow"
+            rounded="full"
+            size="lg"
+            onClick={onStats}
+          >
+            Impact
           </BgAnimateButton>
         </motion.div>
 

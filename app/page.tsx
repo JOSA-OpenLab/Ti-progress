@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { HeroPage } from "./components/HeroPage"
 import { Graph } from "./components/Graph"
+import { StatsPage } from "./components/StatsPage"
 import week01 from "../data/weeks/week-01.json"
 import week02 from "../data/weeks/week-02.json"
 import week03 from "../data/weeks/week-03.json"
@@ -11,9 +12,19 @@ import week05 from "../data/weeks/week-05.json"
 
 const weeks = [week01, week02, week03, week04, week05]
 
-export default function Home() {
-  const [view, setView] = useState<"hero" | "graph">("hero")
+type View = "hero" | "graph" | "stats"
 
-  if (view === "graph") return <Graph weeks={weeks as never} />
-  return <HeroPage onEnter={() => setView("graph")} />
+export default function Home() {
+  const [view, setView] = useState<View>("hero")
+  const [prev, setPrev] = useState<View>("hero")
+
+  // Remember where we were so a page can offer a real "back".
+  const go = (next: View) => {
+    setPrev(view)
+    setView(next)
+  }
+
+  if (view === "graph") return <Graph weeks={weeks as never} onNavigate={go} />
+  if (view === "stats") return <StatsPage onNavigate={go} from={prev} />
+  return <HeroPage onEnter={() => go("graph")} onStats={() => go("stats")} />
 }

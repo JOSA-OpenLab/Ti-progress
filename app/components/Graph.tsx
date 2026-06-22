@@ -91,7 +91,7 @@ function buildGraph(weeks: Week[], onSelect: (s: Selected) => void): { nodes: No
   return { nodes, edges }
 }
 
-export function Graph({ weeks }: { weeks: Week[] }) {
+export function Graph({ weeks, onNavigate }: { weeks: Week[]; onNavigate?: (v: "hero" | "graph" | "stats") => void }) {
   const [selected, setSelected] = useState<Selected | null>(null)
   const rf = useRef<ReactFlowInstance | null>(null)
 
@@ -165,12 +165,28 @@ export function Graph({ weeks }: { weeks: Week[] }) {
             {weeks.length} week{weeks.length !== 1 ? "s" : ""} · 2026
           </span>
         </div>
-        <div style={{
-          fontSize: 11, color: "#6e7681", fontFamily: "monospace",
-          background: "#111318", border: "1px solid #21262d",
-          padding: "4px 12px", borderRadius: 6,
-        }}>
-          {totalDone} / {total} done
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{
+            fontSize: 11, color: "#6e7681", fontFamily: "monospace",
+            background: "#111318", border: "1px solid #21262d",
+            padding: "4px 12px", borderRadius: 6,
+          }}>
+            {totalDone} / {total} done
+          </div>
+          {onNavigate && (
+            <button
+              onClick={() => onNavigate("stats")}
+              style={{
+                fontSize: 11, color: "#8b949e", fontFamily: "monospace", cursor: "pointer",
+                background: "#111318", border: "1px solid #21262d",
+                padding: "5px 13px", borderRadius: 6, transition: "color .2s, border-color .2s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = "#00b4d8"; e.currentTarget.style.borderColor = "#284b54" }}
+              onMouseLeave={e => { e.currentTarget.style.color = "#8b949e"; e.currentTarget.style.borderColor = "#21262d" }}
+            >
+              Impact ↗
+            </button>
+          )}
         </div>
       </div>
 

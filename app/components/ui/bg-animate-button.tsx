@@ -5,16 +5,19 @@ import { Slot } from "@radix-ui/react-slot"
 import { cva } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
-const outerDivVariants = cva("relative inline-block overflow-hidden", {
-  variants: {
-    rounded: {
-      full: "rounded-full",
-      xl: "rounded-xl",
-      "2xl": "rounded-2xl",
+const outerDivVariants = cva(
+  "group relative inline-block overflow-hidden cursor-pointer transition-all duration-200 ease-out hover:scale-[1.04] active:scale-95 hover:shadow-[0_0_28px_-4px_rgba(0,180,216,0.65)]",
+  {
+    variants: {
+      rounded: {
+        full: "rounded-full",
+        xl: "rounded-xl",
+        "2xl": "rounded-2xl",
+      },
     },
-  },
-  defaultVariants: { rounded: "xl" },
-})
+    defaultVariants: { rounded: "xl" },
+  }
+)
 
 const innerSpanVariants = cva("absolute inset-[-1000%] m-auto block", {
   variants: {
@@ -33,12 +36,12 @@ const innerSpanVariants = cva("absolute inset-[-1000%] m-auto block", {
 })
 
 const buttonVariants = cva(
-  "relative px-6 py-2 transition-all duration-150 ease-in-out text-sm overflow-hidden font-semibold",
+  "relative px-6 py-2 transition-colors duration-200 ease-in-out text-sm overflow-hidden font-semibold group-hover:bg-zinc-800 group-active:bg-zinc-900",
   {
     variants: {
       rounded: { full: "rounded-full", xl: "rounded-xl", "2xl": "rounded-2xl" },
       gradient: {
-        cyan: "text-white bg-zinc-950",
+        cyan: "text-white bg-zinc-950 group-hover:text-cyan-50",
         nebula: "text-white bg-zinc-950",
         default: "text-white bg-zinc-950",
       },

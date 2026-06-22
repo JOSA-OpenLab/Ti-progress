@@ -1,0 +1,135 @@
+{
+  "updated": "2026-06-22",
+  "items": [
+    {
+      "id": "palmier-102",
+      "kind": "pr",
+      "title": "Persist editor panel sizes across launches",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-06-22",
+      "url": "https://github.com/palmier-io/palmier-pro/pull/102",
+      "summary": "NSSplitView.autosaveName + a per-split guard so dragged panel sizes survive a quit and relaunch."
+    },
+    {
+      "id": "palmier-101",
+      "kind": "issue",
+      "title": "Editor panel sizes reset to defaults on relaunch",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-06-22",
+      "url": "https://github.com/palmier-io/palmier-pro/issues/101",
+      "summary": "Filed the bug report that PR #102 fixes, issue-first per their CONTRIBUTING guide."
+    },
+    {
+      "id": "palmier-72",
+      "kind": "pr",
+      "title": "Trim newlines in RGBA(hex:)",
+      "repo": "palmier-io/palmier-pro",
+      "status": "merged",
+      "date": "2026-06-21",
+      "url": "https://github.com/palmier-io/palmier-pro/pull/72",
+      "summary": "One-line fix + regression test so hex colors with a trailing newline parse instead of returning nil. Merged."
+    },
+    {
+      "id": "excalidraw-11510",
+      "kind": "review",
+      "title": "Review: invalid-hex feedback (minimal fix)",
+      "repo": "excalidraw/excalidraw",
+      "status": "open",
+      "date": "2026-06-19",
+      "url": "https://github.com/excalidraw/excalidraw/pull/11510",
+      "summary": "Accessibility suggestion + useMemo nit + praise. Verified every claim against the real source before posting."
+    },
+    {
+      "id": "excalidraw-11514",
+      "kind": "review",
+      "title": "Review: invalid-hex feedback (thorough fix)",
+      "repo": "excalidraw/excalidraw",
+      "status": "open",
+      "date": "2026-06-19",
+      "url": "https://github.com/excalidraw/excalidraw/pull/11514",
+      "summary": "Message-accuracy + test-gap notes. A tinycolor smoke test killed a wrong comment before I posted it."
+    },
+    {
+      "id": "calcom-29603",
+      "kind": "review",
+      "title": "Review: recurring booking-limit enforcement",
+      "repo": "calcom/cal.com",
+      "status": "open",
+      "date": "2026-06-19",
+      "url": "https://github.com/calcom/cal.com/pull/29603",
+      "summary": "Dropped two tempting-but-false 'bugs' after cloning + smoke-testing; left two real questions and genuine praise."
+    },
+    {
+      "id": "httpie-1640",
+      "kind": "issue",
+      "title": "Reproduced + built an MCVE",
+      "repo": "httpie/cli",
+      "status": "open",
+      "date": "2026-06-05",
+      "url": "https://github.com/httpie/cli/issues/1640",
+      "summary": "Reproduced the 'JSON content-type not set' bug and posted a minimal, complete, verifiable example."
+    },
+    {
+      "id": "t3-2215",
+      "kind": "issue",
+      "title": "Triaged an --import-alias crash",
+      "repo": "t3-oss/create-t3-app",
+      "status": "open",
+      "date": "2026-06-05",
+      "url": "https://github.com/t3-oss/create-t3-app/issues/2215",
+      "summary": "Triaged a TypeError crash report and narrowed the failing flag and condition."
+    },
+    {
+      "id": "tldr-22625",
+      "kind": "review",
+      "title": "Practice review: foremost command page",
+      "repo": "tldr-pages/tldr",
+      "status": "closed",
+      "date": "2026-05-29",
+      "url": "https://github.com/tldr-pages/tldr/pull/22625",
+      "summary": "First structured review using Conventional Comments labels."
+    },
+    {
+      "id": "tldr-22564",
+      "kind": "pr",
+      "title": "echo: add Arabic translation",
+      "repo": "tldr-pages/tldr",
+      "status": "merged",
+      "date": "2026-05-24",
+      "url": "https://github.com/tldr-pages/tldr/pull/22564",
+      "summary": "Added the Arabic translation for the echo command page. Merged into the tldr pages."
+    },
+    {
+      "id": "tldr-22565",
+      "kind": "pr",
+      "title": "cp: add Arabic translation",
+      "repo": "tldr-pages/tldr",
+      "status": "merged",
+      "date": "2026-05-24",
+      "url": "https://github.com/tldr-pages/tldr/pull/22565",
+      "summary": "Added the Arabic translation for the cp command page. Merged into the tldr pages."
+    },
+    {
+      "id": "haven-5225",
+      "kind": "pr",
+      "title": "Fix glitch effect overwriting the server name",
+      "repo": "ancsemi/Haven",
+      "status": "merged",
+      "date": "2026-04-06",
+      "url": "https://github.com/ancsemi/Haven/pull/5225",
+      "summary": "The scramble animation left the glitched text stuck as the server name; fixed so it restores. Merged into Haven (a 474-star self-hosted Discord alternative)."
+    },
+    {
+      "id": "haven-5226",
+      "kind": "pr",
+      "title": "Auto-disconnect voice when channel is deleted",
+      "repo": "ancsemi/Haven",
+      "status": "merged",
+      "date": "2026-04-06",
+      "url": "https://github.com/ancsemi/Haven/pull/5226",
+      "summary": "Disconnect a user from voice automatically when the channel they're in gets deleted. Merged into Haven."
+    }
+  ]
+}
