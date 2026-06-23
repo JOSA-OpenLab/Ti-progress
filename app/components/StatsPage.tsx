@@ -89,16 +89,44 @@ export function StatsPage({ onNavigate, from = "graph" }: { onNavigate: (v: "her
   const [filter, setFilter] = useState<Kind | "all">("all")
   const [openId, setOpenId] = useState<string | null>(null)
 
+  // Live PR state from GitHub's public API; the JSON status is the fallback.
+  const [live, setLive] = useState<Record<string, Status>>({})
+  useEffect(() => {
+    let cancelled = false
+    Promise.all(
+      items.filter(i => i.kind === "pr").map(async (it) => {
+        const m = it.url.match(/github\.com\/([^/]+)\/([^/]+)\/pull\/(\d+)/)
+        if (!m) return null
+        try {
+          const r = await fetch(`https://api.github.com/repos/${m[1]}/${m[2]}/pulls/${m[3]}`)
+          if (!r.ok) return null
+          const d = await r.json()
+          const s: Status = d.merged ? "merged" : d.state === "open" ? "open" : "closed"
+          return [it.id, s] as const
+        } catch { return null }
+      })
+    ).then(rows => {
+      if (cancelled) return
+      const map: Record<string, Status> = {}
+      for (const row of rows) if (row) map[row[0]] = row[1]
+      setLive(map)
+    })
+    return () => { cancelled = true }
+  }, [])
+
+  const eff = (i: Item): Status => live[i.id] ?? i.status
+
   const stats = useMemo(() => {
     const by = (k: Kind) => items.filter(i => i.kind === k).length
-    const prMerged = items.filter(i => i.kind === "pr" && i.status === "merged").length
-    const prOpen = items.filter(i => i.kind === "pr" && i.status === "open").length
+    const prMerged = items.filter(i => i.kind === "pr" && eff(i) === "merged").length
+    const prOpen = items.filter(i => i.kind === "pr" && eff(i) === "open").length
     const repos = new Set(items.map(i => i.repo)).size
     return {
       total: items.length, pr: by("pr"), review: by("review"), issue: by("issue"),
       prMerged, prOpen, repos,
     }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [live])
 
   const filtered = useMemo(() => {
     const list = filter === "all" ? items : items.filter(i => i.kind === filter)
@@ -117,7 +145,7 @@ export function StatsPage({ onNavigate, from = "graph" }: { onNavigate: (v: "her
     sub?: string; filter?: Kind | "all"
   }> = [
     { label: "Contributions", value: stats.total, icon: LayoutGrid, color: CYAN, sub: `${stats.repos} repositories`, filter: "all" },
-    { label: "Pull Requests", value: stats.pr, icon: GitPullRequest, color: KIND.pr.color, sub: `${items.filter(i => i.kind === "pr" && i.status === "merged").length} merged · ${items.filter(i => i.kind === "pr" && i.status === "open").length} open`, filter: "pr" },
+    { label: "Pull Requests", value: stats.pr, icon: GitPullRequest, color: KIND.pr.color, sub: `${stats.prMerged} merged${stats.prOpen ? ` · ${stats.prOpen} open` : ""}`, filter: "pr" },
     { label: "Reviews", value: stats.review, icon: MessageSquareText, color: KIND.review.color, sub: "on real OSS PRs", filter: "review" },
     { label: "Issues & Triage", value: stats.issue, icon: CircleDot, color: KIND.issue.color, sub: "reported & reproduced", filter: "issue" },
   ]
@@ -260,7 +288,7 @@ export function StatsPage({ onNavigate, from = "graph" }: { onNavigate: (v: "her
             {filtered.map((it, i) => {
               const k = KIND[it.kind]
               const Icon = k.icon
-              const st = STATUS[it.status]
+              const st = STATUS[eff(it)]
               const isOpen = openId === it.id
               return (
                 <motion.div

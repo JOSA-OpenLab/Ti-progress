@@ -6,7 +6,7 @@
       "kind": "pr",
       "title": "Persist editor panel sizes across launches",
       "repo": "palmier-io/palmier-pro",
-      "status": "open",
+      "status": "merged",
       "date": "2026-06-22",
       "url": "https://github.com/palmier-io/palmier-pro/pull/102",
       "summary": "NSSplitView.autosaveName + a per-split guard so dragged panel sizes survive a quit and relaunch."
@@ -16,7 +16,7 @@
       "kind": "issue",
       "title": "Editor panel sizes reset to defaults on relaunch",
       "repo": "palmier-io/palmier-pro",
-      "status": "open",
+      "status": "closed",
       "date": "2026-06-22",
       "url": "https://github.com/palmier-io/palmier-pro/issues/101",
       "summary": "Filed the bug report that PR #102 fixes, issue-first per their CONTRIBUTING guide."
