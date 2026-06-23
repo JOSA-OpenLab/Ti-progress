@@ -1,6 +1,26 @@
 {
-  "updated": "2026-06-22",
+  "updated": "2026-06-23",
   "items": [
+    {
+      "id": "palmier-129",
+      "kind": "pr",
+      "title": "Rescale keyframes when clip speed changes",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-06-23",
+      "url": "https://github.com/palmier-io/palmier-pro/pull/129",
+      "summary": "One-line fix + regression test: changing a clip's speed now rescales its keyframes (like the fps path) instead of clamping them away."
+    },
+    {
+      "id": "palmier-128",
+      "kind": "issue",
+      "title": "Changing clip speed deletes keyframes instead of rescaling them",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-06-23",
+      "url": "https://github.com/palmier-io/palmier-pro/issues/128",
+      "summary": "Reported the bug PR #129 fixes, issue-first per their CONTRIBUTING: speeding up a clip silently dropped every keyframe past the new end."
+    },
     {
       "id": "palmier-102",
       "kind": "pr",
