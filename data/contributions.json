@@ -1,6 +1,26 @@
 {
-  "updated": "2026-06-23",
+  "updated": "2026-06-24",
   "items": [
+    {
+      "id": "palmier-144",
+      "kind": "pr",
+      "title": "Validate speed/volume/opacity/trim in set_clip_properties",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-06-24",
+      "url": "https://github.com/palmier-io/palmier-pro/pull/144",
+      "summary": "The agent tool only validated durationFrames; added guards rejecting out-of-range speed/volume/opacity/trim (a negative speed could later collapse a clip to 1 frame). +regression test."
+    },
+    {
+      "id": "palmier-143",
+      "kind": "issue",
+      "title": "set_clip_properties accepts out-of-range speed/volume/opacity/trim",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-06-24",
+      "url": "https://github.com/palmier-io/palmier-pro/issues/143",
+      "summary": "Reported the bug PR #144 fixes, issue-first per their CONTRIBUTING: the MCP tool accepted values the editor UI disallows (speed 0, volume 5, opacity -1, negative trim)."
+    },
     {
       "id": "palmier-129",
       "kind": "pr",
