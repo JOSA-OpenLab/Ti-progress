@@ -1,6 +1,26 @@
 {
-  "updated": "2026-06-24",
+  "updated": "2026-06-25",
   "items": [
+    {
+      "id": "palmier-163",
+      "kind": "pr",
+      "title": "Fix segment-drop trim: store trimEndFrame as a tail amount, not an out-point",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-06-25",
+      "url": "https://github.com/palmier-io/palmier-pro/pull/163",
+      "summary": "Dropping a search 'moment' onto the timeline stored trimEndFrame as an absolute end instead of a tail-trim amount, so a 3000-frame clip could claim 6000 source frames, mis-sampling the waveform/thumbnail and the FCPXML export. One-line fix + a new invariant test; also corrected an existing test that had encoded the bug."
+    },
+    {
+      "id": "palmier-162",
+      "kind": "issue",
+      "title": "Segment-drop sets trimEndFrame as an absolute out-point instead of a tail-trim amount",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-06-25",
+      "url": "https://github.com/palmier-io/palmier-pro/issues/162",
+      "summary": "Reported the bug PR #163 fixes, issue-first per their CONTRIBUTING: found via a full-codebase bug hunt, then proven with a failing smoke test before fixing."
+    },
     {
       "id": "palmier-144",
       "kind": "pr",
