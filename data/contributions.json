@@ -2,6 +2,26 @@
   "updated": "2026-06-25",
   "items": [
     {
+      "id": "palmier-183",
+      "kind": "pr",
+      "title": "Surface XML/FCPXML write failures instead of silently succeeding",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-06-25",
+      "url": "https://github.com/palmier-io/palmier-pro/pull/183",
+      "summary": "The XML exporter swallowed write errors with try?, so a failed FCPXML export still hit 100%, logged 'Export finished', and closed the dialog with no file written. Made XMLExporter.export throwing and had ExportService set the error like the video path. +regression test; full 743-test suite green."
+    },
+    {
+      "id": "palmier-182",
+      "kind": "issue",
+      "title": "XML/FCPXML export silently reports success when the file write fails",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-06-25",
+      "url": "https://github.com/palmier-io/palmier-pro/issues/182",
+      "summary": "Reported the bug PR #183 fixes, issue-first per their CONTRIBUTING: a data-loss/trust bug where the app claimed a successful export but produced no file."
+    },
+    {
       "id": "palmier-163",
       "kind": "pr",
       "title": "Fix segment-drop trim: store trimEndFrame as a tail amount, not an out-point",
