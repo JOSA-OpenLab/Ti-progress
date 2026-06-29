@@ -267,13 +267,38 @@
     </div>
 
     <div class="callout">
-      <strong>The documented difference:</strong> for a macOS app, <a href="https://github.com/nektos/act" target="_blank">act</a> cannot reproduce the workflow at all, and that limitation is the finding worth recording.
+      Done across <strong>two repos</strong>: one shows act's hard limit (macOS), the other is where act actually shines (Node/Linux) and caught real bugs before they reached GitHub.
     </div>
 
     <div class="block">
-      <div class="block-title">Why act can't run this workflow</div>
+      <div class="block-title">MacDirStat &mdash; the macOS limit</div>
       <div class="reflection">
-        <code>act</code> runs GitHub Actions in <strong>Linux Docker containers</strong>. A <code>runs-on: macos-14</code> job has no equivalent: there is no macOS container image (Apple licensing forbids macOS in Docker), so <code>act -j build-test</code> only offers Linux base images, which can't build a macOS SwiftUI + Sparkle app. <strong>Conclusion:</strong> for a macOS app the local-<code>act</code> loop is unavailable, verification is <code>swift build</code> / <code>swift test</code> on a real Mac (done, 20/20 pass) plus watching GitHub Actions on push. A Node/Linux repo is the right target to actually exercise <code>act</code>. Full write-up in <code>docs/ci-journal.md</code>.
+        <a href="https://github.com/nektos/act" target="_blank">act</a> runs GitHub Actions in <strong>Linux Docker containers</strong>. A <code>runs-on: macos-15</code> job has no equivalent: there is no macOS container image (Apple licensing forbids macOS in Docker), so it can't build a macOS SwiftUI + Sparkle app at all. For a macOS app the local-<code>act</code> loop is simply unavailable, verification is <code>swift build</code> / <code>swift test</code> on a real Mac plus watching Actions on push. Write-up in <code>docs/ci-journal.md</code>.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">adcli &mdash; where act actually runs (Node/TypeScript, private repo)</div>
+      <div class="reflection">
+        To genuinely exercise <code>act</code> I used <strong>adcli</strong>, a private Node/TypeScript monorepo: a <code>lint</code> job (<code>pnpm typecheck</code>) and a <code>test</code> job (matrix Node 20/22, a Postgres 16 service container, migrations, pnpm cache, <code>pnpm -r test</code>). Running it locally <strong>caught two real failures</strong> before they ever reached GitHub: (1) <code>@adcli/sdk</code> wasn't resolvable in a clean checkout because its <code>dist/</code> is gitignored (it only passed on my machine from leftover build output), fixed with a "build workspace libraries" step; and (2) <code>tsc --noEmit</code> flagged 4 pre-existing type errors in backend test mocks and page props.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">act vs GitHub-hosted runners &mdash; the differences I hit</div>
+      <ul class="checklist">
+        <li><strong>Architecture.</strong> Hosted is x86_64; my machine is arm64. The <code>linux/amd64</code> emulation broke <code>setup-node</code> (<code>exec: "node": not found</code>), running native arm64 fixed it.</li>
+        <li><strong>Missing <code>psql</code>.</strong> The <code>catthehacker/ubuntu:act-latest</code> image has no <code>psql</code>, so a <code>psql -f</code> migration step failed. Switched migrations to the existing <code>pg</code>-based <code>migrate.mjs</code>, portable on both.</li>
+        <li><strong>Runner image.</strong> act defaults to a small image; pinned <code>-P ubuntu-latest=catthehacker/ubuntu:act-latest</code> to avoid the interactive size prompt.</li>
+        <li><strong>Service ports.</strong> act binds the Postgres service to host <code>0.0.0.0:5432</code>, a local Postgres on 5432 caused <code>port is already allocated</code>.</li>
+        <li><strong>Windows runners.</strong> Unsupported by act (not used here).</li>
+      </ul>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">act</span></div>
+        <pre><span class="cmd">$ act -j lint -P ubuntu-latest=catthehacker/ubuntu:act-latest</span>
+<span class="cmd">$ act -j test --matrix node:22 -P ubuntu-latest=catthehacker/ubuntu:act-latest</span>
+<span class="out">lint green; test matrix (Node 20 + 22) green,</span>
+<span class="out">all packages pass (sdk 63, cli 172, marketing 97, backend 171).</span></pre>
       </div>
     </div>
   </div>

@@ -32,9 +32,9 @@
       "type": "tooling",
       "title": "Run It Locally with act",
       "status": "done",
-      "reflection": "The documented difference: act runs GitHub Actions in Linux Docker containers, so a macOS job (runs-on: macos-14) cannot be reproduced locally at all. There is no macOS container image (Apple licensing forbids macOS in Docker), so act only offers Linux base images, which can't build a macOS SwiftUI + Sparkle app. Conclusion for a macOS app: the local-act feedback loop is unavailable, verification is swift build / swift test on a real Mac (done, 20/20 pass) plus watching GitHub Actions on push. A Node/Linux repo would be the right target to actually run act. Written up in docs/ci-journal.md.",
-      "commands": ["act -j build-test  # only Linux base images offered; no macOS image"],
-      "output": null,
+      "reflection": "Done across two repos. (1) MacDirStat shows act's hard limit: act runs GitHub Actions in Linux Docker containers, so a macOS job has no equivalent (no macOS container image exists, Apple licensing), it can't build the app at all. (2) adcli, a private Node/TypeScript monorepo, is where act actually runs, and it caught two real failures before they hit GitHub: @adcli/sdk wasn't resolvable in a clean checkout because its dist/ is gitignored (passed on my machine only from leftover build output), fixed with a build-libraries step; and tsc --noEmit flagged 4 pre-existing type errors in backend test mocks/page props. Differences I hit with act vs hosted runners: arm64 vs x86_64 (amd64 emulation broke setup-node), no psql in the image (switched migrations to the pg-based migrate.mjs), had to pin the runner image, and Postgres service port clashes on host 5432. Both jobs pass under act. Write-ups in MacDirStat docs/ci-journal.md and adcli docs/ci-act-journal.md.",
+      "commands": ["act -j lint -P ubuntu-latest=catthehacker/ubuntu:act-latest", "act -j test --matrix node:22 -P ubuntu-latest=catthehacker/ubuntu:act-latest"],
+      "output": "lint: green\ntest matrix (Node 20 + 22): green\nall packages pass (sdk 63, cli 172, marketing 97, backend 171)",
       "screenshot": null,
       "pr": null
     },
