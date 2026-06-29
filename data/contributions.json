@@ -1,12 +1,32 @@
 {
-  "updated": "2026-06-25",
+  "updated": "2026-06-29",
   "items": [
+    {
+      "id": "palmier-201",
+      "kind": "pr",
+      "title": "Harden agent/MCP numeric tool args against Int(Double) overflow crashes",
+      "repo": "palmier-io/palmier-pro",
+      "status": "merged",
+      "date": "2026-06-27",
+      "url": "https://github.com/palmier-io/palmier-pro/pull/201",
+      "summary": "Untrusted numeric tool args hit Int(Double) with no range check, so an out-of-range value traps on the main thread and crashes the editor (reachable from a normal model tool call or any client on 127.0.0.1:19789). Added shared safeInt / clampInt helpers in ToolExecutor and routed every untrusted Double->Int site through them. +overflow regression test; merged."
+    },
+    {
+      "id": "palmier-200",
+      "kind": "issue",
+      "title": "Agent/MCP numeric tool args crash the app via Int(Double) overflow",
+      "repo": "palmier-io/palmier-pro",
+      "status": "closed",
+      "date": "2026-06-27",
+      "url": "https://github.com/palmier-io/palmier-pro/issues/200",
+      "summary": "Reported the crash PR #201 fixes, issue-first per their CONTRIBUTING: an out-of-range numeric tool argument traps in Int(Double) and takes down the editor."
+    },
     {
       "id": "palmier-183",
       "kind": "pr",
       "title": "Surface XML/FCPXML write failures instead of silently succeeding",
       "repo": "palmier-io/palmier-pro",
-      "status": "open",
+      "status": "merged",
       "date": "2026-06-25",
       "url": "https://github.com/palmier-io/palmier-pro/pull/183",
       "summary": "The XML exporter swallowed write errors with try?, so a failed FCPXML export still hit 100%, logged 'Export finished', and closed the dialog with no file written. Made XMLExporter.export throwing and had ExportService set the error like the video path. +regression test; full 743-test suite green."
@@ -16,7 +36,7 @@
       "kind": "issue",
       "title": "XML/FCPXML export silently reports success when the file write fails",
       "repo": "palmier-io/palmier-pro",
-      "status": "open",
+      "status": "closed",
       "date": "2026-06-25",
       "url": "https://github.com/palmier-io/palmier-pro/issues/182",
       "summary": "Reported the bug PR #183 fixes, issue-first per their CONTRIBUTING: a data-loss/trust bug where the app claimed a successful export but produced no file."
@@ -26,7 +46,7 @@
       "kind": "pr",
       "title": "Fix segment-drop trim: store trimEndFrame as a tail amount, not an out-point",
       "repo": "palmier-io/palmier-pro",
-      "status": "open",
+      "status": "merged",
       "date": "2026-06-25",
       "url": "https://github.com/palmier-io/palmier-pro/pull/163",
       "summary": "Dropping a search 'moment' onto the timeline stored trimEndFrame as an absolute end instead of a tail-trim amount, so a 3000-frame clip could claim 6000 source frames, mis-sampling the waveform/thumbnail and the FCPXML export. One-line fix + a new invariant test; also corrected an existing test that had encoded the bug."
@@ -36,7 +56,7 @@
       "kind": "issue",
       "title": "Segment-drop sets trimEndFrame as an absolute out-point instead of a tail-trim amount",
       "repo": "palmier-io/palmier-pro",
-      "status": "open",
+      "status": "closed",
       "date": "2026-06-25",
       "url": "https://github.com/palmier-io/palmier-pro/issues/162",
       "summary": "Reported the bug PR #163 fixes, issue-first per their CONTRIBUTING: found via a full-codebase bug hunt, then proven with a failing smoke test before fixing."
@@ -46,7 +66,7 @@
       "kind": "pr",
       "title": "Validate speed/volume/opacity/trim in set_clip_properties",
       "repo": "palmier-io/palmier-pro",
-      "status": "open",
+      "status": "merged",
       "date": "2026-06-24",
       "url": "https://github.com/palmier-io/palmier-pro/pull/144",
       "summary": "The agent tool only validated durationFrames; added guards rejecting out-of-range speed/volume/opacity/trim (a negative speed could later collapse a clip to 1 frame). +regression test."
@@ -56,7 +76,7 @@
       "kind": "issue",
       "title": "set_clip_properties accepts out-of-range speed/volume/opacity/trim",
       "repo": "palmier-io/palmier-pro",
-      "status": "open",
+      "status": "closed",
       "date": "2026-06-24",
       "url": "https://github.com/palmier-io/palmier-pro/issues/143",
       "summary": "Reported the bug PR #144 fixes, issue-first per their CONTRIBUTING: the MCP tool accepted values the editor UI disallows (speed 0, volume 5, opacity -1, negative trim)."
@@ -66,7 +86,7 @@
       "kind": "pr",
       "title": "Rescale keyframes when clip speed changes",
       "repo": "palmier-io/palmier-pro",
-      "status": "open",
+      "status": "merged",
       "date": "2026-06-23",
       "url": "https://github.com/palmier-io/palmier-pro/pull/129",
       "summary": "One-line fix + regression test: changing a clip's speed now rescales its keyframes (like the fps path) instead of clamping them away."
@@ -76,7 +96,7 @@
       "kind": "issue",
       "title": "Changing clip speed deletes keyframes instead of rescaling them",
       "repo": "palmier-io/palmier-pro",
-      "status": "open",
+      "status": "closed",
       "date": "2026-06-23",
       "url": "https://github.com/palmier-io/palmier-pro/issues/128",
       "summary": "Reported the bug PR #129 fixes, issue-first per their CONTRIBUTING: speeding up a clip silently dropped every keyframe past the new end."

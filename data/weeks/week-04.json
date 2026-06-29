@@ -10,6 +10,17 @@
       "type": "review",
       "title": "Two Real Reviews",
       "status": "done",
+      "why": "Leave verify-before-asserting reviews on three real open PRs, cloning and smoke-testing every claim before posting it.",
+      "metrics": [
+        { "label": "Reviews", "value": "3" },
+        { "label": "False claims killed", "value": "3" }
+      ],
+      "links": [
+        { "type": "review", "label": "excalidraw: invalid-hex (minimal)", "url": "https://github.com/excalidraw/excalidraw/pull/11510" },
+        { "type": "review", "label": "excalidraw: invalid-hex (thorough)", "url": "https://github.com/excalidraw/excalidraw/pull/11514" },
+        { "type": "review", "label": "cal.com: recurring booking limits", "url": "https://github.com/calcom/cal.com/pull/29603" },
+        { "type": "report", "label": "Week 04 full report", "url": "/reports/week-04.html" }
+      ],
       "reflection": "Left substantive design/correctness reviews on three open PRs using Conventional Comments labels, two on Excalidraw (#11510 and #11514, the competing fixes for the same invalid-hex-color issue #9527) and one on Cal.com (#29603, enforcing booking limits across a recurring series). The rule I held to was verify-before-asserting: for every claim I cloned the repo, read the actual source, and ran an isolated smoke test before posting. That paid off most on Cal.com, where two tempting 'bugs' both turned out to be false, a 401 status 'regression' that the existing method already does, and a 'dropped' includeManagedEvents arg that the regular path also omits. Per Google's guide those are pre-existing/consistent behavior and belong in a separate issue, not the CL, so I dropped them. On Excalidraw a 'does it accept color names?' question I almost posted was killed by a tinycolor smoke test (it does), which would have made me look like I hadn't read the lib. Each review paired a real note with genuine praise and a clearly-labelled non-blocking tag, and I asked 'is there a reason X?' rather than asserting wherever I wasn't certain.",
       "commands": [
         "gh pr diff 11510 --repo excalidraw/excalidraw   # read the change before judging it",
@@ -29,6 +40,17 @@
       "type": "writeup",
       "title": "Self-Review Write-up",
       "status": "done",
+      "why": "Self-review my own 4,461-line 'Dev' PR as a hostile stranger, name the payment bug I shipped, then walk back my own overstatement once I traced the code.",
+      "metrics": [
+        { "label": "Lines reviewed", "value": "4,461" },
+        { "label": "Real bug found", "value": "1" },
+        { "label": "Should've been", "value": "~5 PRs" }
+      ],
+      "links": [
+        { "type": "pr", "label": "remainders #30 (self-reviewed)", "url": "https://github.com/Ti-03/remainders/pull/30" },
+        { "type": "repo", "label": "Ti-03/remainders", "url": "https://github.com/Ti-03/remainders" },
+        { "type": "report", "label": "Week 04 full report", "url": "/reports/week-04.html" }
+      ],
       "reflection": "Self-reviewed my own remainders#30, a 4,461-line PR titled just 'Dev' that merged a whole dev branch bundling an admin dashboard, auth, a Ko-fi payment webhook, file uploads and caching. Reviewing it as a hostile stranger surfaced one genuine correctness bug I'd missed at the time: the webhook lowercases the donor email and queries Firestore with it, but signup stores user.email un-normalized, so a case-sensitive equality means already-registered users with any uppercase in their email silently miss their paid Pro grant. The bigger lesson was about asserting carefully even against my own code: my first pass claimed the user 'never gets Pro', but tracing applyPendingKofiGrant proved that's overstated, donate-before-signup is rescued and there's a manual fallback field, so the accurate scope is narrower. I also nearly flagged 'no webhook verification' before reading the handler, which actually does a timing-safe token compare and fails closed. Doing the work the author should have done (self-review before requesting review really does catch ~30%) and writing it up honestly, including correcting my own overstatement, was the point.",
       "commands": [
         "gh pr view 30 --repo Ti-03/remainders --json files   # 33 files / +4461 across ~5 concerns = should have been ~5 PRs",
@@ -46,6 +68,17 @@
       "type": "analysis",
       "title": "Spot the Over-Engineering",
       "status": "done",
+      "why": "Show that vscode#298676 builds an 829-line generic 'foundation' just to ship one folding preference, and that the maintainer made the same YAGNI case.",
+      "metrics": [
+        { "label": "Lines", "value": "+829" },
+        { "label": "Real callers", "value": "1" },
+        { "label": "Providers using it", "value": "0" }
+      ],
+      "links": [
+        { "type": "pr", "label": "vscode #298676 (analyzed)", "url": "https://github.com/microsoft/vscode/pull/298676" },
+        { "type": "repo", "label": "microsoft/vscode", "url": "https://github.com/microsoft/vscode" },
+        { "type": "report", "label": "Week 04 full report", "url": "/reports/week-04.html" }
+      ],
       "reflection": "Analyzed vscode#298676, a PR that builds a generic 'FoldingPreferences foundation' (a public settings API, a FoldingPreferencesCapabilities interface, an abstract generic CompatibilityAdjuster<P> base class, and a compatibility layer) just to deliver ONE folding behavior: include the closing brace line. The over-engineering is verifiable, not opinion: the generic adjuster base has exactly one subclass, every provider ships an empty {} capabilities object so the fancy interface is unused, the code comments 'if multiple adjusters are active' when there's only one, and it even changes the public monaco.d.ts API, 829 lines for a single preference. The clincher is that the folding owner (aeschli) pushed back with the exact YAGNI argument: 'there's no language-agnostic way of describing what you want... the right answer is specific settings per folding provider.' The lesson that stuck: the test for premature abstraction isn't 'is this clean?', it's 'where's the second real caller?', with one preference, one adjuster, and zero providers declaring native support, there isn't one, so the framework is speculative. The simpler version is a single setting on the one provider that needs it; the abstraction only earns its keep once two real preferences share a genuine language-agnostic meaning.",
       "commands": [
         "gh pr view 298676 --repo microsoft/vscode --json title,additions,deletions,changedFiles,body   # +829/-242, 9 files, 1 preference",
@@ -62,6 +95,16 @@
       "type": "reading",
       "title": "Read Merged PRs in One Project",
       "status": "done",
+      "why": "Read four merged rust-lang/rust PRs to learn how its review culture turns judgment into explicit bot commands and settles disagreement with evidence.",
+      "metrics": [
+        { "label": "PRs read", "value": "4" },
+        { "label": "Project", "value": "rust-lang/rust" }
+      ],
+      "links": [
+        { "type": "pr", "label": "rust #158137 (clipboard, the key thread)", "url": "https://github.com/rust-lang/rust/pull/158137" },
+        { "type": "repo", "label": "rust-lang/rust", "url": "https://github.com/rust-lang/rust" },
+        { "type": "report", "label": "Week 04 full report", "url": "/reports/week-04.html" }
+      ],
       "reflection": "Read the discussion on four recently-merged rust-lang/rust PRs (#158042, #158026, #158137, #158122) to learn its review norms. The biggest takeaway is how much of the culture is ritualized into explicit commands and bots so humans only spend attention on judgment: approval isn't a vibe, it's '@bors r+' and nothing merges except through bors' merge queue (the 'not rocket science rule' that keeps main always-green. Performance isn't argued, it's measured, perf-sensitive PRs get '@bors try @rust-timer queue' + an 'S-waiting-on-perf' label before anyone approves. The most instructive human moment was a disagreement on the clipboard PR (#158137): a reviewer doubted the author's 'I couldn't reproduce' claim, but instead of insisting, went and tested across browsers on BrowserStack and publicly updated his position ('I take it back, I wasn't testing the right thing'), disagreement resolved by evidence, not authority, with light banter ('Dark magic.') keeping it human. I also saw a reviewer decline gracefully ('I'm not familiar with this code, feel free to reassign'), admitting expertise limits is normalized, not a loss of face. What gets flagged: perf regressions, commit-message hygiene (a bot nags to move issue links out of commits), and unverified reproduction claims. What slides: style/formatting is delegated to tidy + bots so reviewers don't bikeshed it; reviewers approve when a change clearly improves code health even with open follow-up questions.",
       "commands": [
         "gh search prs --repo rust-lang/rust --merged --json number,title,commentsCount   # find PRs with real discussion",
@@ -78,6 +121,13 @@
       "type": "soft-skill",
       "title": "Giving & Receiving Feedback Without Ego",
       "status": "done",
+      "why": "Internalize separating self from work: lead with the code, tag severity so a nit doesn't read as a blocker, and be the first to say 'you're right'.",
+      "metrics": [
+        { "label": "Soft skill", "value": "Low-ego" }
+      ],
+      "links": [
+        { "type": "report", "label": "Week 04 full report", "url": "/reports/week-04.html" }
+      ],
       "reflection": "The principle that landed hardest was separating self from work, and I felt it most on my own code: self-reviewing my 4,400-line 'Dev' PR meant reading my past self as a stranger and naming a payment bug I'd shipped, then walking back my own overstated first claim once I traced the code. As a reviewer the discipline was leading with the code not the person, tagging severity so a nit doesn't read as a blocker, and asking 'is there a reason X?' instead of asserting (verifying first killed three confident-but-wrong claims before they ever reached an author). As an author, low-ego meant respecting the reviewer's attention: on palmier-pro I opened an issue first, kept the PR tiny and test-backed, and offered to close it. Receiving feedback is the same muscle pointed inward, which Rust modeled when a reviewer who doubted the author tested on BrowserStack and reversed himself in public. My code is not me, and the fastest way to look good is to be the first to say 'you're right'.",
       "commands": [],
       "output": null,

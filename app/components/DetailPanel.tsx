@@ -2,9 +2,17 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
+import {
+  GitPullRequest, CircleDot, FolderGit2, FileText, BookOpen,
+  GitCommitHorizontal, ExternalLink, Terminal, ChevronRight, MessageSquareText,
+} from "lucide-react"
 import { CodeBlock } from "./ui/code-block"
 import { EdgeBlur } from "./ui/edge-blur"
 import { BorderBeamButton } from "./ui/border-beam-button"
+
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? ""
+// Internal links (e.g. /reports/week-05.html) need the base path; external URLs pass through.
+const resolveUrl = (url: string) => (url.startsWith("/") ? BASE + url : url)
 
 function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
   return (
@@ -43,8 +51,11 @@ function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
   )
 }
 
+type Metric = { label: string; value: string }
+type LinkItem = { type: string; label: string; url: string }
 type Task = {
   id: string; type: string; title: string; status: string
+  why?: string | null; metrics?: Metric[]; links?: LinkItem[]
   reflection: string | null; commands: string[]; output: string | null
   screenshot: string | null; pr: string | null; prs?: { label: string; url: string }[]
 }
@@ -64,6 +75,50 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
     <div style={{ fontSize: 9, letterSpacing: 2.5, textTransform: "uppercase", color: "#6e7681", marginBottom: 10, fontFamily: "monospace" }}>
       {children}
     </div>
+  )
+}
+
+const linkMeta: Record<string, { icon: typeof GitPullRequest; color: string; defaultLabel: string }> = {
+  pr:      { icon: GitPullRequest,       color: "#a371f7", defaultLabel: "Pull Request" },
+  review:  { icon: MessageSquareText,    color: "#58a6ff", defaultLabel: "Review" },
+  issue:   { icon: CircleDot,            color: "#3fb950", defaultLabel: "Issue" },
+  repo:    { icon: FolderGit2,           color: "#8b949e", defaultLabel: "Repository" },
+  report:  { icon: FileText,             color: "#00b4d8", defaultLabel: "Full report" },
+  commit:  { icon: GitCommitHorizontal,  color: "#ec6547", defaultLabel: "Commit" },
+  article: { icon: BookOpen,             color: "#f59e0b", defaultLabel: "Reference" },
+  doc:     { icon: BookOpen,             color: "#f59e0b", defaultLabel: "Docs" },
+}
+
+function MetricChip({ label, value }: { label: string; value: string }) {
+  return (
+    <span style={{ display: "inline-flex", alignItems: "baseline", gap: 7, padding: "6px 11px", background: "#111318", border: "1px solid #21262d", borderRadius: 9 }}>
+      <span style={{ fontFamily: "monospace", fontSize: 15, fontWeight: 700, color: "#e6edf3", lineHeight: 1 }}>{value}</span>
+      <span style={{ fontFamily: "monospace", fontSize: 9, letterSpacing: 1, textTransform: "uppercase", color: "#6e7681" }}>{label}</span>
+    </span>
+  )
+}
+
+function LinkRow({ link }: { link: LinkItem }) {
+  const meta = linkMeta[link.type] ?? linkMeta.repo
+  const Icon = meta.icon
+  const num = /\/(?:pull|issues)\/(\d+)/.exec(link.url)?.[1]
+  return (
+    <a
+      href={resolveUrl(link.url)} target="_blank" rel="noreferrer"
+      style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "10px 13px", background: "#111318", border: "1px solid #21262d", borderRadius: 9, textDecoration: "none", transition: "border-color .15s" }}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = meta.color)}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = "#21262d")}
+    >
+      <span style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
+        <Icon size={14} color={meta.color} style={{ flexShrink: 0 }} />
+        <span style={{ fontSize: 12.5, color: "#c9d1d9", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {link.label || meta.defaultLabel}
+        </span>
+      </span>
+      <span style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0, fontFamily: "monospace", fontSize: 11, color: meta.color }}>
+        {num ? `#${num}` : ""} <ExternalLink size={12} />
+      </span>
+    </a>
   )
 }
 
@@ -210,14 +265,27 @@ function WeekDetail({ week }: { week: Week }) {
 function TaskDetail({ task, week, onLightbox }: { task: Task; week: Week; onLightbox: (src: string) => void }) {
   const color = typeColor[task.type] ?? "#6e7681"
   const sc = statusColor[task.status] ?? "#6e7681"
+  const [showTerminal, setShowTerminal] = useState(false)
+
+  // Unified links: prefer the explicit links[], else fall back to legacy prs[]/pr.
+  const links: LinkItem[] = task.links?.length
+    ? task.links
+    : task.prs?.length
+      ? task.prs.map(p => ({ type: "pr", label: p.label, url: p.url }))
+      : task.pr
+        ? [{ type: "pr", label: "Pull Request", url: task.pr }]
+        : []
+
+  const hasTerminal = task.commands.length > 0 || !!task.output
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 26 }}>
+      {/* Header */}
       <div>
         <div style={{ fontSize: 9, letterSpacing: 2.5, color, textTransform: "uppercase", marginBottom: 8, fontFamily: "monospace" }}>
           Week {String(week.id).padStart(2, "0")} · {task.type}
         </div>
-        <div style={{ fontSize: 22, fontWeight: 700, color: "#e6edf3", letterSpacing: -0.5 }}>
+        <div style={{ fontSize: 22, fontWeight: 700, color: "#e6edf3", letterSpacing: -0.5, lineHeight: 1.2 }}>
           {task.title}
         </div>
       </div>
@@ -227,20 +295,34 @@ function TaskDetail({ task, week, onLightbox }: { task: Task; week: Week; onLigh
         <span style={{ fontSize: 12, color: "#8b949e", textTransform: "capitalize" }}>{task.status.replace("-", " ")}</span>
       </div>
 
-      {task.commands.length > 0 && (
-        <div>
-          <SectionLabel>Commands</SectionLabel>
-          <CodeBlock code={task.commands.join("\n")} language="bash" />
+      {/* WHY — leads the panel */}
+      {task.why && (
+        <div style={{ borderLeft: `2px solid ${color}`, paddingLeft: 16 }}>
+          <p style={{ fontSize: 15, color: "#e6edf3", lineHeight: 1.7, margin: 0 }}>{task.why}</p>
         </div>
       )}
 
-      {task.output && (
+      {/* DATA — scannable metric chips */}
+      {task.metrics && task.metrics.length > 0 && (
         <div>
-          <SectionLabel>Output</SectionLabel>
-          <CodeBlock code={task.output} language="output" />
+          <SectionLabel>Data</SectionLabel>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {task.metrics.map(m => <MetricChip key={m.label} label={m.label} value={m.value} />)}
+          </div>
         </div>
       )}
 
+      {/* LINKS — typed (PR / issue / repo / commit / report) */}
+      {links.length > 0 && (
+        <div>
+          <SectionLabel>Links</SectionLabel>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {links.map(l => <LinkRow key={l.url} link={l} />)}
+          </div>
+        </div>
+      )}
+
+      {/* REFLECTION */}
       {task.reflection && (
         <div>
           <SectionLabel>Reflection</SectionLabel>
@@ -248,11 +330,11 @@ function TaskDetail({ task, week, onLightbox }: { task: Task; week: Week; onLigh
           <div style={{ borderLeft: `2px solid ${color}`, paddingLeft: 16 }}>
             <div
               style={{
-                maxHeight: 160,
+                maxHeight: 200,
                 overflowY: "auto",
                 scrollbarWidth: "none",
-                maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 82%, transparent 100%)",
-                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 82%, transparent 100%)",
+                maskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 86%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 86%, transparent 100%)",
                 paddingTop: 12,
                 paddingBottom: 12,
               }}
@@ -265,6 +347,38 @@ function TaskDetail({ task, week, onLightbox }: { task: Task; week: Week; onLigh
         </div>
       )}
 
+      {/* TERMINAL — supporting evidence, collapsed by default */}
+      {hasTerminal && (
+        <div>
+          <button
+            onClick={() => setShowTerminal(v => !v)}
+            style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", background: "none", border: "none", cursor: "pointer", padding: 0, marginBottom: showTerminal ? 12 : 0 }}
+          >
+            <ChevronRight size={13} color="#6e7681" style={{ transform: showTerminal ? "rotate(90deg)" : "none", transition: "transform .2s" }} />
+            <Terminal size={12} color="#6e7681" />
+            <span style={{ fontSize: 9, letterSpacing: 2.5, textTransform: "uppercase", color: "#6e7681", fontFamily: "monospace" }}>Terminal</span>
+            <span style={{ fontSize: 10, color: "#3d444d", fontFamily: "monospace", marginLeft: "auto" }}>
+              {task.commands.length > 0 ? `${task.commands.length} cmd${task.commands.length > 1 ? "s" : ""}` : "output"}
+            </span>
+          </button>
+          <AnimatePresence initial={false}>
+            {showTerminal && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                style={{ overflow: "hidden", display: "flex", flexDirection: "column", gap: 12 }}
+              >
+                {task.commands.length > 0 && <CodeBlock code={task.commands.join("\n")} language="bash" />}
+                {task.output && <CodeBlock code={task.output} language="output" />}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+
+      {/* SCREENSHOT */}
       {task.screenshot && (
         <div>
           <SectionLabel>Screenshot</SectionLabel>
@@ -276,32 +390,6 @@ function TaskDetail({ task, week, onLightbox }: { task: Task; week: Week; onLigh
           />
         </div>
       )}
-
-      {task.prs && task.prs.length > 0 ? (
-        <div>
-          <SectionLabel>Pull Requests</SectionLabel>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {task.prs.map(({ label, url }) => (
-              <a key={url} href={url} target="_blank" rel="noreferrer"
-                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", background: "#111318", border: "1px solid #21262d", borderRadius: 8, textDecoration: "none", transition: "border-color 0.15s" }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = color)}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = "#21262d")}
-              >
-                <span style={{ fontSize: 12, color: "#c9d1d9", fontWeight: 600 }}>{label}</span>
-                <span style={{ fontSize: 11, color, fontFamily: "monospace" }}>#{url.split("/").pop()} →</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      ) : task.pr ? (
-        <div>
-          <SectionLabel>Pull Request</SectionLabel>
-          <a href={task.pr} target="_blank" rel="noreferrer"
-            style={{ fontSize: 13, color, textDecoration: "none", fontFamily: "monospace" }}>
-            {task.pr} →
-          </a>
-        </div>
-      ) : null}
 
       {task.status === "pending" && (
         <div style={{ borderLeft: "2px solid #21262d", paddingLeft: 16, fontSize: 13, color: "#6e7681", fontStyle: "italic" }}>

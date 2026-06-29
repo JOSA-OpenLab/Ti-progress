@@ -10,6 +10,17 @@
       "type": "triage",
       "title": "Reproduce One Issue",
       "status": "done",
+      "why": "Reproduce httpie#1640 and prove that 'can't reproduce on a clean install' is itself a finding: the bug lived in one transitive dependency version.",
+      "metrics": [
+        { "label": "Issue", "value": "#1640" },
+        { "label": "Trigger", "value": "multidict 6.5.0" },
+        { "label": "Boundary", "value": "1 header" }
+      ],
+      "links": [
+        { "type": "issue", "label": "Reproduction write-up", "url": "https://github.com/httpie/cli/issues/1640" },
+        { "type": "repo", "label": "httpie/cli", "url": "https://github.com/httpie/cli" },
+        { "type": "report", "label": "Week 03 full report", "url": "/reports/week-03.html" }
+      ],
       "reflection": "Reproduced httpie/cli#1640 (JSON Content-Type dropped when a single custom header is present). A fresh install didn't reproduce it, which was the clue: the bug lives in a dependency, not httpie. By pinning multidict==6.5.0 (a yanked version) in an isolated uv venv and changing nothing else, I isolated the exact trigger and confirmed the root cause. The boundary turned out to be precise: 0, 2, and 3 headers all keep Content-Type; only a single header drops it. I also verified it's genuinely sent that way — pie.dev echoed back no Content-Type — so it wasn't just a display quirk. Lesson: 'can't reproduce on a fresh install' is itself a finding; the difference between my machine and the reporter's was a single transitive dependency version.",
       "commands": [
         "uv venv httpie-repro && source httpie-repro/bin/activate && uv pip install httpie",
@@ -27,6 +38,17 @@
       "type": "mcve",
       "title": "Build One MCVE",
       "status": "done",
+      "why": "Reduce the whole httpie reproduction to a 3-line, network-free MCVE that fails on exactly 5 keys, so the bug is undeniable and CI-checkable.",
+      "metrics": [
+        { "label": "Repro size", "value": "3 lines" },
+        { "label": "Min trigger", "value": "5 keys" },
+        { "label": "Network", "value": "none" }
+      ],
+      "links": [
+        { "type": "issue", "label": "MCVE posted on #1640", "url": "https://github.com/httpie/cli/issues/1640#issuecomment-4628686732" },
+        { "type": "repo", "label": "aio-libs/multidict", "url": "https://github.com/aio-libs/multidict" },
+        { "type": "report", "label": "Week 03 full report", "url": "/reports/week-03.html" }
+      ],
       "reflection": "Reduced the sprawling #1640 reproduction (a uv venv + httpie install + a network call to pie.dev) down to a 3-line pure-Python MCVE that needs only multidict and no network. The reduction process was mechanical: trace httpie's apply_missing_repeated_headers() to find it does popone() then update(), reproduce that directly on a CIMultiDict, then minimize the input. The minimization surprised me — exactly 5 keys triggers it; 4 and 6 don't, because it's a hash-table internals bug, not a logic bug. I made it self-verifying with an assert + exit code so it doubles as a bisect/CI probe. Lesson: a good MCVE removes everything that isn't the bug; here that meant deleting httpie and the network entirely and landing on the multidict operation that actually fails.",
       "commands": [
         "# Found the failing op in httpie: client.py -> apply_missing_repeated_headers() does popone() then update()",
@@ -42,6 +64,17 @@
       "type": "bisect",
       "title": "Run a Bisect",
       "status": "done",
+      "why": "Bisect the exact commit behind the bug, discovering first that it only reproduces in multidict's compiled C extension, not the pure-Python fallback.",
+      "metrics": [
+        { "label": "Window", "value": "7 commits" },
+        { "label": "Steps", "value": "3" },
+        { "label": "Culprit", "value": "9d3c53f" }
+      ],
+      "links": [
+        { "type": "commit", "label": "First bad commit: hash table swap", "url": "https://github.com/aio-libs/multidict/commit/9d3c53f28c4c18b1a032af45d013a0bbe12821b9" },
+        { "type": "repo", "label": "aio-libs/multidict", "url": "https://github.com/aio-libs/multidict" },
+        { "type": "report", "label": "Week 03 full report", "url": "/reports/week-03.html" }
+      ],
       "reflection": "I bisected the exact commit behind the same bug as Tasks 1 and 2, feeding the bisect my 5-key MCVE as the good/bad probe. Two things made it more than a mechanical run. First, the bug only lives in multidict's compiled C extension: with MULTIDICT_NO_EXTENSIONS=1 (the pure-Python fallback) every version is GOOD, so there was no Python line to bisect — each step had to rebuild the extension with `build_ext --inplace`, and my `git bisect run` script returns 125 to skip any commit that won't compile. Second, the version window was unusually sharp: 6.4.4 GOOD, 6.5.0 BAD, 6.5.1 GOOD — the regression existed in exactly one release, which is why 6.5.0 was yanked from PyPI. Bisecting v6.4.4..v6.5.0 (7 commits) took just 3 automated builds — textbook O(log n) — and landed on 9d3c53f, 'Replace pair_list with hash table (#1128)'. That commit swapped multidict's internal storage from a linked pair-list to a CPython-dict-style hash table for O(1) lookups; the new tombstone/index bookkeeping mishandled delete-then-reinsert, dropping a sibling key. Lesson: 'which version broke it' and 'which commit broke it' are different questions — bisect answers the second mechanically, but only after you have a reproducer that emits a clean good/bad signal, and here that first meant discovering the bug was in C, not Python.",
       "commands": [
         "git clone https://github.com/aio-libs/multidict.git && cd multidict",
@@ -59,6 +92,16 @@
       "type": "triage",
       "title": "Triage an Issue",
       "status": "done",
+      "why": "Triage a crash in create-t3-app against the published artifact (not repo HEAD), then post a polite correction when the original analysis was off.",
+      "metrics": [
+        { "label": "Issue", "value": "#2215" },
+        { "label": "Version", "value": "7.40.0" }
+      ],
+      "links": [
+        { "type": "issue", "label": "Triage comment on #2215", "url": "https://github.com/t3-oss/create-t3-app/issues/2215#issuecomment-4628828443" },
+        { "type": "repo", "label": "t3-oss/create-t3-app", "url": "https://github.com/t3-oss/create-t3-app" },
+        { "type": "report", "label": "Week 03 full report", "url": "/reports/week-03.html" }
+      ],
       "reflection": "Triaged an unconfirmed bug in a different repo from #1640 for breadth: t3-oss/create-t3-app#2215, where the --import-alias flag crashes with a TypeError in CI mode. I confirmed it on the current npm latest (create-t3-app@7.40.0) rather than from the source tree, which mattered: the released build registers the flag as a plain boolean (.option('-i, --import-alias', '...', '~/') with NO [alias] value placeholder), so Commander discards the passed '@/' and sets importAlias to true; the guard `if (importAlias !== '~/')` then passes and setImportAlias() calls .replace() on a boolean. I also issued a polite correction: the original analysis assumed an optional [alias] resolving to true, but in the released build there is no value placeholder at all — the flag never accepts a value. The current main source does use '-i, --import-alias [alias]', which wouldn't crash, but that isn't in 7.40.0. Lesson: triage the artifact the reporter actually ran (the published dist), not the repo's HEAD — the two had diverged, and reading HEAD alone would have produced a wrong 'cannot reproduce'.",
       "commands": [
         "npx create-t3-app@7.40.0 my-app --CI --tailwind --appRouter --eslint --import-alias \"@/\"   # confirmed crash",
@@ -74,6 +117,13 @@
       "type": "soft-skill",
       "title": "Active Listening",
       "status": "done",
+      "why": "Practice active listening in issue threads: restate the reporter's problem in their own terms before proposing a cause.",
+      "metrics": [
+        { "label": "Soft skill", "value": "Listening" }
+      ],
+      "links": [
+        { "type": "report", "label": "Week 03 full report", "url": "/reports/week-03.html" }
+      ],
       "reflection": null,
       "commands": [],
       "output": null,

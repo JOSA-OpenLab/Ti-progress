@@ -10,6 +10,18 @@
       "type": "pr",
       "title": "Two Well-Formed PRs",
       "status": "done",
+      "why": "Land two maintainer-friendly PRs (Arabic tldr translations) that are small, single-purpose, and answer What / Why / How / Test before anyone has to ask.",
+      "metrics": [
+        { "label": "PRs", "value": "2" },
+        { "label": "Status", "value": "Merged" },
+        { "label": "Pages", "value": "echo, cp" }
+      ],
+      "links": [
+        { "type": "pr", "label": "docs(ar/echo): Arabic translation", "url": "https://github.com/tldr-pages/tldr/pull/22564" },
+        { "type": "pr", "label": "docs(ar/cp): Arabic translation", "url": "https://github.com/tldr-pages/tldr/pull/22565" },
+        { "type": "repo", "label": "tldr-pages/tldr", "url": "https://github.com/tldr-pages/tldr" },
+        { "type": "report", "label": "Week 02 full report", "url": "/reports/week-02.html" }
+      ],
       "reflection": "Contributed two Arabic translations to tldr-pages/tldr — echo.md and cp.md — both submitted as separate PRs. Before writing anything, I verified the files didn't exist in pages.ar/common/ using the GitHub API directly (404 check), not just a search. I also read CONTRIBUTING.md and the style guide, compared against merged Arabic pages like git.md and docker.md, and used the official translation templates for phrases like انظر أيضًا. The main lesson: a maintainer-friendly PR is small, one logical change, and has a description that answers What/Why/How/Test before anyone has to ask. Keeping technical terms in English (terminal, headers, proxy) instead of forcing formal Arabic translations made the output feel natural rather than machine-generated.",
       "commands": [],
       "output": null,
@@ -25,6 +37,15 @@
       "type": "review",
       "title": "Practice Review",
       "status": "done",
+      "why": "Give a structured review on a real PR, separating what is required to fix from what is a preference using Conventional Comments labels.",
+      "metrics": [
+        { "label": "Issues found", "value": "2" },
+        { "label": "Repo", "value": "tldr" }
+      ],
+      "links": [
+        { "type": "review", "label": "Review: foremost command page", "url": "https://github.com/tldr-pages/tldr/pull/22625#pullrequestreview-4391543152" },
+        { "type": "report", "label": "Week 02 full report", "url": "/reports/week-02.html" }
+      ],
       "reflection": "Reviewed PR #22625 in tldr-pages/tldr — a new page for the foremost command. Reading the diff carefully, I found two issues: a hardcoded value that should have been a placeholder, and a description that contradicted its own generic placeholder. The main lesson: good review comments separate what is required to fix from what is a preference. Using Conventional Comments labels (nitpick, suggestion) made it clear which comment was blocking and which was optional — so the author doesn't have to guess.",
       "commands": [],
       "output": "nitpick: `-s 100` → should be `-s {{100}}` per style guide\nsuggestion: description says \"JPEG files\" but placeholder `{{jpg}}` is generic — rephrase to match",
@@ -36,6 +57,13 @@
       "type": "soft-skill",
       "title": "Asking Good Questions",
       "status": "done",
+      "why": "Learn to ask questions that respect a maintainer's time: show what you already tried, narrow the unknown, and make it easy to answer.",
+      "metrics": [
+        { "label": "Soft skill", "value": "Q&A" }
+      ],
+      "links": [
+        { "type": "report", "label": "Week 02 full report", "url": "/reports/week-02.html" }
+      ],
       "reflection": null,
       "commands": [],
       "output": null,

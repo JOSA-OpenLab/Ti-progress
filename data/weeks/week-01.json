@@ -10,6 +10,16 @@
       "type": "archaeology",
       "title": "Git Archaeology",
       "status": "done",
+      "why": "Prove to myself that a Git commit is a pointer, not a snapshot, by walking the commit → tree → blob object chain by hand.",
+      "metrics": [
+        { "label": "Object types", "value": "3" },
+        { "label": "Commands", "value": "4" },
+        { "label": "Repo", "value": "Bayn" }
+      ],
+      "links": [
+        { "type": "repo", "label": "Ti-03/Bayn", "url": "https://github.com/Ti-03/Bayn" },
+        { "type": "report", "label": "Week 01 full report", "url": "/reports/week-01.html" }
+      ],
       "reflection": "Running git cat-file -p HEAD on my Bayn repo revealed that a commit is not a snapshot of files — it's a pointer. It stores a tree hash, a parent commit hash, and metadata like author and message. When I walked into the tree with git cat-file -p HEAD^{tree}, I could see every file and folder as a list of (type, name, hash) entries. Finally, reading the blob for notes.txt showed just the raw bytes with no metadata. Git builds up a complete picture by chaining three objects — commit → tree → blob — not by copying files.",
       "commands": [
         "git rev-parse HEAD",
@@ -26,6 +36,15 @@
       "type": "reflog",
       "title": "Reflog Rescue Drill",
       "status": "done",
+      "why": "Delete five commits with reset --hard, then prove nothing committed is ever truly lost by recovering them from the reflog.",
+      "metrics": [
+        { "label": "Commits dropped", "value": "5" },
+        { "label": "Recovered", "value": "100%" }
+      ],
+      "links": [
+        { "type": "repo", "label": "Ti-03/Bayn", "url": "https://github.com/Ti-03/Bayn" },
+        { "type": "report", "label": "Week 01 full report", "url": "/reports/week-01.html" }
+      ],
       "reflection": "Running git reset --hard HEAD~5 made it look like 5 commits were permanently gone — the log only showed e4d40bd and below. But git reflog revealed the full history of where HEAD has been, not just the commit chain. The lost commit 969e531 was sitting right there at HEAD@{1}. One reset --hard to that hash and everything was back, identical to before. The key insight: git reset doesn't delete objects, it just moves a pointer. The reflog tracks every pointer move, so nothing committed is ever truly lost.",
       "commands": [
         "git log --oneline -8",
@@ -43,6 +62,16 @@
       "type": "rebase",
       "title": "Conventional Commits Refactor",
       "status": "done",
+      "why": "Rewrite three messy commit messages deep in history into Conventional Commits with interactive rebase, then ship the clean history as a PR.",
+      "metrics": [
+        { "label": "Commits reworded", "value": "3" },
+        { "label": "Rebase depth", "value": "HEAD~8" }
+      ],
+      "links": [
+        { "type": "pr", "label": "Conventional Commits refactor", "url": "https://github.com/Ti-03/Bayn/pull/1" },
+        { "type": "repo", "label": "Ti-03/Bayn", "url": "https://github.com/Ti-03/Bayn" },
+        { "type": "report", "label": "Week 01 full report", "url": "/reports/week-01.html" }
+      ],
       "reflection": "Used git rebase -i HEAD~8 to reach three messy commits deep in history and reword them. The key lesson: rebase -i doesn't just let you squash — it lets you rewrite any commit message in a range by marking it as reword. Git replays each commit one by one and pauses at each reword to let you change the message. The result is a clean, readable history that any maintainer can parse at a glance. force-with-lease is safer than force-push because it refuses to overwrite if someone else pushed to the branch since you last fetched.",
       "commands": [
         "git checkout -b feature/clean-history",
@@ -58,6 +87,13 @@
       "type": "soft-skill",
       "title": "BLUF Writing",
       "status": "done",
+      "why": "Practice BLUF (bottom line up front) writing so every async message leads with the conclusion or the ask, the way open-source communication demands.",
+      "metrics": [
+        { "label": "Rules", "value": "3" }
+      ],
+      "links": [
+        { "type": "report", "label": "Week 01 full report", "url": "/reports/week-01.html" }
+      ],
       "reflection": "Open source is asynchronous. The discipline: lead every message with the conclusion or the ask, then provide context. Three rules: subject line is a contract, show your work not just the conclusion, explicit beats clever.",
       "commands": [],
       "output": null,
