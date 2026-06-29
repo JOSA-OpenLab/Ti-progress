@@ -111,7 +111,7 @@
     </div>
     <div class="badge amber">
       <span class="badge-label">Status</span>
-      <span class="badge-value">In Progress</span>
+      <span class="badge-value" style="background: var(--green);">Completed</span>
     </div>
   </div>
 
@@ -174,21 +174,30 @@
     <div class="section-header">
       <span class="section-number">// 01</span>
       <h2>Add Tests Where There Are None</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> Scout for untested code in a GitHub repo. Write a test file (or extend an existing one) with well-structured <strong>Arrange / Act / Assert</strong> tests, then submit a PR.
+      <strong>Repo:</strong> <a href="https://github.com/Ti-03/MacDirStat" target="_blank">Ti-03/MacDirStat</a> (my public macOS Swift app) &nbsp;&middot;&nbsp; <strong>PR:</strong> <a href="https://github.com/Ti-03/MacDirStat/pull/8" target="_blank">#8</a>
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
-      <ul class="checklist">
-        <li><span class="todo">todo</span>Pick a repo with thin coverage and identify a pure-ish function or module that has no tests.</li>
-        <li><span class="todo">todo</span>Write A/A/A tests covering the happy path plus at least one edge case.</li>
-        <li><span class="todo">todo</span>Open a PR and link it here.</li>
-      </ul>
-      <p class="placeholder" style="margin-top:14px;">Reflection, commands, and PR link to be filled in once the work is done.</p>
+      <div class="block-title">What I did</div>
+      <div class="reflection">
+        The treemap had been redesigned from a rectangular layout into a radial <strong>sunburst</strong>, so six tests still asserted on the removed <code>TreemapCell.rect</code> API and the suite no longer compiled. I rewrote all <strong>12</strong> tests against the radial model (<code>startAngle</code> / <code>endAngle</code> / <code>innerRadius</code> / <code>outerRadius</code>), preserving each test's original intent (e.g. "larger items get larger cells" became "larger items get a larger angular span"). I also fixed a <code>ByteFormatter</code> test that assumed binary (1024³) units when the formatter defaults to decimal SI. Every test follows <strong>Arrange / Act / Assert</strong> and is named for the behavior, not the function.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Verification</div>
+      <div class="code-block">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">swift test</span></div>
+        <pre><span class="cmd">$ swift test</span>
+<span class="out">Test Suite 'TreemapLayoutTests' passed.</span>
+<span class="out">  Executed 12 tests, with 0 failures in 0.001s</span>
+<span class="out">Test Suite 'All tests' passed at 2026-06-29 19:34:36.</span>
+<span class="out">  Executed </span><span class="hsh">20 tests, with 0 failures</span><span class="out"> (0 unexpected) in 0.008s</span></pre>
+      </div>
     </div>
   </div>
 
@@ -197,15 +206,15 @@
     <div class="section-header">
       <span class="section-number">// 02</span>
       <h2>Build a Real CI Workflow</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> Add a complete <code>.github/workflows/ci.yml</code> to one of my repos with lint, test, a matrix over 2+ versions, dependency caching, and a status badge in the README.
+      <strong>Repo:</strong> <a href="https://github.com/Ti-03/MacDirStat" target="_blank">Ti-03/MacDirStat</a> &nbsp;&middot;&nbsp; <strong>PR:</strong> <a href="https://github.com/Ti-03/MacDirStat/pull/8" target="_blank">#8</a> &nbsp;&middot;&nbsp; matrix &middot; caching &middot; status badge.
     </div>
 
     <div class="block">
-      <div class="block-title">Reference Shape</div>
+      <div class="block-title">The workflow I shipped</div>
       <div class="code-block">
         <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">.github/workflows/ci.yml</span></div>
         <pre><span class="key">name</span>: CI
@@ -213,26 +222,39 @@
   <span class="key">push</span>: { <span class="key">branches</span>: [main] }
   <span class="key">pull_request</span>:
 <span class="key">jobs</span>:
-  <span class="key">test</span>:
+  <span class="key">build-test</span>:
     <span class="key">runs-on</span>: <span class="str">${{ matrix.os }}</span>
     <span class="key">strategy</span>:
       <span class="key">fail-fast</span>: false
       <span class="key">matrix</span>:
-        <span class="key">os</span>: [ubuntu-latest, macos-latest]
-        <span class="key">node</span>: [20, 22]
+        <span class="key">os</span>: [macos-15, macos-26]   <span class="cm"># Xcode 16 + Xcode 26</span>
     <span class="key">steps</span>:
       - <span class="key">uses</span>: actions/checkout@v4
-      - <span class="key">uses</span>: actions/setup-node@v4
-        <span class="key">with</span>: { <span class="key">node-version</span>: <span class="str">${{ matrix.node }}</span>, <span class="key">cache</span>: npm }
-      - <span class="key">run</span>: npm ci
-      - <span class="key">run</span>: npm run lint
-      - <span class="key">run</span>: npm test</pre>
+      - <span class="key">uses</span>: actions/cache@v4   <span class="cm"># SwiftPM .build + caches</span>
+        <span class="key">with</span>: { <span class="key">key</span>: <span class="str">${{ matrix.os }}-spm-${{ hashFiles('Package.resolved') }}</span> }
+      - <span class="key">run</span>: swift build -v   <span class="cm"># static-analysis gate (StrictConcurrency)</span>
+      - <span class="key">run</span>: swift test</pre>
       </div>
-      <ul class="checklist" style="margin-top:16px;">
-        <li><span class="todo">todo</span>Pick the target repo and wire in lint + test scripts.</li>
-        <li><span class="todo">todo</span>Add the matrix + <code>cache: npm</code>, then add the status badge to the README.</li>
-      </ul>
-      <p class="placeholder" style="margin-top:14px;">Final workflow, badge, and reflection to be filled in once it's green on a real repo.</p>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Notes</div>
+      <div class="reflection">
+        A matrixed <code>build-test</code> job across <strong>macos-15</strong> (Xcode 16 / Swift 6.1) and <strong>macos-26</strong> (Xcode 26 / Swift 6.2, the real Liquid Glass shipping toolchain), on every push to <code>main</code> and every PR. It caches SwiftPM (keyed on <code>Package.resolved</code>), runs <code>swift build -v</code> as the static-analysis gate (Swift + <code>StrictConcurrency</code> is the Testing Trophy's static base), then <code>swift test</code>. No Linux or separate lint job on purpose: a <strong>macOS-only</strong> SwiftUI app can't build on Linux runners.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The matrix earned its keep</div>
+      <div class="reflection">
+        The first run was <strong style="color: var(--red);">red</strong> despite a clean local build, a textbook "works on my machine" bug. <code>GlassCompat</code> calls macOS 26 Liquid Glass APIs (<code>glassEffect</code>) and <code>ContentView</code> uses macOS 15 <code>MeshGradient</code>, both guarded only by a <em>runtime</em> <code>#available</code>, which does nothing for <em>compilation</em>: the symbols simply don't exist in older SDKs. My Mac has the macOS 26 SDK so it compiled; GitHub's older runners didn't. <strong>Fix:</strong> a compile-time <code>#if compiler(&gt;=6.2)</code> guard around the glass APIs, and dropping <code>macos-14</code> (whose SDK lacks both symbols). Now green on both cells.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">gh pr checks 8</span></div>
+        <pre><span class="cmd">$ gh pr checks 8</span>
+<span class="out">Build &amp; Test (macos-15)   </span><span class="hsh">pass</span><span class="out">   26s</span>
+<span class="out">Build &amp; Test (macos-26)   </span><span class="hsh">pass</span><span class="out">   57s</span></pre>
+      </div>
     </div>
   </div>
 
@@ -241,20 +263,18 @@
     <div class="section-header">
       <span class="section-number">// 03</span>
       <h2>Run It Locally with act</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> Reproduce the workflow locally with <a href="https://github.com/nektos/act" target="_blank">act</a> before pushing, and document any differences from the hosted runners in the journal.
+      <strong>The documented difference:</strong> for a macOS app, <a href="https://github.com/nektos/act" target="_blank">act</a> cannot reproduce the workflow at all, and that limitation is the finding worth recording.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
-      <ul class="checklist">
-        <li><span class="todo">todo</span>Install <code>act</code> and run the <code>test</code> job locally (<code>act -j test</code>).</li>
-        <li><span class="todo">todo</span>Note where local diverges from hosted (Windows runners unsupported, action quirks, secrets via <code>--secret-file</code>).</li>
-      </ul>
-      <p class="placeholder" style="margin-top:14px;">Local run output and the list of differences to be filled in.</p>
+      <div class="block-title">Why act can't run this workflow</div>
+      <div class="reflection">
+        <code>act</code> runs GitHub Actions in <strong>Linux Docker containers</strong>. A <code>runs-on: macos-14</code> job has no equivalent: there is no macOS container image (Apple licensing forbids macOS in Docker), so <code>act -j build-test</code> only offers Linux base images, which can't build a macOS SwiftUI + Sparkle app. <strong>Conclusion:</strong> for a macOS app the local-<code>act</code> loop is unavailable, verification is <code>swift build</code> / <code>swift test</code> on a real Mac (done, 20/20 pass) plus watching GitHub Actions on push. A Node/Linux repo is the right target to actually exercise <code>act</code>. Full write-up in <code>docs/ci-journal.md</code>.
+      </div>
     </div>
   </div>
 
@@ -263,7 +283,7 @@
     <div class="section-header">
       <span class="section-number">// 04</span>
       <h2>Soft Skill, Time Management &amp; Deep Work</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
@@ -272,7 +292,9 @@
 
     <div class="block">
       <div class="block-title">Reflection</div>
-      <p class="placeholder">To be written at the end of the week.</p>
+      <div class="reflection">
+        Resurrecting a stale test suite is exactly the work that punishes fragmentation: tracking the <code>Sparkle</code> / <code>Package.swift</code> gap, the radial-redesign test breakage, and the <code>ByteFormatter</code> unit bug needed sustained attention, not Slack-interrupted minutes. I time-boxed the debugging, worked one repo at a time, and batched the changes into three logical commits (tests, CI, docs) instead of committing reactively.
+      </div>
     </div>
   </div>
 
@@ -286,15 +308,24 @@
     <div class="journal-grid">
       <div class="journal-block">
         <h3>What I learned</h3>
-        <ul><li class="placeholder">To be filled in.</li></ul>
+        <ul>
+          <li>A green-looking suite rots silently: a rect-to-radial refactor left 6 tests asserting on a deleted API and nothing flagged it until CI forced a compile.</li>
+          <li>SPM and the Xcode project are separate dependency graphs, <code>import Sparkle</code> built in Xcode but broke <code>swift build</code>.</li>
+          <li>The Swift compiler with StrictConcurrency is a real static-analysis gate, it stands in for lint on a macOS-only project.</li>
+        </ul>
       </div>
       <div class="journal-block">
         <h3>What was hardest</h3>
-        <ul><li class="placeholder">To be filled in.</li></ul>
+        <ul>
+          <li>Accepting that act fundamentally can't run a macOS job, the task became documenting a limitation rather than a local run.</li>
+          <li>The ByteFormatter bug hid behind KB/MB cases that rounded to 1.0; only GB exposed decimal-vs-binary.</li>
+        </ul>
       </div>
       <div class="journal-block">
         <h3>What's blocking me</h3>
-        <ul><li class="placeholder">To be filled in.</li></ul>
+        <ul>
+          <li>Nothing blocking. Open follow-up: adopt swift-format with an agreed config (~3,700 existing violations make it its own task).</li>
+        </ul>
       </div>
     </div>
   </div>
