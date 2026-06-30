@@ -1,6 +1,26 @@
 {
-  "updated": "2026-06-29",
+  "updated": "2026-06-30",
   "items": [
+    {
+      "id": "palmier-224",
+      "kind": "pr",
+      "title": "Open projects with a corrupt media.json instead of failing",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-06-29",
+      "url": "https://github.com/palmier-io/palmier-pro/pull/224",
+      "summary": "A project package keeps the timeline (project.json) and media manifest (media.json) in separate files, so a corrupt media.json made readProjectPackage throw and blocked the whole open even though the timeline was intact. Degrade a bad manifest to 'media offline' (like a missing one) and preserve the original file so the next autosave cannot overwrite it. +9 tests; full 835-test suite green; verified live in the running app."
+    },
+    {
+      "id": "palmier-223",
+      "kind": "issue",
+      "title": "Corrupt media.json makes the entire project unopenable",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-06-29",
+      "url": "https://github.com/palmier-io/palmier-pro/issues/223",
+      "summary": "Reported the bug PR #224 fixes, issue-first per their CONTRIBUTING: a corrupt media.json throws fileReadCorruptFile and blocks opening the project, even though the timeline lives in a separate, intact file."
+    },
     {
       "id": "palmier-201",
       "kind": "pr",
