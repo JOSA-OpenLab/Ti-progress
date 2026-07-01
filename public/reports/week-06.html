@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JOSA OpenLab, Week 06</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1117;
+      --border:  #21262d;
+      --accent:  #00b4d8;
+      --red:     #ff7b72;
+      --green:   #3fb950;
+      --amber:   #f59e0b;
+      --text:    #e6edf3;
+      --muted:   #6e7681;
+      --sub:     #8b949e;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.75; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .hero { padding: 72px 40px 56px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 10px; }
+    .hero h1 span { color: var(--accent); }
+    .hero h2 { font-size: 15px; font-weight: 400; color: var(--muted); margin-bottom: 48px; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
+    .badge { display: flex; border-radius: 4px; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; }
+    .badge-label { background: #161b22; border: 1px solid var(--border); border-right: none; padding: 5px 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-radius: 4px 0 0 4px; }
+    .badge-value { padding: 5px 10px; font-weight: 600; color: #0d1117; border-radius: 0 4px 4px 0; }
+    .badge.blue  .badge-value { background: var(--accent); }
+    .badge.navy  .badge-value { background: #0077b6; }
+    .badge.amber .badge-value { background: var(--amber); }
+    .badge.gray  .badge-value { background: var(--muted); color: var(--text); }
+
+    .meta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+    .meta-item { text-align: center; padding: 0 28px; }
+    .meta-item + .meta-item { border-left: 1px solid var(--border); }
+    .meta-item .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .meta-item .value { font-size: 14px; font-weight: 500; color: var(--text); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 64px 24px 80px; }
+    .section { margin-bottom: 64px; }
+    .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .section-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; }
+    .section-header h2 { font-size: 18px; font-weight: 600; letter-spacing: -.3px; color: var(--text); }
+    .section-header .tag { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--amber); border: 1px solid var(--amber); border-radius: 4px; padding: 2px 8px; }
+
+    .block { border-left: 2px solid var(--border); padding: 4px 0 4px 24px; margin-bottom: 32px; }
+    .block-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 32px; font-size: 14px; color: var(--sub); }
+    .callout strong { color: var(--text); font-weight: 500; }
+
+    .code-block { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .code-bar { display: flex; align-items: center; gap: 6px; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #ffbd2e; } .dot.g { background: #28c840; }
+    .code-lang { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+    pre { padding: 18px 20px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; color: #c9d1d9; white-space: pre; scrollbar-width: thin; scrollbar-color: #2d333b transparent; }
+    .cm { color: var(--muted); } .cmd { color: #79c0ff; } .out { color: #c9d1d9; } .hsh { color: #f0883e; } .key { color: #ff7b72; } .str { color: #a5d6ff; }
+
+    .reflection { border-left: 2px solid var(--accent); padding: 6px 0 6px 24px; font-size: 15px; line-height: 1.85; color: var(--sub); }
+    .reflection strong { color: var(--text); font-weight: 500; }
+
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .checklist li { list-style: none; font-size: 13px; color: var(--sub); padding-left: 22px; position: relative; line-height: 1.6; }
+    .checklist li::before { content: '○'; position: absolute; left: 0; color: var(--muted); }
+    .checklist li strong { color: var(--text); font-weight: 500; }
+
+    .journal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 580px) { .journal-grid { grid-template-columns: 1fr; } }
+    .journal-block { border-left: 2px solid var(--border); padding: 4px 0 4px 20px; }
+    .journal-block h3 { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+    .journal-block ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .journal-block ul li { font-size: 13px; color: var(--sub); padding-left: 14px; position: relative; }
+    .journal-block ul li::before { content: '–'; position: absolute; left: 0; color: var(--muted); }
+
+    .placeholder { font-size: 13px; color: var(--muted); font-style: italic; }
+    .todo { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--amber); border: 1px dashed var(--amber); border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .3px; }
+    footer strong { color: var(--sub); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">OpenLab Apprenticeship 2026</div>
+  <h1>JOSA <span>OpenLab</span></h1>
+  <h2>Week 06: Documentation as Code &amp; Technical Writing</h2>
+
+  <div class="badges">
+    <div class="badge blue">
+      <span class="badge-label">Week</span>
+      <span class="badge-value">06 of 11</span>
+    </div>
+    <div class="badge navy">
+      <span class="badge-label">Phase</span>
+      <span class="badge-value">Foundations</span>
+    </div>
+    <div class="badge amber">
+      <span class="badge-label">Status</span>
+      <span class="badge-value">Pending</span>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="label">Apprentice</div>
+      <div class="value">Qutibah Ananzeh</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cohort</div>
+      <div class="value">OpenLab 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Deadline</div>
+      <div class="value">Jun 20, 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- THE STANDARD -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 00</span>
+      <h2>The Standard</h2>
+    </div>
+
+    <div class="callout">
+      <strong>The unifying principle:</strong> good docs are written from the <em>reader's</em> perspective ("you have a problem, here is what you do"), not the author's ("here is what I built"). For every page, decide which of the four Diátaxis kinds it is and ruthlessly cut anything that belongs to the other three.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Diátaxis, the four kinds of documentation</div>
+      <ul class="checklist">
+        <li><strong>Tutorial.</strong> "I want to learn." A teacher walking you through your first success.</li>
+        <li><strong>How-to guide.</strong> "I want to solve a specific problem." A recipe for one task.</li>
+        <li><strong>Reference.</strong> "I want to look something up." An encyclopedia of the API surface.</li>
+        <li><strong>Explanation.</strong> "I want to understand." An essay on the why behind a design.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Google style in 60 seconds</div>
+      <ul class="checklist">
+        <li><strong>Active voice.</strong> "The parser reads the file", not "The file is read by the parser".</li>
+        <li><strong>Present tense, second person.</strong> "Returns a list." "You can install with pip."</li>
+        <li><strong>Short sentences, sentence-case headings.</strong> Two <code>and</code>s or a <code>however</code> means break it up.</li>
+        <li><strong>No "simply", "just", "easy".</strong> They are either lies or condescending, the reader is stuck.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Docs as code</div>
+      <ul class="checklist">
+        <li><strong>PR workflow.</strong> Doc changes get reviewed like code.</li>
+        <li><strong>CI preview.</strong> Every PR builds the site with a preview URL (Cloudflare / Netlify / Vercel Pages).</li>
+        <li><strong>Linting.</strong> Style violations fail CI, so a prose linter (Vale) does the nagging, not a human.</li>
+        <li><strong>ADRs.</strong> Short, immutable Markdown files in <code>docs/adr/</code> that record why a decision was made.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Suggested Repositories</div>
+      <p><a href="https://github.com/mdn/content" target="_blank">mdn/content</a> &nbsp;&middot;&nbsp; <a href="https://github.com/github/docs" target="_blank">github/docs</a> &nbsp;&middot;&nbsp; <a href="https://github.com/tldr-pages/tldr" target="_blank">tldr-pages/tldr</a> &nbsp;&middot;&nbsp; any tool whose README is bad.</p>
+    </div>
+  </div>
+
+  <!-- TASK 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 01</span>
+      <h2>Ship One Real Docs PR</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Target:</strong> <a href="https://github.com/mdn/content" target="_blank">MDN</a>, <a href="https://github.com/github/docs" target="_blank">GitHub Docs</a>, <a href="https://github.com/tldr-pages/tldr" target="_blank">tldr-pages</a>, or a tool with a weak README.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Submit a PR to a major docs project. It can be small, but every line must follow a real style guide: <strong>active voice</strong>, <strong>present tense</strong>, <strong>second person</strong>, sentence-case headings, short sentences, and no <code>simply</code> / <code>just</code> / <code>easy</code>. If I restructure a README, follow Diátaxis order: intro, install, a quick tutorial, then links to deeper docs.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>One PR opened against a real docs repo, linked here.</li>
+        <li>Every change passes the style checklist (voice, tense, person, headings).</li>
+        <li>The diff is scoped and reviewable, no unrelated edits.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 02</span>
+      <h2>Set Up a Docs Site (MkDocs Material)</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Stack:</strong> <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank">MkDocs Material</a>, deployed via GitHub Pages or Cloudflare Pages, linked from the repo README.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Pick one of my repos and stand up a docs-as-code site. It must cover three of the four Diátaxis modes: at least one <strong>tutorial</strong>, one <strong>how-to guide</strong>, and <strong>reference</strong> docs, each kept ruthlessly separate. Deploy it (Pages) and link it from the README so it is discoverable.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">mkdocs.yml</span></div>
+        <pre><span class="key">site_name</span>: My Project
+<span class="key">theme</span>:
+  <span class="key">name</span>: material
+<span class="key">nav</span>:
+  - Home: index.md
+  - Tutorial: tutorial.md
+  - How-to: how-to.md
+  - Reference: reference.md</pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>Site builds with <code>mkdocs serve</code> and deploys to a public URL.</li>
+        <li>Contains a tutorial, a how-to, and reference docs (kept distinct).</li>
+        <li>README links to the live docs site.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 03</span>
+      <h2>Write My First ADR</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Format:</strong> Michael Nygard's template (<a href="https://adr.github.io" target="_blank">adr.github.io</a>), committed as <code>docs/adr/0001-....md</code>.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Capture the <em>why</em> behind a real technical decision in one of my projects (it can be a past one) as an Architecture Decision Record. ADRs are append-only: when a decision changes, I write a new one that supersedes the old, so the reasoning survives after the decision is forgotten.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">docs/adr/0001-example.md</span></div>
+        <pre><span class="hsh"># 0001. Title of the decision</span>
+
+<span class="key">## Status</span>
+Accepted, 2026-06-20.
+
+<span class="key">## Context</span>
+What forces are at play, what constraints we have.
+
+<span class="key">## Decision</span>
+What we will do.
+
+<span class="key">## Consequences</span>
++ What gets better.
+- What gets harder.</pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>One ADR committed under <code>docs/adr/</code>, numbered <code>0001</code>.</li>
+        <li>Uses Status / Context / Decision / Consequences.</li>
+        <li>Records the reasoning, not just the outcome.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 4 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 04</span>
+      <h2>Add Vale to a Repo + CI</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Tool:</strong> <a href="https://vale.sh" target="_blank">Vale</a> with the Microsoft style, wired into the same CI pipeline from Week 5.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Add Vale (a linter for prose, what ESLint is to code) to one repo, run it over the docs, and fix what it flags. Then add it to CI so style violations fail the build, not a reviewer's patience. The first run will be noisy, that is the point.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">vale docs/</span></div>
+        <pre><span class="cmd">$ vale docs/</span>
+<span class="out"> docs/install.md</span>
+<span class="out">  12:5  error    Did you really mean 'simply'?   Microsoft.Adverbs</span>
+<span class="out">  18:3  warning  Use active voice ...            Microsoft.Passive</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li><code>.vale.ini</code> configured with the Microsoft style; findings fixed.</li>
+        <li>A Vale step added to the repo's CI so it fails on violations.</li>
+        <li>CI green after the fixes land.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SOFT SKILL -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 05</span>
+      <h2>Soft Skill, Empathy for the Reader</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>The principle is theory of mind:</strong> the reader does not have the context I have. Every word that needs context they lack is a place they bounce.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Three exercises to practice this week</div>
+      <ul class="checklist">
+        <li><strong>Name the audience.</strong> Say who each page is for at the top ("for developers who already have Node 20+"). The reader self-selects.</li>
+        <li><strong>Read as a stranger.</strong> Open the page in a private tab, pretend I have never seen the project, and follow it. The first place I get stuck is the place to fix.</li>
+        <li><strong>Watch someone use the docs.</strong> Sit a friend down, give no help, ask them to follow the tutorial. 20 minutes of usability testing beats a week of solo editing.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Jordan Open Source Association &nbsp;&middot;&nbsp; <strong>OpenLab 2026</strong> &nbsp;&middot;&nbsp; Qutibah Ananzeh
+</footer>
+
+</body>
+</html>

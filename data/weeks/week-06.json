@@ -1,0 +1,92 @@
+{
+  "id": 6,
+  "title": "Documentation as Code & Technical Writing",
+  "status": "pending",
+  "deadline": "2026-06-20",
+  "report": "/reports/week-06.html",
+  "tasks": [
+    {
+      "id": "docs-pr",
+      "type": "docs-pr",
+      "title": "Ship One Real Docs PR",
+      "status": "pending",
+      "why": "Submit a PR to a major docs project (MDN, GitHub Docs, tldr-pages, or any tool whose README is weak). It can be small, but every line must follow a real style guide: active voice, present tense, second person (\"you\"), sentence-case headings, short sentences, and no \"simply\" / \"just\" / \"easy\".",
+      "links": [
+        { "type": "repo", "label": "mdn/content", "url": "https://github.com/mdn/content" },
+        { "type": "repo", "label": "github/docs", "url": "https://github.com/github/docs" },
+        { "type": "repo", "label": "tldr-pages/tldr", "url": "https://github.com/tldr-pages/tldr" },
+        { "type": "report", "label": "Week 06 full report", "url": "/reports/week-06.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "docs-site",
+      "type": "docs-site",
+      "title": "Set Up a Docs Site (MkDocs Material)",
+      "status": "pending",
+      "why": "Stand up a docs-as-code site for one of my repos with MkDocs Material, deploy it via GitHub Pages or Cloudflare Pages, and link it from the README. It must cover three of the four Diátaxis modes, at least one tutorial, one how-to guide, and reference docs, each kept ruthlessly separate.",
+      "links": [
+        { "type": "doc", "label": "MkDocs Material", "url": "https://squidfunk.github.io/mkdocs-material/" },
+        { "type": "doc", "label": "Diátaxis framework", "url": "https://diataxis.fr" },
+        { "type": "report", "label": "Week 06 full report", "url": "/reports/week-06.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "first-adr",
+      "type": "adr",
+      "title": "Write My First ADR",
+      "status": "pending",
+      "why": "Capture the why behind a real technical decision in one of my projects as an Architecture Decision Record, using Michael Nygard's format (Status / Context / Decision / Consequences). Commit it as docs/adr/0001-....md so the reasoning survives after the decision is forgotten.",
+      "links": [
+        { "type": "doc", "label": "adr.github.io", "url": "https://adr.github.io" },
+        { "type": "report", "label": "Week 06 full report", "url": "/reports/week-06.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "vale-ci",
+      "type": "vale",
+      "title": "Add Vale to a Repo + CI",
+      "status": "pending",
+      "why": "Add the Vale prose linter with the Microsoft style to one repo, run it across the docs, and fix what it flags. Then wire it into the same CI pipeline from Week 5 so style violations fail the build, not a reviewer's patience.",
+      "links": [
+        { "type": "doc", "label": "Vale", "url": "https://vale.sh" },
+        { "type": "report", "label": "Week 06 full report", "url": "/reports/week-06.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "empathy-reader",
+      "type": "soft-skill",
+      "title": "Soft Skill: Empathy for the Reader",
+      "status": "pending",
+      "why": "Practice reader empathy (theory of mind): name the audience at the top of each page, read my own docs in a private tab as a stranger and fix the first place I get stuck, and watch a friend follow my tutorial with no help, the single highest-leverage move in technical writing.",
+      "links": [
+        { "type": "doc", "label": "Procida — What nobody tells you about documentation", "url": "https://www.youtube.com/watch?v=t4vKPhjcMZg" },
+        { "type": "report", "label": "Week 06 full report", "url": "/reports/week-06.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    }
+  ]
+}

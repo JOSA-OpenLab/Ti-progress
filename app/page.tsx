@@ -9,8 +9,9 @@ import week02 from "../data/weeks/week-02.json"
 import week03 from "../data/weeks/week-03.json"
 import week04 from "../data/weeks/week-04.json"
 import week05 from "../data/weeks/week-05.json"
+import week06 from "../data/weeks/week-06.json"
 
-const weeks = [week01, week02, week03, week04, week05]
+const weeks = [week01, week02, week03, week04, week05, week06]
 
 type View = "hero" | "graph" | "stats"
 
