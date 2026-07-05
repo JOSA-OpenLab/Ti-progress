@@ -1,6 +1,16 @@
 {
-  "updated": "2026-06-30",
+  "updated": "2026-07-05",
   "items": [
+    {
+      "id": "tldr-23074",
+      "kind": "pr",
+      "title": "container: add page",
+      "repo": "tldr-pages/tldr",
+      "status": "open",
+      "date": "2026-07-05",
+      "url": "https://github.com/tldr-pages/tldr/pull/23074",
+      "summary": "New tldr page for Apple's container CLI (Linux containers in lightweight VMs on Apple silicon), answering page request #23039. Eight examples verified against the official v1.0.0 command reference; short options kept ungrouped because Swift ArgumentParser does not support combined flags like -it. Follows the tldr style guide and passes tldr-lint."
+    },
     {
       "id": "palmier-224",
       "kind": "pr",

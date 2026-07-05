@@ -9,19 +9,23 @@
       "id": "docs-pr",
       "type": "docs-pr",
       "title": "Ship One Real Docs PR",
-      "status": "pending",
+      "status": "done",
       "why": "Submit a PR to a major docs project (MDN, GitHub Docs, tldr-pages, or any tool whose README is weak). It can be small, but every line must follow a real style guide: active voice, present tense, second person (\"you\"), sentence-case headings, short sentences, and no \"simply\" / \"just\" / \"easy\".",
       "links": [
-        { "type": "repo", "label": "mdn/content", "url": "https://github.com/mdn/content" },
-        { "type": "repo", "label": "github/docs", "url": "https://github.com/github/docs" },
-        { "type": "repo", "label": "tldr-pages/tldr", "url": "https://github.com/tldr-pages/tldr" },
+        { "type": "pr", "label": "tldr-pages/tldr PR #23074", "url": "https://github.com/tldr-pages/tldr/pull/23074" },
+        { "type": "issue", "label": "Page request #23039", "url": "https://github.com/tldr-pages/tldr/issues/23039" },
         { "type": "report", "label": "Week 06 full report", "url": "/reports/week-06.html" }
       ],
-      "reflection": null,
-      "commands": [],
-      "output": null,
+      "reflection": "I answered an open page request (#23039) for Apple's new container CLI with a new pages/osx/container.md. The interesting work was not the writing, it was the verification: every flag came from Apple's own command-reference.md instead of memory, which caught a real trap. The tool looks like Docker but its Swift ArgumentParser CLI cannot group short flags, so the idiomatic docker -it becomes -i -t here. tldr's style guide did the rest: max 8 examples, option placeholders like {{[-d|--detach]}} so clients can render short or long form, snake_case placeholders, and one user goal per example. I claimed the issue with a comment first so nobody duplicates the work, linted with the same tldr-lint their CI runs, and opened the PR against a freshly synced main.",
+      "commands": [
+        "gh issue view 23039 --repo tldr-pages/tldr",
+        "git fetch upstream main && git merge --ff-only upstream/main",
+        "npx tldr-lint pages/osx/container.md",
+        "gh pr create --repo tldr-pages/tldr --head Ti-03:container-add-page --title \"container: add page\""
+      ],
+      "output": "PR #23074 open against tldr-pages/tldr: pages/osx/container.md with 8 verified examples for Apple's container v1.0.0. tldr-lint clean, CLA green, codespell green.",
       "screenshot": null,
-      "pr": null
+      "pr": "https://github.com/tldr-pages/tldr/pull/23074"
     },
     {
       "id": "docs-site",

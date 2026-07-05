@@ -186,26 +186,40 @@
     <div class="section-header">
       <span class="section-number">// 01</span>
       <h2>Ship One Real Docs PR</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Target:</strong> <a href="https://github.com/mdn/content" target="_blank">MDN</a>, <a href="https://github.com/github/docs" target="_blank">GitHub Docs</a>, <a href="https://github.com/tldr-pages/tldr" target="_blank">tldr-pages</a>, or a tool with a weak README.
+      <strong>Repo:</strong> <a href="https://github.com/tldr-pages/tldr" target="_blank">tldr-pages/tldr</a> (55k+ stars) &nbsp;&middot;&nbsp; <strong>PR:</strong> <a href="https://github.com/tldr-pages/tldr/pull/23074" target="_blank">#23074</a> &nbsp;&middot;&nbsp; <strong>Answers:</strong> <a href="https://github.com/tldr-pages/tldr/issues/23039" target="_blank">page request #23039</a>
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">What I did</div>
       <div class="reflection">
-        <span class="todo">To do</span> Submit a PR to a major docs project. It can be small, but every line must follow a real style guide: <strong>active voice</strong>, <strong>present tense</strong>, <strong>second person</strong>, sentence-case headings, short sentences, and no <code>simply</code> / <code>just</code> / <code>easy</code>. If I restructure a README, follow Diátaxis order: intro, install, a quick tutorial, then links to deeper docs.
+        I answered an open page request for <strong>Apple's <code>container</code> CLI</strong> (Linux containers in lightweight VMs on Apple silicon, Apple's Docker Desktop alternative) with a new <code>pages/osx/container.md</code>. The writing was the small part; the real work was verification. Every one of the 8 examples comes from Apple's own <code>command-reference.md</code> for v1.0.0, not from memory, and that caught a real trap: the tool looks like Docker, but its Swift ArgumentParser CLI <strong>cannot group short flags</strong>, so the idiomatic <code>docker -it</code> must be written <code>-i -t</code> here. The page follows the tldr style guide: at most 8 examples, <code>{{[-d|--detach]}}</code> option placeholders so clients render short or long form, snake_case placeholders, and one user goal per example description. I claimed the issue with a comment before starting so nobody duplicates the work, rebuilt the branch on a freshly synced upstream <code>main</code>, and noted in the PR why the flags are ungrouped.
       </div>
     </div>
 
     <div class="block">
-      <div class="block-title">Definition of done</div>
+      <div class="block-title">Verification</div>
+      <div class="code-block">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">tldr-lint + PR checks</span></div>
+        <pre><span class="cmd">$ npx tldr-lint pages/osx/container.md</span>
+<span class="out">(no errors)</span>
+<span class="cmd">$ gh pr checks 23074 --repo tldr-pages/tldr</span>
+<span class="out">labeler      </span><span class="hsh">pass</span>
+<span class="out">codespell    </span><span class="hsh">pass</span>
+<span class="out">license/cla  </span><span class="hsh">pass</span><span class="out">  Contributor License Agreement is signed.</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Style checklist</div>
       <ul class="checklist">
-        <li>One PR opened against a real docs repo, linked here.</li>
-        <li>Every change passes the style checklist (voice, tense, person, headings).</li>
-        <li>The diff is scoped and reviewable, no unrelated edits.</li>
+        <li>Active voice, present tense, one goal per example description.</li>
+        <li>Filename and title match the command exactly; page sits in <code>osx</code> since the tool is macOS-only.</li>
+        <li>No <code>simply</code> / <code>just</code> / <code>easy</code> anywhere in the page.</li>
+        <li>Linted with the same <code>tldr-lint</code> their CI runs, before pushing.</li>
       </ul>
     </div>
   </div>
