@@ -229,38 +229,32 @@
     <div class="section-header">
       <span class="section-number">// 02</span>
       <h2>Set Up a Docs Site (MkDocs Material)</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Stack:</strong> <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank">MkDocs Material</a>, deployed via GitHub Pages or Cloudflare Pages, linked from the repo README.
+      <strong>Repo:</strong> <a href="https://github.com/Ti-03/MacDirStat" target="_blank">Ti-03/MacDirStat</a> &nbsp;&middot;&nbsp; <strong>PR:</strong> <a href="https://github.com/Ti-03/MacDirStat/pull/9" target="_blank">#9</a> &nbsp;&middot;&nbsp; <strong>Live:</strong> <a href="https://ti-03.github.io/MacDirStat/guide/" target="_blank">ti-03.github.io/MacDirStat/guide</a>
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">What I did</div>
       <div class="reflection">
-        <span class="todo">To do</span> Pick one of my repos and stand up a docs-as-code site. It must cover three of the four Diátaxis modes: at least one <strong>tutorial</strong>, one <strong>how-to guide</strong>, and <strong>reference</strong> docs, each kept ruthlessly separate. Deploy it (Pages) and link it from the README so it is discoverable.
-      </div>
-      <div class="code-block" style="margin-top:16px;">
-        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">mkdocs.yml</span></div>
-        <pre><span class="key">site_name</span>: My Project
-<span class="key">theme</span>:
-  <span class="key">name</span>: material
-<span class="key">nav</span>:
-  - Home: index.md
-  - Tutorial: tutorial.md
-  - How-to: how-to.md
-  - Reference: reference.md</pre>
+        MacDirStat already had a GitHub Pages landing page (logo, screenshots) served by the legacy Jekyll build from <code>docs/</code>. Rather than replace it, I switched the repo's Pages source to an Actions-based build and wrote a workflow that assembles <strong>both</strong> outputs into one artifact: the landing page keeps serving from the site root, and the new MkDocs Material site lands at <code>/guide/</code>. The content is genuinely three separate Diátaxis modes, not just three labels: a <strong>tutorial</strong> (scan your first folder), a <strong>how-to guide</strong> (read the treemap's colors, change the color scheme), and <strong>reference</strong> docs for <code>ByteFormatter</code> and <code>TreemapLayout</code> written straight from their source, including the real 10-category color table and the exact arc-angle formula.
       </div>
     </div>
 
     <div class="block">
-      <div class="block-title">Definition of done</div>
-      <ul class="checklist">
-        <li>Site builds with <code>mkdocs serve</code> and deploys to a public URL.</li>
-        <li>Contains a tutorial, a how-to, and reference docs (kept distinct).</li>
-        <li>README links to the live docs site.</li>
-      </ul>
+      <div class="block-title">Verification</div>
+      <div class="code-block">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">mkdocs build --strict</span></div>
+        <pre><span class="cmd">$ mkdocs build --strict</span>
+<span class="out">INFO    -  Cleaning site directory</span>
+<span class="out">INFO    -  Building documentation to directory: .../site</span>
+<span class="hsh">INFO    -  Documentation built in 0.16 seconds</span>
+<span class="cmd">$ ls _site && ls _site/guide</span>
+<span class="out">index.html  logo.png  privacy.html  screenshot1.png ...  guide/</span>
+<span class="out">how-to/  reference/  tutorial/  index.html  search/</span></pre>
+      </div>
     </div>
   </div>
 
@@ -269,44 +263,38 @@
     <div class="section-header">
       <span class="section-number">// 03</span>
       <h2>Write My First ADR</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Format:</strong> Michael Nygard's template (<a href="https://adr.github.io" target="_blank">adr.github.io</a>), committed as <code>docs/adr/0001-....md</code>.
+      <strong>Repo:</strong> <a href="https://github.com/Ti-03/MacDirStat" target="_blank">Ti-03/MacDirStat</a> &nbsp;&middot;&nbsp; <strong>PR:</strong> <a href="https://github.com/Ti-03/MacDirStat/pull/9" target="_blank">#9</a> &nbsp;&middot;&nbsp; <code>docs/adr/0001-compile-time-guard-for-liquid-glass.md</code>
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">What I did</div>
       <div class="reflection">
-        <span class="todo">To do</span> Capture the <em>why</em> behind a real technical decision in one of my projects (it can be a past one) as an Architecture Decision Record. ADRs are append-only: when a decision changes, I write a new one that supersedes the old, so the reasoning survives after the decision is forgotten.
+        I did not invent a decision to document; I had a real one from last week still worth writing down. The Week 5 CI matrix caught a bug where <code>GlassCompat.swift</code>'s macOS 26 Liquid Glass calls compiled fine locally (only the macOS 26 SDK was installed) but failed on the <code>macos-15</code> runner, because <code>#available</code> is a <em>runtime</em> check and does not stop the compiler from needing a symbol that only exists in a newer SDK. The fix was a compile-time <code>#if compiler(&gt;=6.2)</code> guard wrapped around the existing <code>#available</code> check. Writing it as an ADR forced me to name the sharpest Consequence explicitly: any future Liquid Glass call site that copies a plain <code>#available</code> pattern from elsewhere in the codebase will silently reintroduce this exact bug, with no compiler warning to catch it.
       </div>
-      <div class="code-block" style="margin-top:16px;">
-        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">docs/adr/0001-example.md</span></div>
-        <pre><span class="hsh"># 0001. Title of the decision</span>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Verification</div>
+      <div class="code-block">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">docs/adr/0001-compile-time-guard-for-liquid-glass.md</span></div>
+        <pre><span class="hsh"># 0001. Guard Liquid Glass APIs with a compile-time check, not just #available</span>
 
 <span class="key">## Status</span>
-Accepted, 2026-06-20.
-
-<span class="key">## Context</span>
-What forces are at play, what constraints we have.
+Accepted, 2026-06-29.
 
 <span class="key">## Decision</span>
-What we will do.
+Wrap every Liquid Glass call site with #if compiler(&gt;=6.2)
+around the existing #available(macOS 26, *) check.
 
 <span class="key">## Consequences</span>
-+ What gets better.
-- What gets harder.</pre>
++ A future contributor copying a plain #available-only
+  pattern elsewhere will reintroduce this bug silently.
++ The macos-15/macos-26 CI matrix is now load-bearing.</pre>
       </div>
-    </div>
-
-    <div class="block">
-      <div class="block-title">Definition of done</div>
-      <ul class="checklist">
-        <li>One ADR committed under <code>docs/adr/</code>, numbered <code>0001</code>.</li>
-        <li>Uses Status / Context / Decision / Consequences.</li>
-        <li>Records the reasoning, not just the outcome.</li>
-      </ul>
     </div>
   </div>
 

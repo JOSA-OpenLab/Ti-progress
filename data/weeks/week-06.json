@@ -31,34 +31,45 @@
       "id": "docs-site",
       "type": "docs-site",
       "title": "Set Up a Docs Site (MkDocs Material)",
-      "status": "pending",
+      "status": "done",
       "why": "Stand up a docs-as-code site for one of my repos with MkDocs Material, deploy it via GitHub Pages or Cloudflare Pages, and link it from the README. It must cover three of the four Diátaxis modes, at least one tutorial, one how-to guide, and reference docs, each kept ruthlessly separate.",
       "links": [
+        { "type": "pr", "label": "MacDirStat PR #9", "url": "https://github.com/Ti-03/MacDirStat/pull/9" },
         { "type": "doc", "label": "MkDocs Material", "url": "https://squidfunk.github.io/mkdocs-material/" },
         { "type": "doc", "label": "Diátaxis framework", "url": "https://diataxis.fr" },
         { "type": "report", "label": "Week 06 full report", "url": "/reports/week-06.html" }
       ],
-      "reflection": null,
-      "commands": [],
-      "output": null,
+      "reflection": "MacDirStat already had a GitHub Pages landing page at ti-03.github.io/MacDirStat, served by the legacy Jekyll build from docs/. Rather than replace it, I switched the repo's Pages source to an Actions-based build and wrote a workflow that assembles both outputs into one artifact: the existing landing page stays at the site root, and the new MkDocs Material site lands at /guide/. Content is genuinely three Diátaxis modes, not just labeled that way: a tutorial (scan your first folder), a how-to guide (read the treemap's colors and change the color scheme), and reference docs for ByteFormatter and TreemapLayout written directly from their source, including the actual color-category table and the exact arc-angle formula. I built the site locally with mkdocs build --strict first and simulated the artifact-assembly step by hand before trusting it to CI.",
+      "commands": [
+        "pip install mkdocs-material",
+        "mkdocs build --strict",
+        "gh api -X PUT repos/Ti-03/MacDirStat/pages -f build_type=workflow",
+        "gh pr create --repo Ti-03/MacDirStat --base main --head docs/mkdocs-adr-vale"
+      ],
+      "output": "PR #9 open against Ti-03/MacDirStat: guide/ (index, tutorial, how-to, 2 reference pages) + mkdocs.yml + .github/workflows/pages.yml. Local strict build clean, artifact assembly verified by hand (landing page at /, docs at /guide/).",
       "screenshot": null,
-      "pr": null
+      "pr": "https://github.com/Ti-03/MacDirStat/pull/9"
     },
     {
       "id": "first-adr",
       "type": "adr",
       "title": "Write My First ADR",
-      "status": "pending",
+      "status": "done",
       "why": "Capture the why behind a real technical decision in one of my projects as an Architecture Decision Record, using Michael Nygard's format (Status / Context / Decision / Consequences). Commit it as docs/adr/0001-....md so the reasoning survives after the decision is forgotten.",
       "links": [
+        { "type": "pr", "label": "MacDirStat PR #9", "url": "https://github.com/Ti-03/MacDirStat/pull/9" },
+        { "type": "file", "label": "0001-compile-time-guard-for-liquid-glass.md", "url": "https://github.com/Ti-03/MacDirStat/blob/docs/mkdocs-adr-vale/docs/adr/0001-compile-time-guard-for-liquid-glass.md" },
         { "type": "doc", "label": "adr.github.io", "url": "https://adr.github.io" },
         { "type": "report", "label": "Week 06 full report", "url": "/reports/week-06.html" }
       ],
-      "reflection": null,
-      "commands": [],
-      "output": null,
+      "reflection": "I did not invent a decision to document, I had a real one from last week that was still worth writing down. The Week 5 CI matrix caught a bug where GlassCompat.swift's macOS 26 Liquid Glass calls compiled fine locally (only the macOS 26 SDK was installed) but failed on the macos-15 CI runner, because #available is a runtime check and does not stop the compiler from needing a symbol that only exists in a newer SDK. The fix was a compile-time #if compiler(>=6.2) guard wrapped around the existing #available check. Writing it as an ADR forced me to be explicit about the Consequence that actually matters: any future Liquid Glass call site that copies a plain #available pattern from elsewhere in the codebase will silently reintroduce this bug, with no compiler warning to catch it.",
+      "commands": [
+        "git log -p -- Sources/App/GlassCompat.swift",
+        "mkdir -p docs/adr"
+      ],
+      "output": "docs/adr/0001-compile-time-guard-for-liquid-glass.md committed in PR #9, Nygard format (Status/Context/Decision/Consequences).",
       "screenshot": null,
-      "pr": null
+      "pr": "https://github.com/Ti-03/MacDirStat/pull/9"
     },
     {
       "id": "vale-ci",
