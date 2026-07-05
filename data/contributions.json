@@ -1,6 +1,26 @@
 {
-  "updated": "2026-07-05",
+  "updated": "2026-07-06",
   "items": [
+    {
+      "id": "palmier-265",
+      "kind": "pr",
+      "title": "Bound agent tool frame args so an LLM tool call can't overflow Int and crash the app",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-07-06",
+      "url": "https://github.com/palmier-io/palmier-pro/pull/265",
+      "summary": "Frame-valued agent tool args (startFrame, atFrame, toFrame, durationFrames) were only lower-bounded, so an LLM-generated tool call with a value near Int.max decoded cleanly into Int (it is finite, so it passed the finiteness check) and then trapped the whole app on startFrame + durationFrames — an arithmetic trap the tool executor's do/catch cannot intercept. Added a shared maxToolFrame ceiling plus a requireFrameInBounds helper applied next to the existing guards in add_clips, insert_clips, move_clips, set_clip_properties, add_texts, and apply_layout. Same class as the earlier #201 fix. 23 source lines across 4 files, plus 5 end-to-end regression tests driving each tool at Int.max; full 948-test suite green."
+    },
+    {
+      "id": "palmier-264",
+      "kind": "issue",
+      "title": "Agent crash: an out-of-range integer frame arg (near Int.max) traps Int arithmetic and kills the app",
+      "repo": "palmier-io/palmier-pro",
+      "status": "open",
+      "date": "2026-07-06",
+      "url": "https://github.com/palmier-io/palmier-pro/issues/264",
+      "summary": "Reported the crash PR #265 fixes, issue-first per their CONTRIBUTING. Confirmed against main with a test that drives add_clips at Int.max: the process is killed with SIGTRAP the moment the tool runs, because the overflow trap escapes the tool executor's do/catch."
+    },
     {
       "id": "tldr-23074",
       "kind": "pr",
