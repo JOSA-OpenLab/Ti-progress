@@ -1,0 +1,92 @@
+{
+  "id": 7,
+  "title": "Security & the Software Supply Chain",
+  "status": "in-progress",
+  "deadline": "2026-06-27",
+  "report": "/reports/week-07.html",
+  "tasks": [
+    {
+      "id": "dependabot",
+      "type": "dependabot",
+      "title": "Add Dependabot",
+      "status": "pending",
+      "why": "Configure Dependabot for one of my repos, covering both the code ecosystem and github-actions. Pin all Actions to commit SHAs, not tags. Submit as a PR.",
+      "links": [
+        { "type": "doc", "label": "Dependabot docs", "url": "https://docs.github.com/en/code-security/dependabot" },
+        { "type": "report", "label": "Week 07 full report", "url": "/reports/week-07.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "sign-release",
+      "type": "sigstore",
+      "title": "Sign a Release with Sigstore",
+      "status": "pending",
+      "why": "Tag a release of one of my repos, sign the artifact with cosign, and document the verify command in the README so anyone can confirm it was not tampered with.",
+      "links": [
+        { "type": "doc", "label": "Sigstore", "url": "https://www.sigstore.dev" },
+        { "type": "doc", "label": "cosign", "url": "https://docs.sigstore.dev/cosign/overview/" },
+        { "type": "report", "label": "Week 07 full report", "url": "/reports/week-07.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "sbom",
+      "type": "sbom",
+      "title": "Generate and Read an SBOM",
+      "status": "pending",
+      "why": "Run Syft on a project to generate an SBOM, then run Grype against it. Write a journal entry on any known CVEs that show up, and pick one to investigate: what it is, what the fix is, and who is affected.",
+      "links": [
+        { "type": "doc", "label": "Syft", "url": "https://github.com/anchore/syft" },
+        { "type": "doc", "label": "Grype", "url": "https://github.com/anchore/grype" },
+        { "type": "report", "label": "Week 07 full report", "url": "/reports/week-07.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "scorecard",
+      "type": "scorecard",
+      "title": "Run OpenSSF Scorecard",
+      "status": "pending",
+      "why": "Run Scorecard on any project, including my own, and try to open a PR fixing the lowest-scoring check.",
+      "links": [
+        { "type": "doc", "label": "OpenSSF Scorecard", "url": "https://github.com/ossf/scorecard" },
+        { "type": "doc", "label": "scorecard.dev", "url": "https://scorecard.dev" },
+        { "type": "report", "label": "Week 07 full report", "url": "/reports/week-07.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "conscientious-skepticism",
+      "type": "soft-skill",
+      "title": "Soft Skill: Conscientious Skepticism",
+      "status": "pending",
+      "why": "Practice probing assumptions constructively: phrase concerns as questions, bring data instead of alarm, pick battles that matter, and default to charity about teammates who added a risky dependency while trying to ship.",
+      "links": [
+        { "type": "doc", "label": "OWASP Threat Modeling Cheat Sheet", "url": "https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html" },
+        { "type": "report", "label": "Week 07 full report", "url": "/reports/week-07.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    }
+  ]
+}

@@ -10,11 +10,12 @@ import week03 from "../../data/weeks/week-03.json"
 import week04 from "../../data/weeks/week-04.json"
 import week05 from "../../data/weeks/week-05.json"
 import week06 from "../../data/weeks/week-06.json"
+import week07 from "../../data/weeks/week-07.json"
 
 // Single source of truth — derived from the week data files so the hero
 // can never drift out of sync with the graph again.
 const TOTAL = 11
-const known = [week01.status, week02.status, week03.status, week04.status, week05.status, week06.status]
+const known = [week01.status, week02.status, week03.status, week04.status, week05.status, week06.status, week07.status]
 const weeks = Array.from({ length: TOTAL }, (_, i) => known[i] ?? "pending")
 
 const doneCount = weeks.filter((s) => s === "done").length

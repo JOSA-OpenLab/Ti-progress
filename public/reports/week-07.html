@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JOSA OpenLab, Week 07</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1117;
+      --border:  #21262d;
+      --accent:  #00b4d8;
+      --red:     #ff7b72;
+      --green:   #3fb950;
+      --amber:   #f59e0b;
+      --text:    #e6edf3;
+      --muted:   #6e7681;
+      --sub:     #8b949e;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.75; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .hero { padding: 72px 40px 56px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 10px; }
+    .hero h1 span { color: var(--accent); }
+    .hero h2 { font-size: 15px; font-weight: 400; color: var(--muted); margin-bottom: 48px; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
+    .badge { display: flex; border-radius: 4px; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; }
+    .badge-label { background: #161b22; border: 1px solid var(--border); border-right: none; padding: 5px 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-radius: 4px 0 0 4px; }
+    .badge-value { padding: 5px 10px; font-weight: 600; color: #0d1117; border-radius: 0 4px 4px 0; }
+    .badge.blue  .badge-value { background: var(--accent); }
+    .badge.navy  .badge-value { background: #0077b6; }
+    .badge.amber .badge-value { background: var(--amber); }
+    .badge.gray  .badge-value { background: var(--muted); color: var(--text); }
+
+    .meta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+    .meta-item { text-align: center; padding: 0 28px; }
+    .meta-item + .meta-item { border-left: 1px solid var(--border); }
+    .meta-item .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .meta-item .value { font-size: 14px; font-weight: 500; color: var(--text); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 64px 24px 80px; }
+    .section { margin-bottom: 64px; }
+    .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .section-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; }
+    .section-header h2 { font-size: 18px; font-weight: 600; letter-spacing: -.3px; color: var(--text); }
+    .section-header .tag { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--amber); border: 1px solid var(--amber); border-radius: 4px; padding: 2px 8px; }
+
+    .block { border-left: 2px solid var(--border); padding: 4px 0 4px 24px; margin-bottom: 32px; }
+    .block-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 32px; font-size: 14px; color: var(--sub); }
+    .callout strong { color: var(--text); font-weight: 500; }
+
+    .code-block { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .code-bar { display: flex; align-items: center; gap: 6px; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #ffbd2e; } .dot.g { background: #28c840; }
+    .code-lang { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+    pre { padding: 18px 20px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; color: #c9d1d9; white-space: pre; scrollbar-width: thin; scrollbar-color: #2d333b transparent; }
+    .cm { color: var(--muted); } .cmd { color: #79c0ff; } .out { color: #c9d1d9; } .hsh { color: #f0883e; } .key { color: #ff7b72; } .str { color: #a5d6ff; }
+
+    .reflection { border-left: 2px solid var(--accent); padding: 6px 0 6px 24px; font-size: 15px; line-height: 1.85; color: var(--sub); }
+    .reflection strong { color: var(--text); font-weight: 500; }
+
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .checklist li { list-style: none; font-size: 13px; color: var(--sub); padding-left: 22px; position: relative; line-height: 1.6; }
+    .checklist li::before { content: '○'; position: absolute; left: 0; color: var(--muted); }
+    .checklist li strong { color: var(--text); font-weight: 500; }
+
+    .placeholder { font-size: 13px; color: var(--muted); font-style: italic; }
+    .todo { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--amber); border: 1px dashed var(--amber); border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .3px; }
+    footer strong { color: var(--sub); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">OpenLab Apprenticeship 2026</div>
+  <h1>JOSA <span>OpenLab</span></h1>
+  <h2>Week 07: Security &amp; the Software Supply Chain</h2>
+
+  <div class="badges">
+    <div class="badge blue">
+      <span class="badge-label">Week</span>
+      <span class="badge-value">07 of 11</span>
+    </div>
+    <div class="badge navy">
+      <span class="badge-label">Phase</span>
+      <span class="badge-value">Foundations</span>
+    </div>
+    <div class="badge amber">
+      <span class="badge-label">Status</span>
+      <span class="badge-value">In Progress</span>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="label">Apprentice</div>
+      <div class="value">Qutibah Ananzeh</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cohort</div>
+      <div class="value">OpenLab 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Deadline</div>
+      <div class="value">Jun 27, 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- THE STANDARD -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 00</span>
+      <h2>The Standard</h2>
+    </div>
+
+    <div class="callout">
+      <strong>The unifying principle:</strong> most code in a modern app is not mine, an average npm app pulls in 1,000+ transitive dependencies, a Python web app 200+. Every one of those is an attack surface, and the goal this week is to use the free tooling that makes that surface visible instead of trusting it by default.
+    </div>
+
+    <div class="block">
+      <div class="block-title">The supply chain in three layers</div>
+      <ul class="checklist">
+        <li><strong>Dependency-on-itself.</strong> A package I depend on turns malicious: typosquatting, a maintainer going rogue, or a takeover like the xz/liblzma backdoor.</li>
+        <li><strong>Build-process.</strong> CI itself is compromised, e.g. a GitHub Action imported as <code>@main</code> that silently changes underneath a project (the 2024 tj-actions/changed-files incident).</li>
+        <li><strong>Distribution.</strong> A published artifact is tampered with after build. The defense is signing, Sigstore.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Tooling map</div>
+      <ul class="checklist">
+        <li><strong>OpenSSF Scorecard.</strong> 18+ automated checks on any GitHub repo, 0-10 score: branch protection, code review, pinned dependencies, signed releases, SAST, token permissions.</li>
+        <li><strong>Dependabot / Renovate.</strong> Bot-opened PRs for outdated deps. Default to Dependabot (zero-config); switch to Renovate for grouping or a polyglot repo.</li>
+        <li><strong>Sigstore (cosign).</strong> Keyless signing tied to an existing GitHub/Google identity instead of managed GPG keys, logged to the public Rekor transparency log.</li>
+        <li><strong>SBOM (Syft + Grype).</strong> A CycloneDX/SPDX inventory of every dependency, version, and license; Grype cross-references it against osv.dev for known CVEs.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Case study: the xz backdoor (CVE-2024-3094)</div>
+      <div class="reflection">
+        A contributor spent two years quietly building maintainer trust on the xz compression library, then landed a backdoor in liblzma that compromised SSH on most Linux distros. It was caught by accident, a Microsoft engineer noticed slow SSH logins. The lesson: a single-maintainer project is a single point of failure, tarball releases can differ from what is visible in git tags, and long-game social engineering is a real threat model. Scorecard, Sigstore, and SBOMs are built against exactly this failure mode.
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 01</span>
+      <h2>Add Dependabot</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> configure Dependabot for one repo, both the code ecosystem and <code>github-actions</code>, pin every Action to a commit SHA, and submit as a PR.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Add <code>.github/dependabot.yml</code> with a weekly schedule for the repo's package ecosystem and for <code>github-actions</code>. Pinning to <code>@v4</code> still exposes any vulnerability published under that tag, so every existing <code>uses:</code> line gets rewritten to a commit SHA with the version kept as a trailing comment.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">.github/dependabot.yml</span></div>
+        <pre><span class="hsh">version: 2</span>
+<span class="key">updates:</span>
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: weekly }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly }</pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li><code>.github/dependabot.yml</code> covers both the language ecosystem and <code>github-actions</code>.</li>
+        <li>Every <code>uses:</code> line in the workflows is pinned by commit SHA, not a mutable tag.</li>
+        <li>Change submitted as a PR.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 02</span>
+      <h2>Sign a Release with Sigstore</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> tag a release, sign the artifact with cosign, and document the verify command in the README.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Sign the release artifact with cosign, authenticating keylessly against a GitHub identity, so the signature ties to the exact workflow and tag rather than a private key someone has to guard forever.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">cosign sign-blob / verify-blob</span></div>
+        <pre><span class="cmd">$ cosign sign-blob --yes ./release.tar.gz --output-signature release.tar.gz.sig</span>
+<span class="cmd">$ cosign verify-blob \</span>
+<span class="cmd">    --certificate-identity '&lt;workflow-url&gt;@refs/tags/v1.0.0' \</span>
+<span class="cmd">    --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \</span>
+<span class="cmd">    --signature release.tar.gz.sig ./release.tar.gz</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>Release tagged, artifact built.</li>
+        <li>Artifact signed with cosign, signature logged to Rekor.</li>
+        <li>Verify command documented in the README so anyone can check it.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 03</span>
+      <h2>Generate and Read an SBOM</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> run Syft on a project, run Grype against the SBOM, and write a journal entry on any known CVEs that surface.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Generate a CycloneDX SBOM with Syft, then feed it to Grype to check every listed package and version against osv.dev. If anything shows up, pick one finding and dig in: what the CVE actually affects, whether the fix is a version bump, and who else it touches.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">syft + grype</span></div>
+        <pre><span class="cmd">$ syft ./my-app --output cyclonedx-json=sbom.json</span>
+<span class="cmd">$ grype sbom:sbom.json</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li><code>sbom.json</code> generated for a real project.</li>
+        <li>Grype run against it, output captured.</li>
+        <li>Journal entry written on the findings, with one CVE investigated in depth.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 4 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 04</span>
+      <h2>Run OpenSSF Scorecard</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> run Scorecard on a project, then try to open a PR fixing the lowest-scoring check.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Run Scorecard against one of my own repos, read through the 18+ checks, and treat the lowest score as the actual target instead of chasing every checkbox. Per the soft-skill note this week, not every check matters equally: branch protection on <code>main</code> is worth fighting for, pinned dependencies on a hobby repo is not.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">scorecard</span></div>
+        <pre><span class="cmd">$ go install github.com/ossf/scorecard/v5/cmd/scorecard@latest</span>
+<span class="cmd">$ scorecard --repo=github.com/&lt;owner&gt;/&lt;repo&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>Scorecard run, full report read, lowest-scoring check identified.</li>
+        <li>PR opened addressing that specific check.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SOFT SKILL -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 05</span>
+      <h2>Soft Skill, Conscientious Skepticism</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>The principle:</strong> security work needs someone who asks "but what if this fails?" without becoming the person nobody invites back to the kickoff meeting.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Specific moves to practice this week</div>
+      <ul class="checklist">
+        <li><strong>Phrase concerns as questions.</strong> "What's the threat model for this dependency?" lands differently than "we can't add this".</li>
+        <li><strong>Bring data, not alarm.</strong> "3 known CVEs in the last year and a Scorecard of 4/10, here's the alternative" beats "this is risky".</li>
+        <li><strong>Pick battles.</strong> Branch protection on <code>main</code> is a real fight; Pinned-Dependencies on a hobby project is not.</li>
+        <li><strong>Default to charity.</strong> A sketchy dependency usually means someone was trying to ship, not being careless. Educate, don't blame.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Jordan Open Source Association &nbsp;&middot;&nbsp; <strong>OpenLab 2026</strong> &nbsp;&middot;&nbsp; Qutibah Ananzeh
+</footer>
+
+</body>
+</html>
