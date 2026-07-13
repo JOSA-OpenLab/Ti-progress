@@ -75,17 +75,24 @@
       "id": "vale-ci",
       "type": "vale",
       "title": "Add Vale to a Repo + CI",
-      "status": "pending",
+      "status": "done",
       "why": "Add the Vale prose linter with the Microsoft style to one repo, run it across the docs, and fix what it flags. Then wire it into the same CI pipeline from Week 5 so style violations fail the build, not a reviewer's patience.",
       "links": [
+        { "type": "pr", "label": "MacDirStat PR #9", "url": "https://github.com/Ti-03/MacDirStat/pull/9" },
         { "type": "doc", "label": "Vale", "url": "https://vale.sh" },
+        { "type": "doc", "label": "Microsoft Writing Style Guide", "url": "https://learn.microsoft.com/en-us/style-guide/welcome/" },
         { "type": "report", "label": "Week 06 full report", "url": "/reports/week-06.html" }
       ],
-      "reflection": null,
-      "commands": [],
-      "output": null,
+      "reflection": "I put Vale on MacDirStat, the same repo that already has the MkDocs site, the ADR, and the Week 5 CI matrix, so the whole week lives in one PR. The config uses the Microsoft style, the same voice the docs were already written in, which meant the fixes were real style tightening rather than fighting the linter: spaced em dashes became colons and commas (which also satisfies my own no-em-dash rule), 'do not' became 'don't', and one quote got its period pulled inside. I turned off Vale.Spelling because the reference pages quote real API symbols (ByteFormatter, TreemapLayout), and set MinAlertLevel to error so clear-cut violations fail the build while advisory warnings (like 'use I sparingly' in a first-person ADR) still print but don't block. The styles are downloaded by `vale sync`, not committed, so CI stays reproducible from a clean checkout, which I verified by deleting the local styles dir and re-running the exact CI sequence before opening the change.",
+      "commands": [
+        "brew install vale",
+        "vale sync",
+        "vale guide docs/adr README.md",
+        "rm -rf .github/styles && vale sync && vale guide docs/adr README.md"
+      ],
+      "output": "Added .vale.ini (Microsoft style, error gate) and a prose-lint job on ubuntu-latest in the existing ci.yml. Fixed 31 errors + 2 warnings across 7 files (guide, ADR, README). Fresh clean-checkout run: 0 errors, 0 warnings in 7 files. Committed to PR #9's docs/mkdocs-adr-vale branch.",
       "screenshot": null,
-      "pr": null
+      "pr": "https://github.com/Ti-03/MacDirStat/pull/9"
     },
     {
       "id": "empathy-reader",
