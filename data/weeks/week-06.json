@@ -78,7 +78,7 @@
       "status": "done",
       "why": "Add the Vale prose linter with the Microsoft style to one repo, run it across the docs, and fix what it flags. Then wire it into the same CI pipeline from Week 5 so style violations fail the build, not a reviewer's patience.",
       "links": [
-        { "type": "pr", "label": "MacDirStat PR #9", "url": "https://github.com/Ti-03/MacDirStat/pull/9" },
+        { "type": "pr", "label": "MacDirStat PR #10", "url": "https://github.com/Ti-03/MacDirStat/pull/10" },
         { "type": "doc", "label": "Vale", "url": "https://vale.sh" },
         { "type": "doc", "label": "Microsoft Writing Style Guide", "url": "https://learn.microsoft.com/en-us/style-guide/welcome/" },
         { "type": "report", "label": "Week 06 full report", "url": "/reports/week-06.html" }
@@ -90,9 +90,9 @@
         "vale guide docs/adr README.md",
         "rm -rf .github/styles && vale sync && vale guide docs/adr README.md"
       ],
-      "output": "Added .vale.ini (Microsoft style, error gate) and a prose-lint job on ubuntu-latest in the existing ci.yml. Fixed 31 errors + 2 warnings across 7 files (guide, ADR, README). Fresh clean-checkout run: 0 errors, 0 warnings in 7 files. Committed to PR #9's docs/mkdocs-adr-vale branch.",
+      "output": "Added .vale.ini (Microsoft style, error gate) and a prose-lint job on ubuntu-latest in the existing ci.yml. Fixed 31 errors + 2 warnings across 7 files (guide, ADR, README). Fresh clean-checkout run: 0 errors, 0 warnings in 7 files. Opened as PR #10 (follow-up to #9, which merged first).",
       "screenshot": null,
-      "pr": "https://github.com/Ti-03/MacDirStat/pull/9"
+      "pr": "https://github.com/Ti-03/MacDirStat/pull/10"
     },
     {
       "id": "empathy-reader",
