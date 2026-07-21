@@ -163,25 +163,25 @@
     <div class="section-header">
       <span class="section-number">// 01</span>
       <h2>Pick the License</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> for my own personal repo, write a journal justification: which license, and why. Then add the LICENSE file.
+      <strong>Repo:</strong> <a href="https://github.com/Ti-03/MacDirStat" target="_blank">Ti-03/MacDirStat</a> &nbsp;&middot;&nbsp; <strong>License: AGPL-3.0</strong>, already in place, now justified deliberately instead of by momentum.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">The justification</div>
       <div class="reflection">
-        <span class="todo">To do</span> Walk one of my repos through the copyleft question honestly instead of defaulting to MIT out of habit. Journal the reasoning: what the project is, whether derivatives staying open matters to it, and why the chosen license fits. Add the plaintext <code>LICENSE</code> file with the year and copyright holder.
+        The copyleft question first: do I care if someone takes the code, modifies it, and never shares back? Yes. MacDirStat is a polished end-user app, and the realistic bad outcome is someone repackaging it as a paid app with private changes. AGPL's distribution trigger blocks exactly that, and its network trigger costs nothing here, since a local disk scanner has no SaaS story to lose. The twist that makes this repo's choice interesting: the same app ships on the <strong>Mac App Store</strong> (as DirStat), and GPL-family licenses are famously incompatible with App Store terms. That combination is legal for exactly one party, the copyright holder, who is not bound by their own license. So AGPL plus sole ownership works as de facto dual licensing: everyone else gets strong copyleft, the author keeps the store channel. The fine print: outside contributions would break sole ownership, so CONTRIBUTING.md now carries an explicit inbound-licensing clause (AGPL plus an App Store distribution grant). Also fixed the exact thing the brief warns about: the LICENSE file was the stock FSF text with no project copyright line, so the README gained <strong>Copyright &copy; 2026 Qutibah Ananzeh</strong> and a License section explaining the choice.
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li>Journal entry: which license and why, argued from the permissive-vs-copyleft question.</li>
-        <li><code>LICENSE</code> file added, named exactly LICENSE, with year and copyright holder.</li>
+        <li>Journal entry arguing the choice from the permissive-vs-copyleft question, plus the App Store wrinkle. ✓</li>
+        <li><code>LICENSE</code> present (named exactly that); missing copyright line fixed via the README License section. ✓ (branch <code>community/standards</code>)</li>
       </ul>
     </div>
   </div>
@@ -191,25 +191,25 @@
     <div class="section-header">
       <span class="section-number">// 02</span>
       <h2>Hit 100% Community Profile</h2>
-      <span class="tag">Pending</span>
+      <span class="tag">In Progress</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> for one of my repos, complete every item on GitHub's Community Standards checklist and screenshot the green page.
+      <strong>Before:</strong> 42% (README + LICENSE only) &nbsp;&middot;&nbsp; <strong>Now:</strong> every checklist file exists, committed on the local <code>community/standards</code> branch; the green page unlocks when the branch lands on <code>main</code>.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">What I did</div>
       <div class="reflection">
-        <span class="todo">To do</span> Work through the checklist at <code>github.com/&lt;owner&gt;/&lt;repo&gt;/community</code>: README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT (Contributor Covenant 2.1 verbatim), SECURITY with a private reporting path, issue templates under <code>.github/ISSUE_TEMPLATE/</code>, and a PR template with the What/Why/How/Test structure. Screenshot the all-green page for the journal.
+        README and LICENSE were already in place, SECURITY.md rides in week 7's PR #13, and this week's branch adds the rest: CONTRIBUTING.md, CODE_OF_CONDUCT.md (Contributor Covenant 2.1 verbatim, per the brief's don't-write-your-own rule), bug and feature issue templates under <code>.github/ISSUE_TEMPLATE/</code>, a What/Why/How/Test PR template, and CODEOWNERS auto-assigning review. The Community Standards page reads from the default branch, and this week runs under a no-push rule, so the all-green page and its screenshot are queued behind merge day.
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li>Every Community Standards item green on one repo.</li>
-        <li>Screenshot of the green page in the journal.</li>
+        <li>Every Community Standards file written and committed. ✓ (local branch)</li>
+        <li><strong>Remaining:</strong> push/merge the branch (plus PR #13 for SECURITY.md), then screenshot the green page.</li>
       </ul>
     </div>
   </div>
@@ -219,25 +219,25 @@
     <div class="section-header">
       <span class="section-number">// 03</span>
       <h2>Write the CONTRIBUTING.md</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> cover setup, how to run tests, how to file a bug, PR conventions, and review expectations. This is what new contributors read first.
+      <strong>Written as the document I wished every project had</strong> when I was the newcomer during weeks 4 through 8.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">What it covers</div>
       <div class="reflection">
-        <span class="todo">To do</span> Write it as the document I wish every project had when I contributed during weeks 4 through 8: exact dev-environment setup commands, the one command that runs the tests, what a good bug report contains, commit/PR conventions, and what I promise as a reviewer (and how fast). Express's contributor docs are the quality bar.
+        Exact clone-to-run commands (<code>swift run</code>, zero dependencies), the one test command plus the CI-matrix gotcha that actually bites (runtime <code>#available</code> does not fix compile-time SDK breakage, the week 5 lesson, linked to its ADR), what makes a disk-scanner bug reproducible (macOS version, folder shape, network mounts and iCloud placeholders), issue-first PR conventions with the What/Why/How/Test structure, and honest review expectations from a solo maintainer: first response within a week, no one-on-one debugging support, narrow-use-case complexity gets a friendly no. Plus the clause this specific repo genuinely needs and template CONTRIBUTINGs never have: an inbound-licensing paragraph, because AGPL code that also ships on the App Store only works while the maintainer can license every line, so contributions carry an App Store distribution grant.
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li><code>CONTRIBUTING.md</code> covers setup, tests, bug filing, PR conventions, review expectations.</li>
-        <li>A newcomer could go from clone to first PR without asking anything.</li>
+        <li>Setup, tests, bug filing, PR conventions, review expectations: all covered. ✓</li>
+        <li>A newcomer can go from clone to first PR without asking anything, including the licensing question they didn't know to ask. ✓</li>
       </ul>
     </div>
   </div>
@@ -247,25 +247,25 @@
     <div class="section-header">
       <span class="section-number">// 04</span>
       <h2>Document Governance</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> even as a solo BDFL, write a 1-page GOVERNANCE.md explaining how decisions are made.
+      <strong>One page, honest:</strong> BDFL, named, with the rules that used to live only in my head.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">What it says</div>
       <div class="reflection">
-        <span class="todo">To do</span> State the model plainly: I (the founder) decide; if you disagree, file an issue and we discuss. Cover who merges, how disputes get resolved, and what would trigger moving to shared maintainership. The point is that implicit governance is the worst kind, so a page of honesty beats silence.
+        Decisions get reversed by better arguments and evidence, not volume. The feature bar is written down: serves the core job (see where your disk space went) without adding complexity everyone else pays for. Breaking changes require an ADR before they land. A no comes with a reason and an alternative, usually "fork it and I will link you from the README". And the document pre-commits to rewriting itself if a second maintainer ever earns commit access, because at two people "the founder decides" stops being governance and starts being a bottleneck. Twenty minutes of writing; the value is that the rules now exist somewhere other than my head.
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li><code>GOVERNANCE.md</code> written, one page, honest about the BDFL model.</li>
-        <li>Documents the decision process, merge rights, and the path to shared maintainership.</li>
+        <li><code>GOVERNANCE.md</code>, one page, honest BDFL. ✓</li>
+        <li>Decision process, merge rights, the shape of a no, and the path to shared maintainership. ✓</li>
       </ul>
     </div>
   </div>
@@ -275,25 +275,32 @@
     <div class="section-header">
       <span class="section-number">// 05</span>
       <h2>Audit a Real Project, Then Contribute</h2>
-      <span class="tag">Pending</span>
+      <span class="tag">In Progress</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> pick an OSS project I actually use, audit it with this week's checklist, then do one small, real thing: open a genuinely useful PR.
+      <strong>Subject:</strong> <a href="https://github.com/benfred/py-spy" target="_blank">benfred/py-spy</a>, the profiler from week 8, a tool I actually used this month &nbsp;&middot;&nbsp; <strong>Community profile: 57%</strong>.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">The audit</div>
       <div class="reflection">
-        <span class="todo">To do</span> Check the project's Community Profile, read its LICENSE (and classify it: permissive, copyleft, or source-available), and read its CONTRIBUTING.md if one exists. Journal what the audit surfaced, then contribute something small but real: a typo fix, a missing README example, or a doc clarification, following their contribution conventions exactly.
+        Present: MIT license, a genuinely good README, SECURITY.md. Missing on a 14,000-star project: CONTRIBUTING.md, CODE_OF_CONDUCT, issue templates, PR template. The LICENSE read: MIT fits py-spy exactly, a developer tool that wants zero adoption friction, no SaaS-loophole exposure worth caring about, permissive-by-default Rust ecosystem. The gap that matters is the missing CONTRIBUTING.md: build knowledge is buried in a README development section, and a first-time contributor has to guess at test commands and PR expectations, precisely the "if it's bad, you lose them" failure this week's material describes. That makes the small, genuinely useful contribution obvious: a CONTRIBUTING.md distilling what already exists in the README and CI config, proposed issue-first per their norms.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">audit</span></div>
+        <pre><span class="cmd">$ gh api repos/benfred/py-spy/community/profile</span>
+<span class="out">health_percentage: 57</span>
+<span class="out">license: true (MIT)   readme: true   security: true</span>
+<span class="out">contributing: false   code_of_conduct: false   templates: false</span></pre>
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li>Community Profile checked, LICENSE and CONTRIBUTING.md read and journaled.</li>
-        <li>One small, genuinely useful PR opened on the project.</li>
+        <li>Community Profile checked, LICENSE and (absent) CONTRIBUTING.md read and journaled. ✓</li>
+        <li><strong>Remaining:</strong> file the issue + CONTRIBUTING.md PR, queued behind this week's no-push rule.</li>
       </ul>
     </div>
   </div>
@@ -303,20 +310,27 @@
     <div class="section-header">
       <span class="section-number">// 06</span>
       <h2>Soft Skill, Setting Boundaries (Saying No)</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>The principle:</strong> maintainer burnout is the OSS occupational hazard, and the cause is almost always an inability to say no. An OSS project with bad boundaries dies with its maintainer; the kindest thing for future users is a maintainer who is still around in 3 years.
+      <strong>The principle:</strong> maintainer burnout is the OSS occupational hazard, and the cause is almost always an inability to say no. Instead of rehearsing the three refusals in the abstract, they are now written into the project's actual documents, where they will get used.
     </div>
 
     <div class="block">
-      <div class="block-title">Three kind, firm refusals to practice</div>
+      <div class="block-title">Where each refusal now lives</div>
       <ul class="checklist">
-        <li><strong>The clear no with rationale.</strong> "I've thought about this and decided not to, it adds API complexity for everyone to serve a smaller use case. If it matters to you, fork it and I'll link your fork from the README."</li>
-        <li><strong>The not-now no.</strong> "Great idea, not on the roadmap for v1. I'd accept a PR if someone wants to maintain it as a plugin."</li>
-        <li><strong>The boundary no.</strong> "I can't provide one-on-one debugging support. Post a minimal reproducible example as an issue and I'll look when I have time."</li>
+        <li><strong>The clear no with rationale</strong> lives in GOVERNANCE.md: every no comes with the reason and an alternative, usually "maintain it as a fork and I will link it from the README".</li>
+        <li><strong>The not-now no</strong> lives in the feature bar: a good idea that is unstaffed gets "a PR that includes the maintenance (tests, docs) changes that answer".</li>
+        <li><strong>The boundary no</strong> lives in CONTRIBUTING.md's review expectations: no one-on-one debugging support, a minimal reproducible example is the path to attention, first response within a week.</li>
       </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The takeaway</div>
+      <div class="reflection">
+        Boundaries are not rudeness; they are what keeps a maintainer alive in three years, and a project whose maintainer burned out serves nobody. Saying no kindly, in writing, before anyone asks, is cheaper than saying it badly, in an issue thread, at 1am.
+      </div>
     </div>
   </div>
 

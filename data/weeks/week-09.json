@@ -9,16 +9,28 @@
       "id": "pick-license",
       "type": "licensing",
       "title": "Pick the License",
-      "status": "pending",
+      "status": "done",
       "why": "For my own personal repo, write a justification in my journal: which license, and why (permissive vs copyleft, deliberately chosen). Add the LICENSE file, named exactly LICENSE, with year and copyright holder.",
       "links": [
-        { "type": "doc", "label": "choosealicense.com", "url": "https://choosealicense.com" },
-        { "type": "doc", "label": "OSI-approved licenses", "url": "https://opensource.org/licenses" },
-        { "type": "report", "label": "Week 09 full report", "url": "/reports/week-09.html" }
+        {
+          "type": "doc",
+          "label": "choosealicense.com",
+          "url": "https://choosealicense.com"
+        },
+        {
+          "type": "doc",
+          "label": "OSI-approved licenses",
+          "url": "https://opensource.org/licenses"
+        },
+        {
+          "type": "report",
+          "label": "Week 09 full report",
+          "url": "/reports/week-09.html"
+        }
       ],
-      "reflection": null,
+      "reflection": "The repo is MacDirStat, and the honest starting point is that it already had a license, AGPL-3.0, chosen when I published it. This week's exercise was to justify it deliberately instead of by momentum, and it survives the copyleft question with an interesting twist. Do I care if someone takes the code, modifies it, and never shares back? Yes: MacDirStat is a polished end-user app, and the realistic bad outcome is someone repackaging it (or a themed fork) as a paid app with private changes. AGPL's distribution trigger blocks that, and its network trigger costs nothing here since a local disk scanner has no SaaS story to lose. The twist is the Mac App Store: the same app ships there as DirStat, and GPL-family licenses are famously incompatible with App Store terms. That combination is legal for exactly one party, the copyright holder, who is not bound by their own license. So AGPL + sole ownership works as de facto dual licensing: everyone else gets strong copyleft, I keep the store channel. The fine print that decision creates: outside contributions would break sole ownership, so CONTRIBUTING.md now carries an explicit inbound-licensing clause (AGPL + App Store distribution grant). Also fixed what the brief warns about: the LICENSE was the stock FSF text with no project copyright line, so the README gained 'Copyright (c) 2026 Qutibah Ananzeh' and a License section explaining the choice.",
       "commands": [],
-      "output": null,
+      "output": "AGPL-3.0 justified deliberately (anti-repackaging copyleft + App-Store distribution via sole copyright ownership); copyright line + License section added to README on branch community/standards.",
       "screenshot": null,
       "pr": null
     },
@@ -26,16 +38,30 @@
       "id": "community-profile",
       "type": "community",
       "title": "Hit 100% Community Profile",
-      "status": "pending",
+      "status": "in-progress",
       "why": "For one of my repos, complete every item on GitHub's Community Standards checklist: README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, issue and PR templates. Screenshot the green page in my journal.",
       "links": [
-        { "type": "doc", "label": "Contributor Covenant 2.1", "url": "https://www.contributor-covenant.org/version/2/1/code_of_conduct/" },
-        { "type": "doc", "label": "opensource.guide", "url": "https://opensource.guide" },
-        { "type": "report", "label": "Week 09 full report", "url": "/reports/week-09.html" }
+        {
+          "type": "doc",
+          "label": "Contributor Covenant 2.1",
+          "url": "https://www.contributor-covenant.org/version/2/1/code_of_conduct/"
+        },
+        {
+          "type": "doc",
+          "label": "opensource.guide",
+          "url": "https://opensource.guide"
+        },
+        {
+          "type": "report",
+          "label": "Week 09 full report",
+          "url": "/reports/week-09.html"
+        }
       ],
-      "reflection": null,
-      "commands": [],
-      "output": null,
+      "reflection": "Everything GitHub's checklist asks for now exists: README and LICENSE were already there, SECURITY.md is in PR #13 from week 7, and this week's branch adds CONTRIBUTING.md, CODE_OF_CONDUCT.md (Contributor Covenant 2.1 verbatim, per the brief's don't-write-your-own rule), bug and feature issue templates, a What/Why/How/Test PR template, and CODEOWNERS. The one thing that cannot happen yet is the green page itself: the Community Standards page reads from the default branch, and this week runs under a no-push rule, so the files sit on the local community/standards branch. Merge day flips the checklist green; the screenshot goes in then.",
+      "commands": [
+        "gh api repos/Ti-03/MacDirStat/community/profile   # 42% before; green after merge"
+      ],
+      "output": "All checklist files written and committed locally (branch community/standards). Green page + screenshot pending push/merge.",
       "screenshot": null,
       "pr": null
     },
@@ -43,15 +69,23 @@
       "id": "contributing-md",
       "type": "docs",
       "title": "Write the CONTRIBUTING.md",
-      "status": "pending",
+      "status": "done",
       "why": "Cover: dev environment setup, how to run tests, how to file a bug, my PR conventions, and my review expectations. This is what new contributors read first; if it's bad, I lose them.",
       "links": [
-        { "type": "doc", "label": "expressjs/express contributor docs", "url": "https://github.com/expressjs/express" },
-        { "type": "report", "label": "Week 09 full report", "url": "/reports/week-09.html" }
+        {
+          "type": "doc",
+          "label": "expressjs/express contributor docs",
+          "url": "https://github.com/expressjs/express"
+        },
+        {
+          "type": "report",
+          "label": "Week 09 full report",
+          "url": "/reports/week-09.html"
+        }
       ],
-      "reflection": null,
+      "reflection": "Written as the document I wished every project had when I contributed during weeks 4 through 8: exact clone-to-run commands (swift run, no dependencies), the one test command plus the CI-matrix gotcha that actually bites (runtime #available does not fix compile-time SDK breakage, see the week 5 story), what makes a disk-scanner bug reproducible (macOS version, folder shape, network mounts and iCloud placeholders), issue-first PR conventions with the What/Why/How/Test structure, and honest review expectations from a solo maintainer: first response within a week, no one-on-one debugging support, and a warning that narrow-use-case complexity gets a friendly no. The clause I have not seen in template CONTRIBUTINGs but this repo genuinely needs: an inbound-licensing paragraph, because AGPL code that also ships on the App Store only works while the maintainer can license every line.",
       "commands": [],
-      "output": null,
+      "output": "CONTRIBUTING.md on branch community/standards: setup, tests + CI gotcha, bug filing, PR conventions, review expectations, inbound AGPL + App Store licensing clause.",
       "screenshot": null,
       "pr": null
     },
@@ -59,14 +93,18 @@
       "id": "governance",
       "type": "governance",
       "title": "Document Governance",
-      "status": "pending",
+      "status": "done",
       "why": "Even as a solo BDFL, write a 1-page GOVERNANCE.md explaining how decisions are made. Implicit governance is the worst kind.",
       "links": [
-        { "type": "report", "label": "Week 09 full report", "url": "/reports/week-09.html" }
+        {
+          "type": "report",
+          "label": "Week 09 full report",
+          "url": "/reports/week-09.html"
+        }
       ],
-      "reflection": null,
+      "reflection": "One page, honest: BDFL. It names the maintainer, states that decisions get reversed by better arguments and evidence rather than volume, sets the feature bar ('serves the core job without adding complexity everyone else pays for'), requires ADRs for breaking changes, and documents what a no looks like: reason plus alternative, usually 'fork it and I will link you from the README'. It also pre-commits to rewriting itself if a second maintainer ever earns commit access, because at two people 'the founder decides' stops being governance and starts being a bottleneck. Writing it took twenty minutes; the value is that the rules now exist somewhere other than my head.",
       "commands": [],
-      "output": null,
+      "output": "GOVERNANCE.md on branch community/standards: BDFL model, decision rules, the shape of a no, path to shared maintainership.",
       "screenshot": null,
       "pr": null
     },
@@ -74,14 +112,21 @@
       "id": "audit-contribute",
       "type": "contribution",
       "title": "Audit a Real Project, Then Contribute",
-      "status": "pending",
+      "status": "in-progress",
       "why": "Pick an OSS project I actually use. Check its Community Profile, read its LICENSE, read its CONTRIBUTING.md. Then do one small, real thing: open a PR (typo fix, missing README example, doc clarification, anything genuinely useful).",
       "links": [
-        { "type": "report", "label": "Week 09 full report", "url": "/reports/week-09.html" }
+        {
+          "type": "report",
+          "label": "Week 09 full report",
+          "url": "/reports/week-09.html"
+        }
       ],
-      "reflection": null,
-      "commands": [],
-      "output": null,
+      "reflection": "Audited benfred/py-spy, the profiler from week 8 and a tool I actually used this month. Community profile: 57%. Present: MIT license, a solid README, SECURITY.md. Missing: CONTRIBUTING.md, CODE_OF_CONDUCT, issue templates, PR template, on a 14,000-star project. The LICENSE read: MIT fits it exactly, a developer tool that wants zero adoption friction, no SaaS-loophole exposure worth caring about, and its Rust crate ecosystem is permissive-by-default. The missing CONTRIBUTING.md is the interesting part: the README has build instructions buried in a development section, but a first-time contributor has to guess at test commands and PR expectations, which is precisely the gap this week's material says loses contributors. That makes the small, genuinely useful contribution obvious: a CONTRIBUTING.md distilling the build/test knowledge that already exists in the README and CI config. Under this week's no-push rule the PR is not filed; it is the queued next action, issue-first per their norms.",
+      "commands": [
+        "gh api repos/benfred/py-spy/community/profile   # 57%",
+        "gh api repos/benfred/py-spy --jq .license.spdx_id   # MIT"
+      ],
+      "output": "py-spy audit done: 57% profile, MIT (right license for it), no CONTRIBUTING.md on a 14k-star repo. Contribution candidate identified (CONTRIBUTING.md); filing awaits push permission.",
       "screenshot": null,
       "pr": null
     },
@@ -89,15 +134,23 @@
       "id": "saying-no",
       "type": "soft-skill",
       "title": "Soft Skill: Setting Boundaries (Saying No)",
-      "status": "pending",
+      "status": "done",
       "why": "Maintainer burnout is almost always an inability to say no. Practice the three kind, firm refusals: the clear no with rationale, the not-now no, and the boundary no. A maintainer who is still around in 3 years is the kindest thing a project can have.",
       "links": [
-        { "type": "doc", "label": "Working in Public, Nadia Eghbal", "url": "https://press.stripe.com/working-in-public" },
-        { "type": "report", "label": "Week 09 full report", "url": "/reports/week-09.html" }
+        {
+          "type": "doc",
+          "label": "Working in Public, Nadia Eghbal",
+          "url": "https://press.stripe.com/working-in-public"
+        },
+        {
+          "type": "report",
+          "label": "Week 09 full report",
+          "url": "/reports/week-09.html"
+        }
       ],
-      "reflection": null,
+      "reflection": "Instead of rehearsing the three refusals in the abstract, I wrote them into the project's actual documents, which is where they will get used. The clear no with rationale lives in GOVERNANCE.md: every no comes with the reason and an alternative, usually a linked fork. The not-now no lives in the feature bar: a good idea that is unstaffed gets 'a PR that includes the maintenance answers that'. The boundary no lives in CONTRIBUTING.md's review expectations: no one-on-one debugging support, a minimal reproducible example is the path to attention, first response within a week. The reframe that stuck from the brief: boundaries are not rudeness, they are what keeps a maintainer alive in three years, and a project whose maintainer burned out serves nobody. Saying no kindly, in writing, before anyone asks, is cheaper than saying it badly, in an issue thread, at 1am.",
       "commands": [],
-      "output": null,
+      "output": "The three refusals codified in real docs: rationale-no in GOVERNANCE.md, not-now-no in the feature bar, boundary-no in CONTRIBUTING.md review expectations.",
       "screenshot": null,
       "pr": null
     }
