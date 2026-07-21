@@ -169,37 +169,34 @@
     <div class="section-header">
       <span class="section-number">// 01</span>
       <h2>Add Dependabot</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> configure Dependabot for one repo, both the code ecosystem and <code>github-actions</code>, pin every Action to a commit SHA, and submit as a PR.
+      <strong>Repo:</strong> <a href="https://github.com/Ti-03/MacDirStat" target="_blank">Ti-03/MacDirStat</a> &nbsp;&middot;&nbsp; <strong>PR:</strong> <a href="https://github.com/Ti-03/MacDirStat/pull/12" target="_blank">#12</a> &nbsp;&middot;&nbsp; both ecosystems the repo actually has: <code>swift</code> (SwiftPM) and <code>github-actions</code>, weekly.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">What I did</div>
       <div class="reflection">
-        <span class="todo">To do</span> Add <code>.github/dependabot.yml</code> with a weekly schedule for the repo's package ecosystem and for <code>github-actions</code>. Pinning to <code>@v4</code> still exposes any vulnerability published under that tag, so every existing <code>uses:</code> line gets rewritten to a commit SHA with the version kept as a trailing comment.
+        The pinning half was the real lesson. Every <code>uses:</code> line in <code>ci.yml</code> and <code>pages.yml</code> moved from a mutable tag (<code>@v4</code>) to the tag's resolved commit SHA with the version kept as a trailing <code># v4</code> comment, which Dependabot understands and keeps updated. Resolving a SHA takes two API hops, because a tag ref can point at an annotated tag object rather than the commit itself. One honest mistake worth recording: my first commit staged <code>.github/</code> wholesale and swept 41 vale-sync style files into the PR; a follow-up commit dropped them and the diff settled at exactly 3 files.
       </div>
       <div class="code-block" style="margin-top:16px;">
-        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">.github/dependabot.yml</span></div>
-        <pre><span class="hsh">version: 2</span>
-<span class="key">updates:</span>
-  - package-ecosystem: npm
-    directory: /
-    schedule: { interval: weekly }
-  - package-ecosystem: github-actions
-    directory: /
-    schedule: { interval: weekly }</pre>
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">resolve tag -&gt; commit sha</span></div>
+        <pre><span class="cmd">$ gh api repos/actions/checkout/git/ref/tags/v4</span>   <span class="cm"># -&gt; object sha (may be a tag object)</span>
+<span class="cmd">$ gh api repos/actions/checkout/git/tags/&lt;sha&gt;</span>    <span class="cm"># -&gt; the actual commit</span>
+<span class="out">actions/checkout@v4          11d5960a326750d5838078e36cf38b85af677262</span>
+<span class="out">actions/cache@v4             0057852bfaa89a56745cba8c7296529d2fc39830</span>
+<span class="out">actions/deploy-pages@v4      d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e</span></pre>
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li><code>.github/dependabot.yml</code> covers both the language ecosystem and <code>github-actions</code>.</li>
-        <li>Every <code>uses:</code> line in the workflows is pinned by commit SHA, not a mutable tag.</li>
-        <li>Change submitted as a PR.</li>
+        <li><code>.github/dependabot.yml</code> covers <code>swift</code> and <code>github-actions</code>. ✓</li>
+        <li>All 6 <code>uses:</code> lines across both workflows pinned by commit SHA. ✓</li>
+        <li>Submitted as PR <a href="https://github.com/Ti-03/MacDirStat/pull/12" target="_blank">#12</a>. ✓</li>
       </ul>
     </div>
   </div>
@@ -209,34 +206,35 @@
     <div class="section-header">
       <span class="section-number">// 02</span>
       <h2>Sign a Release with Sigstore</h2>
-      <span class="tag">Pending</span>
+      <span class="tag">In Progress</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> tag a release, sign the artifact with cosign, and document the verify command in the README.
+      <strong>Repo:</strong> <a href="https://github.com/Ti-03/MacDirStat" target="_blank">Ti-03/MacDirStat</a> &nbsp;&middot;&nbsp; <strong>PR:</strong> <a href="https://github.com/Ti-03/MacDirStat/pull/14" target="_blank">#14</a> &nbsp;&middot;&nbsp; keyless signing wired into a release workflow; first signed tag (<code>v1.2.0</code>) lands after merge.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">What I did</div>
       <div class="reflection">
-        <span class="todo">To do</span> Sign the release artifact with cosign, authenticating keylessly against a GitHub identity, so the signature ties to the exact workflow and tag rather than a private key someone has to guard forever.
+        PR #14 adds <code>release.yml</code>: on any <code>v*</code> tag it builds the release binary, zips it, signs it with cosign <strong>keylessly</strong> (the job's OIDC token becomes a short-lived Fulcio certificate, logged in Rekor), and attaches the artifact plus its <code>.cosign.bundle</code> to the GitHub release. The README now documents the exact <code>verify-blob</code> command, pinned to this repo's <code>release.yml</code> identity. Exercising the mechanics locally against the existing v1.1 DMG with a throwaway key caught a real bug before it shipped: cosign v3 removed <code>--output-signature</code>/<code>--output-certificate</code> and requires <code>--bundle</code>, so the workflow as first written would have failed on its very first tag. The local demo also proved the point of the exercise: the intact DMG verifies OK, and the same DMG with one byte flipped is rejected.
       </div>
       <div class="code-block" style="margin-top:16px;">
-        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">cosign sign-blob / verify-blob</span></div>
-        <pre><span class="cmd">$ cosign sign-blob --yes ./release.tar.gz --output-signature release.tar.gz.sig</span>
-<span class="cmd">$ cosign verify-blob \</span>
-<span class="cmd">    --certificate-identity '&lt;workflow-url&gt;@refs/tags/v1.0.0' \</span>
-<span class="cmd">    --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \</span>
-<span class="cmd">    --signature release.tar.gz.sig ./release.tar.gz</span></pre>
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">local sign / verify / tamper demo</span></div>
+        <pre><span class="cmd">$ cosign sign-blob --key cosign.key --yes --bundle MacDirStat-1.1.dmg.cosign.bundle MacDirStat-1.1.dmg</span>
+<span class="out">Wrote bundle to file MacDirStat-1.1.dmg.cosign.bundle</span>
+<span class="cmd">$ cosign verify-blob --key cosign.pub --bundle ... MacDirStat-1.1.dmg</span>
+<span class="out">Verified OK</span>
+<span class="cmd">$ cosign verify-blob --key cosign.pub --bundle ... tampered.dmg</span>   <span class="cm"># one byte flipped</span>
+<span class="key">Error: failed to verify signature</span></pre>
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li>Release tagged, artifact built.</li>
-        <li>Artifact signed with cosign, signature logged to Rekor.</li>
-        <li>Verify command documented in the README so anyone can check it.</li>
+        <li>Release workflow signs keylessly with cosign, bundle logged to Rekor. ✓ (PR <a href="https://github.com/Ti-03/MacDirStat/pull/14" target="_blank">#14</a>)</li>
+        <li>Verify command documented in the README. ✓</li>
+        <li><strong>Remaining:</strong> merge PR #14, push the <code>v1.2.0</code> tag, confirm the first signed release.</li>
       </ul>
     </div>
   </div>
@@ -246,31 +244,38 @@
     <div class="section-header">
       <span class="section-number">// 03</span>
       <h2>Generate and Read an SBOM</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> run Syft on a project, run Grype against the SBOM, and write a journal entry on any known CVEs that surface.
+      <strong>Subject:</strong> this progress site itself. A "tiny static site" whose CycloneDX SBOM lists <strong>482 components</strong>; Grype found <strong>16 known vulnerabilities</strong>, two High. After targeted updates: <strong>1</strong>.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">What I did</div>
       <div class="reflection">
-        <span class="todo">To do</span> Generate a CycloneDX SBOM with Syft, then feed it to Grype to check every listed package and version against osv.dev. If anything shows up, pick one finding and dig in: what the CVE actually affects, whether the fix is a version bump, and who else it touches.
+        The finding I investigated in depth: <a href="https://github.com/advisories/GHSA-52cp-r559-cp3m" target="_blank">GHSA-52cp-r559-cp3m</a> in <code>js-yaml 4.1.1</code>, published <strong>two days before the scan</strong>. It is a quadratic-CPU parsing bug: a YAML document chaining merge keys (<code>&lt;&lt;: *anchor</code>) forces O(N&sup2;) work for O(N) input, so a sub-100KB document can hang the parser for seconds. The interesting part is who is affected: <code>npm ls</code> shows js-yaml reaches this repo only through eslint and the shadcn CLI, both dev-time tools, and the site is a static export that parses no YAML at runtime. High severity, near-zero exposure here; that judgment is the whole point. I fixed what was fixable anyway: <code>npm update</code> bumped js-yaml to 4.3.0 plus five other flagged packages, and the re-scan dropped from 16 findings to 1. The leftover is postcss 8.4.31, which Next.js itself pins: Medium, build-time only, tracked rather than fought.
       </div>
       <div class="code-block" style="margin-top:16px;">
-        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">syft + grype</span></div>
-        <pre><span class="cmd">$ syft ./my-app --output cyclonedx-json=sbom.json</span>
-<span class="cmd">$ grype sbom:sbom.json</span></pre>
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">syft + grype, before / after</span></div>
+        <pre><span class="cmd">$ syft . -o cyclonedx-json=sbom.json</span>   <span class="cm"># 482 components</span>
+<span class="cmd">$ grype sbom:sbom.json</span>
+<span class="out">js-yaml          4.1.1   4.3.0   GHSA-52cp-r559-cp3m  High</span>
+<span class="out">brace-expansion  5.0.6   5.0.7   GHSA-3jxr-9vmj-r5cp  High</span>
+<span class="out">... 14 more (hono, qs, postcss, body-parser, @babel/core)</span>
+<span class="cmd">$ npm ls js-yaml</span>   <span class="cm"># eslint + shadcn -&gt; js-yaml (dev-time only)</span>
+<span class="cmd">$ npm update js-yaml brace-expansion hono qs body-parser @babel/core</span>
+<span class="cmd">$ grype sbom:sbom-after.json</span>
+<span class="out">postcss  8.4.31  8.5.10  GHSA-qx2v-qp2m-jg93  Medium</span>   <span class="cm"># pinned by Next itself</span></pre>
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li><code>sbom.json</code> generated for a real project.</li>
-        <li>Grype run against it, output captured.</li>
-        <li>Journal entry written on the findings, with one CVE investigated in depth.</li>
+        <li><code>sbom.json</code> generated for a real project. ✓ (482 components)</li>
+        <li>Grype run against it, output captured. ✓ (16 findings &rarr; 1 after fixes)</li>
+        <li>One CVE investigated in depth. ✓ (GHSA-52cp-r559-cp3m: mechanism, fix, who is affected)</li>
       </ul>
     </div>
   </div>
@@ -280,30 +285,37 @@
     <div class="section-header">
       <span class="section-number">// 04</span>
       <h2>Run OpenSSF Scorecard</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> run Scorecard on a project, then try to open a PR fixing the lowest-scoring check.
+      <strong>Repo:</strong> <a href="https://github.com/Ti-03/MacDirStat" target="_blank">Ti-03/MacDirStat</a> &nbsp;&middot;&nbsp; <strong>Score: 3.0/10</strong>, twelve checks at zero &nbsp;&middot;&nbsp; <strong>PR:</strong> <a href="https://github.com/Ti-03/MacDirStat/pull/13" target="_blank">#13</a>
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">What I did</div>
       <div class="reflection">
-        <span class="todo">To do</span> Run Scorecard against one of my own repos, read through the 18+ checks, and treat the lowest score as the actual target instead of chasing every checkbox. Per the soft-skill note this week, not every check matters equally: branch protection on <code>main</code> is worth fighting for, pinned dependencies on a hobby repo is not.
+        Reading the full report was the calibration exercise. Most of the twelve zeros need process or settings, not code: branch protection, code review on a solo repo, fuzzing, a CII badge. Chasing all of them would be checkbox security. Two zeros were fixable from inside the repo and actually change the threat model, so they became PR #13: <strong>Token-Permissions</strong> (ci.yml had no <code>permissions</code> block, so every job got a default token with write access to repo contents; build-and-test needs read-only) and <strong>Security-Policy</strong> (no SECURITY.md, so the only way to report a vulnerability was a public issue). Two more zeros, Dependency-Update-Tool and Pinned-Dependencies, are already covered by the Dependabot PR #12 from task 1, so the two PRs together should move four checks off zero once merged.
       </div>
       <div class="code-block" style="margin-top:16px;">
         <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">scorecard</span></div>
-        <pre><span class="cmd">$ go install github.com/ossf/scorecard/v5/cmd/scorecard@latest</span>
-<span class="cmd">$ scorecard --repo=github.com/&lt;owner&gt;/&lt;repo&gt;</span></pre>
+        <pre><span class="cmd">$ export GITHUB_AUTH_TOKEN=$(gh auth token)</span>
+<span class="cmd">$ scorecard --repo=github.com/Ti-03/MacDirStat</span>
+<span class="out">AGGREGATE: 3.0 / 10</span>
+<span class="out">  0  Token-Permissions        default token can write contents</span>
+<span class="out">  0  Security-Policy          no SECURITY.md</span>
+<span class="out">  0  Dependency-Update-Tool   (fixed by PR #12)</span>
+<span class="out">  0  Pinned-Dependencies      (fixed by PR #12)</span>
+<span class="out">  0  Branch-Protection, Code-Review, Fuzzing, ...   settings/process</span>
+<span class="out"> 10  License, CI-Tests, Dangerous-Workflow, Binary-Artifacts, Vulnerabilities</span></pre>
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li>Scorecard run, full report read, lowest-scoring check identified.</li>
-        <li>PR opened addressing that specific check.</li>
+        <li>Scorecard run, full report read, lowest-scoring checks identified. ✓</li>
+        <li>PR opened addressing the PR-fixable zeros: <a href="https://github.com/Ti-03/MacDirStat/pull/13" target="_blank">#13</a> (least-privilege CI token + SECURITY.md). ✓</li>
       </ul>
     </div>
   </div>
@@ -313,7 +325,7 @@
     <div class="section-header">
       <span class="section-number">// 05</span>
       <h2>Soft Skill, Conscientious Skepticism</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
@@ -321,12 +333,12 @@
     </div>
 
     <div class="block">
-      <div class="block-title">Specific moves to practice this week</div>
+      <div class="block-title">How the week's work exercised it</div>
       <ul class="checklist">
-        <li><strong>Phrase concerns as questions.</strong> "What's the threat model for this dependency?" lands differently than "we can't add this".</li>
-        <li><strong>Bring data, not alarm.</strong> "3 known CVEs in the last year and a Scorecard of 4/10, here's the alternative" beats "this is risky".</li>
-        <li><strong>Pick battles.</strong> Branch protection on <code>main</code> is a real fight; Pinned-Dependencies on a hobby project is not.</li>
-        <li><strong>Default to charity.</strong> A sketchy dependency usually means someone was trying to ship, not being careless. Educate, don't blame.</li>
+        <li><strong>Bring data, not alarm.</strong> The SBOM scan surfaced a High in js-yaml. The alarmed move is "drop everything"; the data-first move was <code>npm ls</code> showing it only enters via eslint and shadcn at dev time in a static-export site. Severity is not exposure. Fixed with a one-line update anyway.</li>
+        <li><strong>Pick battles.</strong> Scorecard handed me twelve zeros. Fighting all of them is checkbox security; the PR fixed the two that change the threat model (CI token write access, no vulnerability reporting path) and skipped fuzzing badges for a solo desktop app.</li>
+        <li><strong>Phrase concerns as questions, with evidence attached.</strong> The week's PRs lead with the incident that motivates them (tj-actions for SHA pinning) rather than "this is insecure".</li>
+        <li><strong>Default to charity.</strong> My own first Dependabot commit accidentally shipped 41 generated files, exactly the class of oversight I would be tempted to flag in someone else's PR while they were just trying to ship.</li>
       </ul>
     </div>
   </div>
