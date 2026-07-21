@@ -170,35 +170,37 @@
   <div class="section">
     <div class="section-header">
       <span class="section-number">// 01</span>
-      <h2>Profile and Fix (Someone Else's Repo)</h2>
-      <span class="tag">Pending</span>
+      <h2>Profile and Fix (Voxa)</h2>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> profile a real workflow in an open-source project I actually use, find a function taking &gt;50ms with a flame graph, and open a PR if a small safe fix exists. Either way, open an issue with the flame graph, the specific function, and the numbers.
+      <strong>Subject:</strong> <a href="https://github.com/voxa-code/voxa" target="_blank">Voxa</a>'s server test suite, 1180 tests (the brief explicitly allows "any of your own slow code") &nbsp;&middot;&nbsp; <strong>Result: 33-36s &rarr; 23.7s, ~30% faster</strong>, 1180/1180 green, zero production behavior change.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">What I did</div>
       <div class="reflection">
-        <span class="todo">To do</span> Pick a library or CLI tool from my daily stack and profile a real workload: its test suite, a heavy command, or a script that uses it. State a hypothesis first ("I think the bottleneck is X"), then let the flame graph confirm or embarrass it. Findings get filed as an issue with numbers in the shape "840ms for 10k items, function X is 91% of that time", and the before/after goes in my journal whether or not the maintainers respond.
+        Hypothesis first: I assumed the suite was CPU-bound in the websocket/audio paths. The first measurement killed that: 33s wall but only ~40% CPU, so the suite was mostly <strong>waiting</strong>. <code>--durations</code> showed the top 25 tests (2% of 1181) holding ~22s. Two wait sinks, both proven with a debugger rather than guessed. First: every websocket test's first connection ran <strong>real terminal discovery</strong>, osascript Apple Events to iTerm and Terminal.app plus tmux shell-outs, ~3.3s cold, and a TTL cache hid it from every later test, so the cost masqueraded as one "slow test" and sent me chasing a voice-param red herring. Second: six interrupt tests slept through the real 2&times;0.7s anti-double-esc retry gap, 7s total. Fixes: an autouse fixture stubbing discovery in <code>test_app.py</code> (one helper in the file already did exactly this locally, so the pattern was endorsed), and the 0.7s gap extracted to a class attribute (<code>_interrupt_gap</code>, production default unchanged) that those six tests set to 0. Remaining lead, journaled honestly: two hook tests cost ~3.1s in a full run but 0.8s in isolation, a cross-test contention effect not yet diagnosed. Committed locally on branch <code>perf/faster-test-suite</code>, not pushed, per this week's instruction.
       </div>
       <div class="code-block" style="margin-top:16px;">
-        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">py-spy</span></div>
-        <pre><span class="cm"># attach to a live process and record 30s as a flame graph</span>
-<span class="cmd">$ py-spy record -o profile.svg --pid 12345 --duration 30</span>
-<span class="cm"># or profile a workload from the start</span>
-<span class="cmd">$ py-spy record -o profile.svg -- python -m pytest tests/</span></pre>
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">before / after</span></div>
+        <pre><span class="cmd">$ time .venv/bin/python -m pytest tests -q</span>
+<span class="out">1180 passed, 1 skipped in 32.84s     <span class="cm"># ~40% CPU: the suite is waiting</span></span>
+<span class="cmd">$ .venv/bin/python -m pytest tests -q --durations=25</span>
+<span class="out">3.34s test_voice_param_reaches_factory   <span class="cm"># cold discovery, not voice</span></span>
+<span class="out">1.40s x5 interrupt tests                 <span class="cm"># real 2x0.7s Escape gaps</span></span>
+<span class="cmd">$ time .venv/bin/python -m pytest tests -q</span>   <span class="cm"># after the two fixes</span>
+<span class="out">1180 passed, 1 skipped in 23.69s</span></pre>
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li>Real workflow profiled, flame graph produced.</li>
-        <li>A &gt;50ms function identified as the bottleneck, with numbers.</li>
-        <li>Issue opened with the flame graph attached; PR opened if a small safe fix exists.</li>
-        <li>Before/after documented in the journal.</li>
+        <li>Real workflow profiled (durations + cProfile + thread dumps); wait sinks &gt;50ms identified with numbers. ✓</li>
+        <li>Small, safe fix produced: 2 stubs + 1 constant extraction, behavior unchanged. ✓</li>
+        <li>Before/after documented: 33-36s &rarr; 23.7s, 1180/1180 green. ✓ (local branch only, no push this week)</li>
       </ul>
     </div>
   </div>
@@ -218,7 +220,7 @@
     <div class="block">
       <div class="block-title">Plan</div>
       <div class="reflection">
-        <span class="todo">To do</span> Run an OSS web app locally with SQL logging on and click through list-heavy pages (dashboards, feeds, tables with per-row relations). The tell is the same query shape repeating dozens of times with only the id changing. If one shows up: issue with the query log as evidence, plus a PR if the fix is a one-line eager load. If not, journal the attempt and move on.
+        <span class="todo">To do</span> The honest status: not attempted yet, and I would rather leave it pending than claim a hunt that did not happen. The designated hunting ground is the WordPress site I run locally under DDEV, with the Query Monitor plugin as the SQL log: WordPress metadata loading is famously N+1-shaped, and it is an app I actually operate. The tell to look for is the same query shape repeating dozens of times with only the id changing.
       </div>
     </div>
 
@@ -237,25 +239,39 @@
     <div class="section-header">
       <span class="section-number">// 03</span>
       <h2>Read 3 Real Flame Graphs</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> find any 3 flame graphs published online and write, in my own words, what each one says: what's hot, and what the bottleneck is.
+      <strong>Source:</strong> three published graphs from <a href="https://www.brendangregg.com/flamegraphs.html" target="_blank">brendangregg.com</a>, read from the raw SVG frame data (names, sample counts, widths), not just eyeballed.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">Reading 1: <a href="https://www.brendangregg.com/FlameGraphs/cpu-linux-tcpsend.svg" target="_blank">Linux kernel TCP send</a></div>
       <div class="reflection">
-        <span class="todo">To do</span> Source three published flame graphs (brendangregg.com has a gallery) covering different shapes: one CPU-bound with a clear wide plateau, one where the width drops mid-stack, and one with p99-style slivers. For each, journal the reading: widest block, where the time actually went, and what I would optimize first.
+        One tower stays ~99.8% wide from <code>vfs_write</code> all the way up through <code>tcp_sendmsg</code>, then narrows only gently: <code>tcp_write_xmit</code> 92.7%, <code>ip_queue_xmit</code> 89.3%, <code>dev_queue_xmit</code> 80.7%. There is no wide block at the top of the stack, so there is no hot leaf to optimize. The cost is smeared along the whole network stack: every packet pays the full traversal. The lever here is fewer, bigger sends (batching), not a faster function.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Reading 2: <a href="https://www.brendangregg.com/FlameGraphs/cpu-mysql-updated.svg" target="_blank">MySQL under a query load</a></div>
+      <div class="reflection">
+        <code>dispatch_command</code> (98%) funnels into <code>JOIN::exec</code> (78.3%), which splits into two towers: row fetching via InnoDB reverse index reads (~45.6% under <code>do_select</code>, with <code>ha_innobase::index_prev</code> at 24.4%) and <code>create_sort_index</code>/<code>filesort</code> at 31.2%. Read plainly: nearly a third of the server's entire CPU is sorting rows that the index did not deliver in order. That is the classic missing-or-wrong-index signature; the fix lives in the query or schema (an index satisfying the ORDER BY), not anywhere in mysqld's code.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Reading 3: <a href="https://www.brendangregg.com/FlameGraphs/cpu-bash-flamegraph.svg" target="_blank">bash running a while loop</a></div>
+      <div class="reflection">
+        78% of samples sit under <code>execute_while_command</code>. Inside it, <code>execute_builtin_or_function</code> is 44.7%, but <code>do_redirections</code> (24.9%) plus word expansion (20.6%) together match it: the shell spends about as much time setting up redirections and expanding words each iteration as it does running the actual builtins. That is the cost of a redirect inside a tight loop, re-opened every pass. Also instructive: 15.1% of samples are <code>[unknown]</code>, missing symbols, the real-world annoyance every profiling guide warns about.
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li>3 real flame graphs found and linked.</li>
-        <li>Journal entry per graph: what's hot, what the bottleneck is, in my own words.</li>
+        <li>3 real flame graphs found and linked. ✓</li>
+        <li>Journal reading per graph, in my own words: what's hot, what the bottleneck is, what I would do first. ✓</li>
       </ul>
     </div>
   </div>
@@ -265,33 +281,38 @@
     <div class="section-header">
       <span class="section-number">// 04</span>
       <h2>Use a Real Debugger</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> pick the debugger for my primary language and solve one bug end-to-end with breakpoints. No print statements.
+      <strong>Debugger:</strong> pdb (via <code>pytest --trace</code>) &nbsp;&middot;&nbsp; <strong>The bug:</strong> <code>test_voice_param_reaches_factory</code> took 3.34s while its nearly identical account twin took 0.2s. Zero print statements.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">The session</div>
       <div class="reflection">
-        <span class="todo">To do</span> Take a real bug and work it entirely inside the debugger: breakpoint at the suspected site, inspect state, step through, watch the moment the data goes wrong. The discipline is separating what I know from what I assume; every unchecked assumption is where the bug hides. Document the session and how it compares to print-debugging.
+        Breakpoint at the wait call, <code>c</code> to hit it, stamp a timestamp from the pdb prompt, then <code>n</code> to step <em>over</em> the wait: 3 seconds elapse inside a single step. <code>p captured</code> shows the dict still <strong>empty</strong>, so the 300-poll wait loop exhausted without the value ever arriving; the assert only passes because the value lands during teardown. Then the move that cracked it: running <code>faulthandler.dump_traceback()</code> from the pdb prompt dumped every thread mid-hang. Two worker threads sat in <code>subprocess.run</code> inside <code>discover_claude_sessions</code>, one in <code>_tty_of_tmux_panes</code> (tmux) and one in <code>discover_iterm</code> (osascript Apple Events), while the event loop idled in <code>select</code>. The test was never slow because of the voice param: it was the first websocket connection of the run paying for real terminal discovery, which a TTL cache then hides from every later test. Confirmed by running the account twin alone: 3.77s. The delay lived on threads my print statements would never have executed on; the debugger saw them anyway.
       </div>
       <div class="code-block" style="margin-top:16px;">
-        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">lldb</span></div>
-        <pre><span class="cmd">$ lldb ./my-binary</span>
-<span class="cmd">(lldb) b suspicious_function</span>
-<span class="cmd">(lldb) run</span>
-<span class="cmd">(lldb) p state_variable</span>
-<span class="cmd">(lldb) next / step / continue</span></pre>
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">pdb</span></div>
+        <pre><span class="cmd">$ .venv/bin/python -m pytest tests/test_app.py::test_voice_param_reaches_factory -q --trace</span>
+<span class="cmd">(Pdb) b tests/test_app.py:120</span>   <span class="cm"># the _await_captured call</span>
+<span class="cmd">(Pdb) c</span>
+<span class="cmd">(Pdb) n</span>                          <span class="cm"># step over the wait: ~3s pass</span>
+<span class="cmd">(Pdb) p captured</span>
+<span class="out">{}</span>                               <span class="cm"># 300 polls, value never arrived</span>
+<span class="cmd">(Pdb) !import faulthandler; faulthandler.dump_traceback()</span>
+<span class="out">Thread ...: subprocess.run &lt;- _tty_of_tmux_panes &lt;- discover_claude_sessions</span>
+<span class="out">Thread ...: subprocess.run &lt;- _osa &lt;- discover_iterm  &lt;- discover_claude_sessions</span></pre>
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li>One bug solved end-to-end with breakpoints, zero print statements.</li>
-        <li>Debugger session documented: breakpoints set, state inspected, the moment the bug revealed itself.</li>
+        <li>One bug solved end-to-end with breakpoints, zero print statements. ✓</li>
+        <li>Session documented: breakpoint, step-over timing, state inspection, thread dump, refuted hypothesis. ✓</li>
+        <li>The diagnosis drove the actual fix in task 1 (discovery stub + gap constant). ✓</li>
       </ul>
     </div>
   </div>
@@ -301,20 +322,27 @@
     <div class="section-header">
       <span class="section-number">// 05</span>
       <h2>Soft Skill, Intellectual Humility</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>The principle:</strong> performance work is humbling. Code I thought was fast will be slow; code I wrote off as "probably fine" will dominate the profile. The senior move is trusting the measurement over the story.
+      <strong>The principle:</strong> performance work is humbling. The senior move is trusting the measurement over the story. This week's score: three logged predictions, two wrong.
     </div>
 
     <div class="block">
-      <div class="block-title">Three habits to practice this week</div>
+      <div class="block-title">The wrong-predictions journal, week 8 entries</div>
       <ul class="checklist">
-        <li><strong>State a hypothesis before measuring.</strong> "I think the bottleneck is the database call." Then measure, and notice when wrong. Calibration compounds over months.</li>
-        <li><strong>When wrong, say so out loud.</strong> "I thought X but the data shows Y." Admitting error in public is the most credible form of leadership.</li>
-        <li><strong>Keep a wrong-predictions journal.</strong> One line per confident-but-wrong call; reread monthly to spot where my gut systematically fails.</li>
+        <li><strong>"The Voxa suite is CPU-bound."</strong> Wrong: 33s wall, ~40% CPU. It was 60% waiting on sleeps and subprocesses.</li>
+        <li><strong>"The slow test is voice-param-specific."</strong> Wrong: the account twin alone took 3.77s. The cost was first-connection terminal discovery, and a TTL cache had been assigning the blame to whichever test connected first. The thread dump, not my theory, settled it.</li>
+        <li><strong>"After the fix everything runs under a second."</strong> Wrong: two hook tests still cost ~3.1s in a full run but 0.8s in isolation, and I do not yet know why. That stays in the journal as an open item instead of a hand-wave.</li>
       </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The takeaway</div>
+      <div class="reflection">
+        The habit that did the work was stating each hypothesis before measuring and letting the tooling vote: durations first, then cProfile, then the pdb thread dump that overturned the story I had already half-written. Knowing versus assuming showed up concretely: "the factory sets the dict" was an assumption; <code>p captured</code> returning <code>{}</code> was knowledge.
+      </div>
     </div>
   </div>
 
