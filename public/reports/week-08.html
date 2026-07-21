@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JOSA OpenLab, Week 08</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1117;
+      --border:  #21262d;
+      --accent:  #00b4d8;
+      --red:     #ff7b72;
+      --green:   #3fb950;
+      --amber:   #f59e0b;
+      --text:    #e6edf3;
+      --muted:   #6e7681;
+      --sub:     #8b949e;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.75; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .hero { padding: 72px 40px 56px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 10px; }
+    .hero h1 span { color: var(--accent); }
+    .hero h2 { font-size: 15px; font-weight: 400; color: var(--muted); margin-bottom: 48px; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
+    .badge { display: flex; border-radius: 4px; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; }
+    .badge-label { background: #161b22; border: 1px solid var(--border); border-right: none; padding: 5px 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-radius: 4px 0 0 4px; }
+    .badge-value { padding: 5px 10px; font-weight: 600; color: #0d1117; border-radius: 0 4px 4px 0; }
+    .badge.blue  .badge-value { background: var(--accent); }
+    .badge.navy  .badge-value { background: #0077b6; }
+    .badge.amber .badge-value { background: var(--amber); }
+    .badge.gray  .badge-value { background: var(--muted); color: var(--text); }
+
+    .meta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+    .meta-item { text-align: center; padding: 0 28px; }
+    .meta-item + .meta-item { border-left: 1px solid var(--border); }
+    .meta-item .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .meta-item .value { font-size: 14px; font-weight: 500; color: var(--text); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 64px 24px 80px; }
+    .section { margin-bottom: 64px; }
+    .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .section-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; }
+    .section-header h2 { font-size: 18px; font-weight: 600; letter-spacing: -.3px; color: var(--text); }
+    .section-header .tag { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--amber); border: 1px solid var(--amber); border-radius: 4px; padding: 2px 8px; }
+
+    .block { border-left: 2px solid var(--border); padding: 4px 0 4px 24px; margin-bottom: 32px; }
+    .block-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 32px; font-size: 14px; color: var(--sub); }
+    .callout strong { color: var(--text); font-weight: 500; }
+
+    .code-block { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .code-bar { display: flex; align-items: center; gap: 6px; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #ffbd2e; } .dot.g { background: #28c840; }
+    .code-lang { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+    pre { padding: 18px 20px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; color: #c9d1d9; white-space: pre; scrollbar-width: thin; scrollbar-color: #2d333b transparent; }
+    .cm { color: var(--muted); } .cmd { color: #79c0ff; } .out { color: #c9d1d9; } .hsh { color: #f0883e; } .key { color: #ff7b72; } .str { color: #a5d6ff; }
+
+    .reflection { border-left: 2px solid var(--accent); padding: 6px 0 6px 24px; font-size: 15px; line-height: 1.85; color: var(--sub); }
+    .reflection strong { color: var(--text); font-weight: 500; }
+
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .checklist li { list-style: none; font-size: 13px; color: var(--sub); padding-left: 22px; position: relative; line-height: 1.6; }
+    .checklist li::before { content: '○'; position: absolute; left: 0; color: var(--muted); }
+    .checklist li strong { color: var(--text); font-weight: 500; }
+
+    .placeholder { font-size: 13px; color: var(--muted); font-style: italic; }
+    .todo { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--amber); border: 1px dashed var(--amber); border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .3px; }
+    footer strong { color: var(--sub); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">OpenLab Apprenticeship 2026</div>
+  <h1>JOSA <span>OpenLab</span></h1>
+  <h2>Week 08: Performance, Profiling &amp; Debugging</h2>
+
+  <div class="badges">
+    <div class="badge blue">
+      <span class="badge-label">Week</span>
+      <span class="badge-value">08 of 11</span>
+    </div>
+    <div class="badge navy">
+      <span class="badge-label">Phase</span>
+      <span class="badge-value">Foundations</span>
+    </div>
+    <div class="badge amber">
+      <span class="badge-label">Status</span>
+      <span class="badge-value">In Progress</span>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="label">Apprentice</div>
+      <div class="value">Qutibah Ananzeh</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cohort</div>
+      <div class="value">OpenLab 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Deadline</div>
+      <div class="value">Jul 4, 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- THE STANDARD -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 00</span>
+      <h2>The Standard</h2>
+    </div>
+
+    <div class="callout">
+      <strong>The unifying principle:</strong> don't optimize on gut feeling. Measure first, fix what actually costs the most (how often it runs times how slow it is), then measure again. Knuth's 97% of code doesn't matter for speed; the whole week is about finding the 3% that does.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Reading a flame graph</div>
+      <ul class="checklist">
+        <li><strong>Width = CPU time, height = call depth.</strong> The x-axis is not time; it is how often a function showed up while the profiler sampled.</li>
+        <li><strong>Wide block at the top of a stack.</strong> The function actually doing the work. Prime suspect, optimize it directly.</li>
+        <li><strong>Stack stays wide then suddenly narrows.</strong> The time went where the width drops, not at the top of the stack.</li>
+        <li><strong>Skinny sliver going way up high.</strong> Deep but rare; ignore it unless chasing a p99 spike.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Tooling map</div>
+      <ul class="checklist">
+        <li><strong>py-spy (Python).</strong> Attaches to an already-running process, live, without restarting it: <code>py-spy record -o profile.svg --pid 12345 --duration 30</code>.</li>
+        <li><strong>scalene (Python).</strong> Line-level CPU plus memory attribution.</li>
+        <li><strong>Chrome DevTools / clinic (Node), pprof (Go), cargo-flamegraph (Rust), perf (C/C++).</strong> One go-to profiler per language.</li>
+        <li><strong>The N+1 query.</strong> 1 query for the list, then 1 per row: 51 round trips instead of 1 JOIN. Invisible in the UI, obvious in the SQL log; fixed with eager loading (<code>select_related</code>, <code>includes</code>, <code>selectinload</code>, <code>JOIN FETCH</code>).</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">USE and RED: two checklists for "something's slow, but why?"</div>
+      <ul class="checklist">
+        <li><strong>USE, for the machine underneath.</strong> For each resource (CPU, memory, disk, network): Utilization (how busy), Saturation (is work queueing), Errors (is it failing). First resource that trips one of the three is the bottleneck.</li>
+        <li><strong>RED, for my own service.</strong> Rate (requests/s), Errors (failures/s), Duration (p50/p95/p99, never just the average; averages hide the slow outliers).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 01</span>
+      <h2>Profile and Fix (Someone Else's Repo)</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> profile a real workflow in an open-source project I actually use, find a function taking &gt;50ms with a flame graph, and open a PR if a small safe fix exists. Either way, open an issue with the flame graph, the specific function, and the numbers.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Pick a library or CLI tool from my daily stack and profile a real workload: its test suite, a heavy command, or a script that uses it. State a hypothesis first ("I think the bottleneck is X"), then let the flame graph confirm or embarrass it. Findings get filed as an issue with numbers in the shape "840ms for 10k items, function X is 91% of that time", and the before/after goes in my journal whether or not the maintainers respond.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">py-spy</span></div>
+        <pre><span class="cm"># attach to a live process and record 30s as a flame graph</span>
+<span class="cmd">$ py-spy record -o profile.svg --pid 12345 --duration 30</span>
+<span class="cm"># or profile a workload from the start</span>
+<span class="cmd">$ py-spy record -o profile.svg -- python -m pytest tests/</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>Real workflow profiled, flame graph produced.</li>
+        <li>A &gt;50ms function identified as the bottleneck, with numbers.</li>
+        <li>Issue opened with the flame graph attached; PR opened if a small safe fix exists.</li>
+        <li>Before/after documented in the journal.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 02</span>
+      <h2>Find an N+1 Query (Bonus)</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> turn on SQL logging in an open-source web app and browse for a page issuing N+1 queries. Bonus task: not finding one is a valid outcome, noted in the journal.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Run an OSS web app locally with SQL logging on and click through list-heavy pages (dashboards, feeds, tables with per-row relations). The tell is the same query shape repeating dozens of times with only the id changing. If one shows up: issue with the query log as evidence, plus a PR if the fix is a one-line eager load. If not, journal the attempt and move on.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>SQL logging enabled on a real OSS web app, several pages exercised.</li>
+        <li>If an N+1 is found: issue opened with the query log, PR if the fix is small and obvious.</li>
+        <li>If not found: journal entry noting what was checked.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 03</span>
+      <h2>Read 3 Real Flame Graphs</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> find any 3 flame graphs published online and write, in my own words, what each one says: what's hot, and what the bottleneck is.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Source three published flame graphs (brendangregg.com has a gallery) covering different shapes: one CPU-bound with a clear wide plateau, one where the width drops mid-stack, and one with p99-style slivers. For each, journal the reading: widest block, where the time actually went, and what I would optimize first.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>3 real flame graphs found and linked.</li>
+        <li>Journal entry per graph: what's hot, what the bottleneck is, in my own words.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 4 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 04</span>
+      <h2>Use a Real Debugger</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> pick the debugger for my primary language and solve one bug end-to-end with breakpoints. No print statements.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Take a real bug and work it entirely inside the debugger: breakpoint at the suspected site, inspect state, step through, watch the moment the data goes wrong. The discipline is separating what I know from what I assume; every unchecked assumption is where the bug hides. Document the session and how it compares to print-debugging.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">lldb</span></div>
+        <pre><span class="cmd">$ lldb ./my-binary</span>
+<span class="cmd">(lldb) b suspicious_function</span>
+<span class="cmd">(lldb) run</span>
+<span class="cmd">(lldb) p state_variable</span>
+<span class="cmd">(lldb) next / step / continue</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>One bug solved end-to-end with breakpoints, zero print statements.</li>
+        <li>Debugger session documented: breakpoints set, state inspected, the moment the bug revealed itself.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SOFT SKILL -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 05</span>
+      <h2>Soft Skill, Intellectual Humility</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>The principle:</strong> performance work is humbling. Code I thought was fast will be slow; code I wrote off as "probably fine" will dominate the profile. The senior move is trusting the measurement over the story.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Three habits to practice this week</div>
+      <ul class="checklist">
+        <li><strong>State a hypothesis before measuring.</strong> "I think the bottleneck is the database call." Then measure, and notice when wrong. Calibration compounds over months.</li>
+        <li><strong>When wrong, say so out loud.</strong> "I thought X but the data shows Y." Admitting error in public is the most credible form of leadership.</li>
+        <li><strong>Keep a wrong-predictions journal.</strong> One line per confident-but-wrong call; reread monthly to spot where my gut systematically fails.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Jordan Open Source Association &nbsp;&middot;&nbsp; <strong>OpenLab 2026</strong> &nbsp;&middot;&nbsp; Qutibah Ananzeh
+</footer>
+
+</body>
+</html>

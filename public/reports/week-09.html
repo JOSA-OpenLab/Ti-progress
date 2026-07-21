@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JOSA OpenLab, Week 09</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1117;
+      --border:  #21262d;
+      --accent:  #00b4d8;
+      --red:     #ff7b72;
+      --green:   #3fb950;
+      --amber:   #f59e0b;
+      --text:    #e6edf3;
+      --muted:   #6e7681;
+      --sub:     #8b949e;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.75; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .hero { padding: 72px 40px 56px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 10px; }
+    .hero h1 span { color: var(--accent); }
+    .hero h2 { font-size: 15px; font-weight: 400; color: var(--muted); margin-bottom: 48px; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
+    .badge { display: flex; border-radius: 4px; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; }
+    .badge-label { background: #161b22; border: 1px solid var(--border); border-right: none; padding: 5px 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-radius: 4px 0 0 4px; }
+    .badge-value { padding: 5px 10px; font-weight: 600; color: #0d1117; border-radius: 0 4px 4px 0; }
+    .badge.blue  .badge-value { background: var(--accent); }
+    .badge.navy  .badge-value { background: #0077b6; }
+    .badge.amber .badge-value { background: var(--amber); }
+    .badge.gray  .badge-value { background: var(--muted); color: var(--text); }
+
+    .meta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+    .meta-item { text-align: center; padding: 0 28px; }
+    .meta-item + .meta-item { border-left: 1px solid var(--border); }
+    .meta-item .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .meta-item .value { font-size: 14px; font-weight: 500; color: var(--text); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 64px 24px 80px; }
+    .section { margin-bottom: 64px; }
+    .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .section-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; }
+    .section-header h2 { font-size: 18px; font-weight: 600; letter-spacing: -.3px; color: var(--text); }
+    .section-header .tag { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--amber); border: 1px solid var(--amber); border-radius: 4px; padding: 2px 8px; }
+
+    .block { border-left: 2px solid var(--border); padding: 4px 0 4px 24px; margin-bottom: 32px; }
+    .block-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 32px; font-size: 14px; color: var(--sub); }
+    .callout strong { color: var(--text); font-weight: 500; }
+
+    .code-block { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .code-bar { display: flex; align-items: center; gap: 6px; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #ffbd2e; } .dot.g { background: #28c840; }
+    .code-lang { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+    pre { padding: 18px 20px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; color: #c9d1d9; white-space: pre; scrollbar-width: thin; scrollbar-color: #2d333b transparent; }
+    .cm { color: var(--muted); } .cmd { color: #79c0ff; } .out { color: #c9d1d9; } .hsh { color: #f0883e; } .key { color: #ff7b72; } .str { color: #a5d6ff; }
+
+    .reflection { border-left: 2px solid var(--accent); padding: 6px 0 6px 24px; font-size: 15px; line-height: 1.85; color: var(--sub); }
+    .reflection strong { color: var(--text); font-weight: 500; }
+
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .checklist li { list-style: none; font-size: 13px; color: var(--sub); padding-left: 22px; position: relative; line-height: 1.6; }
+    .checklist li::before { content: '○'; position: absolute; left: 0; color: var(--muted); }
+    .checklist li strong { color: var(--text); font-weight: 500; }
+
+    .placeholder { font-size: 13px; color: var(--muted); font-style: italic; }
+    .todo { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--amber); border: 1px dashed var(--amber); border-radius: 4px; padding: 1px 7px; margin-right: 8px; }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .3px; }
+    footer strong { color: var(--sub); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">OpenLab Apprenticeship 2026</div>
+  <h1>JOSA <span>OpenLab</span></h1>
+  <h2>Week 09: Building Your Own OSS Project, Licensing &amp; Foundations</h2>
+
+  <div class="badges">
+    <div class="badge blue">
+      <span class="badge-label">Week</span>
+      <span class="badge-value">09 of 11</span>
+    </div>
+    <div class="badge navy">
+      <span class="badge-label">Phase</span>
+      <span class="badge-value">Foundations</span>
+    </div>
+    <div class="badge amber">
+      <span class="badge-label">Status</span>
+      <span class="badge-value">In Progress</span>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="label">Apprentice</div>
+      <div class="value">Qutibah Ananzeh</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cohort</div>
+      <div class="value">OpenLab 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Deadline</div>
+      <div class="value">Jul 11, 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- THE STANDARD -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 00</span>
+      <h2>The Standard</h2>
+    </div>
+
+    <div class="callout">
+      <strong>The unifying principle:</strong> the license is, legally, the single most important decision in an OSS project, and a public repo with no LICENSE file grants no rights at all. Visible on GitHub does not mean usable. This week is about choosing deliberately and setting up the foundations that make a project safe to invest time in.
+    </div>
+
+    <div class="block">
+      <div class="block-title">The license question</div>
+      <ul class="checklist">
+        <li><strong>Ask this first:</strong> do I care whether someone can take the code, modify it, and never share the changes back? No: permissive (MIT, Apache 2.0, BSD). Yes: copyleft (GPL, AGPL, MPL).</li>
+        <li><strong>MIT</strong> for libraries meant for wide adoption; <strong>Apache 2.0</strong> adds a patent grant and retaliation clause for non-trivial or enterprise-facing work.</li>
+        <li><strong>GPL-3.0</strong> keeps distributed derivatives open; <strong>AGPL-3.0</strong> extends the trigger to use over a network, closing the SaaS loophole; <strong>MPL-2.0</strong> is file-level copyleft, a pragmatic middle ground.</li>
+        <li><strong>Beware source-available licenses</strong> (BSL, SSPL, Elastic, FSL): they read like OSS but are not OSI-approved. The tell is language singling out who can't use it commercially.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Community standards checklist</div>
+      <ul class="checklist">
+        <li><strong>Copy-paste tier:</strong> LICENSE (named exactly that, not LICENSE.md), CODE_OF_CONDUCT.md (Contributor Covenant 2.1, don't write my own), issue/PR templates, CODEOWNERS.</li>
+        <li><strong>Real-writing tier:</strong> README (name, badges, a 5-line example, one-line install, docs link; the example is the conversion event), CONTRIBUTING.md, SECURITY.md.</li>
+        <li><strong>Versioning:</strong> SemVer with Keep a Changelog; below 1.0.0 is allowed to break. Conventional Commits let release-please or semantic-release cut releases automatically.</li>
+        <li><strong>Governance:</strong> BDFL, do-ocracy, or committee. A new small project starts BDFL, but the decision process gets written down; implicit governance is the worst kind.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 01</span>
+      <h2>Pick the License</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> for my own personal repo, write a journal justification: which license, and why. Then add the LICENSE file.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Walk one of my repos through the copyleft question honestly instead of defaulting to MIT out of habit. Journal the reasoning: what the project is, whether derivatives staying open matters to it, and why the chosen license fits. Add the plaintext <code>LICENSE</code> file with the year and copyright holder.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>Journal entry: which license and why, argued from the permissive-vs-copyleft question.</li>
+        <li><code>LICENSE</code> file added, named exactly LICENSE, with year and copyright holder.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 02</span>
+      <h2>Hit 100% Community Profile</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> for one of my repos, complete every item on GitHub's Community Standards checklist and screenshot the green page.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Work through the checklist at <code>github.com/&lt;owner&gt;/&lt;repo&gt;/community</code>: README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT (Contributor Covenant 2.1 verbatim), SECURITY with a private reporting path, issue templates under <code>.github/ISSUE_TEMPLATE/</code>, and a PR template with the What/Why/How/Test structure. Screenshot the all-green page for the journal.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>Every Community Standards item green on one repo.</li>
+        <li>Screenshot of the green page in the journal.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 03</span>
+      <h2>Write the CONTRIBUTING.md</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> cover setup, how to run tests, how to file a bug, PR conventions, and review expectations. This is what new contributors read first.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Write it as the document I wish every project had when I contributed during weeks 4 through 8: exact dev-environment setup commands, the one command that runs the tests, what a good bug report contains, commit/PR conventions, and what I promise as a reviewer (and how fast). Express's contributor docs are the quality bar.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li><code>CONTRIBUTING.md</code> covers setup, tests, bug filing, PR conventions, review expectations.</li>
+        <li>A newcomer could go from clone to first PR without asking anything.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 4 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 04</span>
+      <h2>Document Governance</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> even as a solo BDFL, write a 1-page GOVERNANCE.md explaining how decisions are made.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> State the model plainly: I (the founder) decide; if you disagree, file an issue and we discuss. Cover who merges, how disputes get resolved, and what would trigger moving to shared maintainership. The point is that implicit governance is the worst kind, so a page of honesty beats silence.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li><code>GOVERNANCE.md</code> written, one page, honest about the BDFL model.</li>
+        <li>Documents the decision process, merge rights, and the path to shared maintainership.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TASK 5 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 05</span>
+      <h2>Audit a Real Project, Then Contribute</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>Goal:</strong> pick an OSS project I actually use, audit it with this week's checklist, then do one small, real thing: open a genuinely useful PR.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Plan</div>
+      <div class="reflection">
+        <span class="todo">To do</span> Check the project's Community Profile, read its LICENSE (and classify it: permissive, copyleft, or source-available), and read its CONTRIBUTING.md if one exists. Journal what the audit surfaced, then contribute something small but real: a typo fix, a missing README example, or a doc clarification, following their contribution conventions exactly.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>Community Profile checked, LICENSE and CONTRIBUTING.md read and journaled.</li>
+        <li>One small, genuinely useful PR opened on the project.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SOFT SKILL -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 06</span>
+      <h2>Soft Skill, Setting Boundaries (Saying No)</h2>
+      <span class="tag">Pending</span>
+    </div>
+
+    <div class="callout">
+      <strong>The principle:</strong> maintainer burnout is the OSS occupational hazard, and the cause is almost always an inability to say no. An OSS project with bad boundaries dies with its maintainer; the kindest thing for future users is a maintainer who is still around in 3 years.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Three kind, firm refusals to practice</div>
+      <ul class="checklist">
+        <li><strong>The clear no with rationale.</strong> "I've thought about this and decided not to, it adds API complexity for everyone to serve a smaller use case. If it matters to you, fork it and I'll link your fork from the README."</li>
+        <li><strong>The not-now no.</strong> "Great idea, not on the roadmap for v1. I'd accept a PR if someone wants to maintain it as a plugin."</li>
+        <li><strong>The boundary no.</strong> "I can't provide one-on-one debugging support. Post a minimal reproducible example as an issue and I'll look when I have time."</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Jordan Open Source Association &nbsp;&middot;&nbsp; <strong>OpenLab 2026</strong> &nbsp;&middot;&nbsp; Qutibah Ananzeh
+</footer>
+
+</body>
+</html>

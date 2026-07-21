@@ -1,0 +1,89 @@
+{
+  "id": 8,
+  "title": "Performance, Profiling & Debugging",
+  "status": "in-progress",
+  "deadline": "2026-07-04",
+  "report": "/reports/week-08.html",
+  "tasks": [
+    {
+      "id": "profile-fix",
+      "type": "profiling",
+      "title": "Profile and Fix (Someone Else's Repo)",
+      "status": "pending",
+      "why": "Pick an open-source project I actually use, profile a real workflow in it, and find a function taking >50ms with a flame graph. Open a PR if a small safe fix exists; either way open an issue with the flame graph, the specific function, and the numbers. Document the before/after in my journal.",
+      "links": [
+        { "type": "doc", "label": "Flame graphs (Brendan Gregg)", "url": "https://www.brendangregg.com/flamegraphs.html" },
+        { "type": "doc", "label": "py-spy", "url": "https://github.com/benfred/py-spy" },
+        { "type": "report", "label": "Week 08 full report", "url": "/reports/week-08.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "n-plus-one",
+      "type": "n-plus-one",
+      "title": "Find an N+1 Query (Bonus)",
+      "status": "pending",
+      "why": "Pick an open-source web app, turn on SQL logging, and browse around looking for a page issuing N+1 queries. If I find one: open an issue with the query log as evidence, and a PR if the fix is a small eager load or JOIN. If I don't find one, note it in the journal and move on.",
+      "links": [
+        { "type": "report", "label": "Week 08 full report", "url": "/reports/week-08.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "flame-graphs",
+      "type": "reading",
+      "title": "Read 3 Real Flame Graphs",
+      "status": "pending",
+      "why": "Find any 3 flame graphs published online and write in my journal, in my own words, what each one says: what's hot, and what the bottleneck is.",
+      "links": [
+        { "type": "doc", "label": "brendangregg.com", "url": "https://www.brendangregg.com/flamegraphs.html" },
+        { "type": "report", "label": "Week 08 full report", "url": "/reports/week-08.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "debugger",
+      "type": "debugging",
+      "title": "Use a Real Debugger",
+      "status": "pending",
+      "why": "Pick a debugger for my primary language (pdb, Chrome DevTools, dlv, lldb) and solve one bug end-to-end with breakpoints. No print statements. Document the experience.",
+      "links": [
+        { "type": "doc", "label": "rr record-replay debugger", "url": "https://rr-project.org" },
+        { "type": "report", "label": "Week 08 full report", "url": "/reports/week-08.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "intellectual-humility",
+      "type": "soft-skill",
+      "title": "Soft Skill: Intellectual Humility",
+      "status": "pending",
+      "why": "Performance work is humbling and intuition is usually wrong. Practice: state a hypothesis before measuring, say it out loud when the data proves me wrong, and keep a wrong-predictions journal to spot where my gut systematically fails.",
+      "links": [
+        { "type": "doc", "label": "Systems Performance, Brendan Gregg", "url": "https://www.brendangregg.com/systems-performance-2nd-edition-book.html" },
+        { "type": "report", "label": "Week 08 full report", "url": "/reports/week-08.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "id": 9,
+  "title": "Building Your Own OSS Project: Licensing & Foundations",
+  "status": "in-progress",
+  "deadline": "2026-07-11",
+  "report": "/reports/week-09.html",
+  "tasks": [
+    {
+      "id": "pick-license",
+      "type": "licensing",
+      "title": "Pick the License",
+      "status": "pending",
+      "why": "For my own personal repo, write a justification in my journal: which license, and why (permissive vs copyleft, deliberately chosen). Add the LICENSE file, named exactly LICENSE, with year and copyright holder.",
+      "links": [
+        { "type": "doc", "label": "choosealicense.com", "url": "https://choosealicense.com" },
+        { "type": "doc", "label": "OSI-approved licenses", "url": "https://opensource.org/licenses" },
+        { "type": "report", "label": "Week 09 full report", "url": "/reports/week-09.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "community-profile",
+      "type": "community",
+      "title": "Hit 100% Community Profile",
+      "status": "pending",
+      "why": "For one of my repos, complete every item on GitHub's Community Standards checklist: README, LICENSE, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, issue and PR templates. Screenshot the green page in my journal.",
+      "links": [
+        { "type": "doc", "label": "Contributor Covenant 2.1", "url": "https://www.contributor-covenant.org/version/2/1/code_of_conduct/" },
+        { "type": "doc", "label": "opensource.guide", "url": "https://opensource.guide" },
+        { "type": "report", "label": "Week 09 full report", "url": "/reports/week-09.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "contributing-md",
+      "type": "docs",
+      "title": "Write the CONTRIBUTING.md",
+      "status": "pending",
+      "why": "Cover: dev environment setup, how to run tests, how to file a bug, my PR conventions, and my review expectations. This is what new contributors read first; if it's bad, I lose them.",
+      "links": [
+        { "type": "doc", "label": "expressjs/express contributor docs", "url": "https://github.com/expressjs/express" },
+        { "type": "report", "label": "Week 09 full report", "url": "/reports/week-09.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "governance",
+      "type": "governance",
+      "title": "Document Governance",
+      "status": "pending",
+      "why": "Even as a solo BDFL, write a 1-page GOVERNANCE.md explaining how decisions are made. Implicit governance is the worst kind.",
+      "links": [
+        { "type": "report", "label": "Week 09 full report", "url": "/reports/week-09.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "audit-contribute",
+      "type": "contribution",
+      "title": "Audit a Real Project, Then Contribute",
+      "status": "pending",
+      "why": "Pick an OSS project I actually use. Check its Community Profile, read its LICENSE, read its CONTRIBUTING.md. Then do one small, real thing: open a PR (typo fix, missing README example, doc clarification, anything genuinely useful).",
+      "links": [
+        { "type": "report", "label": "Week 09 full report", "url": "/reports/week-09.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    },
+    {
+      "id": "saying-no",
+      "type": "soft-skill",
+      "title": "Soft Skill: Setting Boundaries (Saying No)",
+      "status": "pending",
+      "why": "Maintainer burnout is almost always an inability to say no. Practice the three kind, firm refusals: the clear no with rationale, the not-now no, and the boundary no. A maintainer who is still around in 3 years is the kindest thing a project can have.",
+      "links": [
+        { "type": "doc", "label": "Working in Public, Nadia Eghbal", "url": "https://press.stripe.com/working-in-public" },
+        { "type": "report", "label": "Week 09 full report", "url": "/reports/week-09.html" }
+      ],
+      "reflection": null,
+      "commands": [],
+      "output": null,
+      "screenshot": null,
+      "pr": null
+    }
+  ]
+}
