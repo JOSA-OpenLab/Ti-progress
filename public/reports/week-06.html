@@ -111,7 +111,7 @@
     </div>
     <div class="badge amber">
       <span class="badge-label">Status</span>
-      <span class="badge-value">In Progress</span>
+      <span class="badge-value" style="background: var(--green);">Completed</span>
     </div>
   </div>
 
@@ -303,33 +303,34 @@ around the existing #available(macOS 26, *) check.
     <div class="section-header">
       <span class="section-number">// 04</span>
       <h2>Add Vale to a Repo + CI</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Tool:</strong> <a href="https://vale.sh" target="_blank">Vale</a> with the Microsoft style, wired into the same CI pipeline from Week 5.
+      <strong>Repo:</strong> <a href="https://github.com/Ti-03/MacDirStat" target="_blank">Ti-03/MacDirStat</a> &nbsp;&middot;&nbsp; <strong>PR:</strong> <a href="https://github.com/Ti-03/MacDirStat/pull/10" target="_blank">#10</a> &nbsp;&middot;&nbsp; <strong>Tool:</strong> <a href="https://vale.sh" target="_blank">Vale</a> with the <a href="https://learn.microsoft.com/en-us/style-guide/welcome/" target="_blank">Microsoft style</a>
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">What I did</div>
       <div class="reflection">
-        <span class="todo">To do</span> Add Vale (a linter for prose, what ESLint is to code) to one repo, run it over the docs, and fix what it flags. Then add it to CI so style violations fail the build, not a reviewer's patience. The first run will be noisy, that is the point.
+        I put Vale on MacDirStat, the same repo that already has the MkDocs site, the ADR, and the Week 5 CI matrix, so the whole week lives in one PR. The config uses the Microsoft style, the same voice the docs were already written in, which meant the fixes were real style tightening rather than fighting the linter: spaced em dashes became colons and commas, "do not" became "don't", and one quote got its period pulled inside. I turned off <code>Vale.Spelling</code> because the reference pages quote real API symbols (<code>ByteFormatter</code>, <code>TreemapLayout</code>), and set <code>MinAlertLevel</code> to error so clear-cut violations fail the build while advisory warnings still print but don't block. The styles are downloaded by <code>vale sync</code>, not committed, so CI stays reproducible from a clean checkout, which I verified by deleting the local styles dir and re-running the exact CI sequence before opening the change.
       </div>
       <div class="code-block" style="margin-top:16px;">
-        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">vale docs/</span></div>
-        <pre><span class="cmd">$ vale docs/</span>
-<span class="out"> docs/install.md</span>
-<span class="out">  12:5  error    Did you really mean 'simply'?   Microsoft.Adverbs</span>
-<span class="out">  18:3  warning  Use active voice ...            Microsoft.Passive</span></pre>
+        <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">vale</span></div>
+        <pre><span class="cmd">$ brew install vale</span>
+<span class="cmd">$ vale sync</span>
+<span class="cmd">$ vale guide docs/adr README.md</span>
+<span class="cm"># prove CI reproducibility from a clean checkout</span>
+<span class="cmd">$ rm -rf .github/styles && vale sync && vale guide docs/adr README.md</span></pre>
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li><code>.vale.ini</code> configured with the Microsoft style; findings fixed.</li>
-        <li>A Vale step added to the repo's CI so it fails on violations.</li>
-        <li>CI green after the fixes land.</li>
+        <li><code>.vale.ini</code> configured with the Microsoft style; findings fixed. ✓</li>
+        <li>A Vale prose-lint job added to the repo's CI so violations fail the build. ✓</li>
+        <li>Full sequence verified from a clean checkout; submitted as PR <a href="https://github.com/Ti-03/MacDirStat/pull/10" target="_blank">#10</a>. ✓</li>
       </ul>
     </div>
   </div>
@@ -339,20 +340,27 @@ around the existing #available(macOS 26, *) check.
     <div class="section-header">
       <span class="section-number">// 05</span>
       <h2>Soft Skill, Empathy for the Reader</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>The principle is theory of mind:</strong> the reader does not have the context I have. Every word that needs context they lack is a place they bounce.
+      <strong>The principle is theory of mind:</strong> the reader does not have the context I have. Every word that needs context they lack is a place they bounce. &nbsp;&middot;&nbsp; <strong>Outcome:</strong> <a href="https://github.com/Ti-03/MacDirStat/pull/11" target="_blank">MacDirStat PR #11</a>
     </div>
 
     <div class="block">
-      <div class="block-title">Three exercises to practice this week</div>
-      <ul class="checklist">
-        <li><strong>Name the audience.</strong> Say who each page is for at the top ("for developers who already have Node 20+"). The reader self-selects.</li>
-        <li><strong>Read as a stranger.</strong> Open the page in a private tab, pretend I have never seen the project, and follow it. The first place I get stuck is the place to fix.</li>
-        <li><strong>Watch someone use the docs.</strong> Sit a friend down, give no help, ask them to follow the tutorial. 20 minutes of usability testing beats a week of solo editing.</li>
-      </ul>
+      <div class="block-title">What I did</div>
+      <div class="reflection">
+        <strong>Name the audience:</strong> auditing the live guide showed this was already paid for by the week's docs work. Every page opens by saying who it is for: the guide home names macOS users who already have the app, the tutorial names first-time users, the how-to names users who have run a scan, and the reference names people reading the Swift source. <br/><br/>
+        <strong>Read as a stranger:</strong> this one caught something real. Walking the live guide fresh, with no repo context, I got stuck at step zero: both the guide home and the tutorial's "Before you start" say you need MacDirStat installed, and neither links to where to get it. From inside the project that gap is invisible, because you always arrive from the README or the landing page, which have the download. A stranger landing on <code>/guide/</code> from a search has no path to the app at all. That is exactly the class of bug this exercise exists to catch: the writer's context (I know where the download is) silently baked into the page. The fix is <a href="https://github.com/Ti-03/MacDirStat/pull/11" target="_blank">PR #11</a>, two links: a "Not installed yet?" pointer on the guide home and an install link in the tutorial's prerequisites.<br/><br/>
+        <strong>Watch someone use the docs:</strong> I did not get a live 20-minute session with another person this week; the fresh-context walkthrough stood in for it. The honest note is that a walkthrough by someone who knows the project is a weaker signal than a real stranger, it caught the dead end but would never catch a confusing sentence I wrote myself. Scheduling a real usability read is the habit to carry forward.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The takeaway</div>
+      <div class="reflection">
+        The docs said "you need MacDirStat installed" and stopped, because to the person who wrote them the download location was obvious. Empathy for the reader is not a tone, it is an audit: every sentence that assumes context the reader might not have is a bounce point, and the only reliable way to find them is to arrive at the page the way a reader does.
+      </div>
     </div>
   </div>
 
