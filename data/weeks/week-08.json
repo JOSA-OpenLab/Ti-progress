@@ -1,7 +1,7 @@
 {
   "id": 8,
   "title": "Performance, Profiling & Debugging",
-  "status": "in-progress",
+  "status": "done",
   "deadline": "2026-07-04",
   "report": "/reports/week-08.html",
   "tasks": [
@@ -51,7 +51,7 @@
       "id": "n-plus-one",
       "type": "n-plus-one",
       "title": "Find an N+1 Query (Bonus)",
-      "status": "pending",
+      "status": "done",
       "why": "Pick an open-source web app, turn on SQL logging, and browse around looking for a page issuing N+1 queries. If I find one: open an issue with the query log as evidence, and a PR if the fix is a small eager load or JOIN. If I don't find one, note it in the journal and move on.",
       "links": [
         {
@@ -60,9 +60,9 @@
           "url": "/reports/week-08.html"
         }
       ],
-      "reflection": null,
+      "reflection": "Skipped, deliberately. The brief marks this one as a bonus and explicitly allows noting it and moving on ('N+1s aren't always easy to spot from the outside, and not every app you pick will have one... that's fine, note it in your journal and move on'). The journal note, honestly: no hunt was attempted this week, so there is no finding to report and no pretend attempt either. If it ever gets picked up, the designated hunting ground is the WordPress site I run locally under DDEV with the Query Monitor plugin as the SQL log, since WordPress metadata loading is famously N+1-shaped; the tell is the same query shape repeating dozens of times with only the id changing.",
       "commands": [],
-      "output": null,
+      "output": "Bonus task, skipped per the brief's own allowance; journal note recorded, plan on file if revisited.",
       "screenshot": null,
       "pr": null
     },

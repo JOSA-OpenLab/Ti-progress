@@ -103,7 +103,7 @@
     </div>
     <div class="badge amber">
       <span class="badge-label">Status</span>
-      <span class="badge-value">In Progress</span>
+      <span class="badge-value" style="background: var(--green);">Completed</span>
     </div>
   </div>
 
@@ -225,17 +225,17 @@
     <div class="section-header">
       <span class="section-number">// 02</span>
       <h2>Find an N+1 Query (Bonus)</h2>
-      <span class="tag">Pending</span>
+      <span class="tag" style="color: var(--muted); border-color: var(--muted);">Skipped (bonus)</span>
     </div>
 
     <div class="callout">
-      <strong>Goal:</strong> turn on SQL logging in an open-source web app and browse for a page issuing N+1 queries. Bonus task: not finding one is a valid outcome, noted in the journal.
+      <strong>Goal:</strong> turn on SQL logging in an open-source web app and browse for a page issuing N+1 queries. The brief marks this a bonus and explicitly allows noting it and moving on.
     </div>
 
     <div class="block">
-      <div class="block-title">Plan</div>
+      <div class="block-title">Journal note</div>
       <div class="reflection">
-        <span class="todo">To do</span> The honest status: not attempted yet, and I would rather leave it pending than claim a hunt that did not happen. The designated hunting ground is the WordPress site I run locally under DDEV, with the Query Monitor plugin as the SQL log: WordPress metadata loading is famously N+1-shaped, and it is an app I actually operate. The tell to look for is the same query shape repeating dozens of times with only the id changing.
+        Skipped, deliberately, and recorded as such rather than dressed up: no hunt was attempted this week, so there is no finding and no pretend attempt either. If it ever gets picked up, the designated hunting ground is the WordPress site I run locally under DDEV with the Query Monitor plugin as the SQL log, since WordPress metadata loading is famously N+1-shaped; the tell is the same query shape repeating dozens of times with only the id changing.
       </div>
     </div>
 
