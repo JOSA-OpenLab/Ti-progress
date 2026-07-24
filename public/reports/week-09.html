@@ -191,25 +191,25 @@
     <div class="section-header">
       <span class="section-number">// 02</span>
       <h2>Hit 100% Community Profile</h2>
-      <span class="tag">In Progress</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Before:</strong> 42% (README + LICENSE only) &nbsp;&middot;&nbsp; <strong>Now:</strong> every checklist file exists, committed on the local <code>community/standards</code> branch; the green page unlocks when the branch lands on <code>main</code>.
+      <strong>Before:</strong> 42% (README + LICENSE only) &nbsp;&middot;&nbsp; <strong>After <a href="https://github.com/Ti-03/MacDirStat/pull/20" target="_blank">PR #20</a>: 100%</strong>, every checkbox green, confirmed by the API and screenshotted.
     </div>
 
     <div class="block">
       <div class="block-title">What I did</div>
       <div class="reflection">
-        README and LICENSE were already in place, SECURITY.md rides in week 7's PR #13, and this week's branch adds the rest: CONTRIBUTING.md, CODE_OF_CONDUCT.md (Contributor Covenant 2.1 verbatim, per the brief's don't-write-your-own rule), bug and feature issue templates under <code>.github/ISSUE_TEMPLATE/</code>, a What/Why/How/Test PR template, and CODEOWNERS auto-assigning review. The Community Standards page reads from the default branch, and this week runs under a no-push rule, so the all-green page and its screenshot are queued behind merge day.
+        README and LICENSE were already in place, SECURITY.md landed in week 7's PR #13, and PR #20 added the rest: CONTRIBUTING.md, CODE_OF_CONDUCT.md (Contributor Covenant 2.1 verbatim, per the brief's don't-write-your-own rule), bug and feature issue templates under <code>.github/ISSUE_TEMPLATE/</code>, a What/Why/How/Test PR template, and CODEOWNERS auto-assigning review. Merged 2026-07-24 after a rebase over the release PR's README changes; <code>gh api .../community/profile</code> now returns <strong>health_percentage: 100</strong>. A nice proof the week 7 work is alive: within a day of the Dependabot config landing, it opened five real update PRs, including major bumps of the exact actions we SHA-pinned.
       </div>
     </div>
 
     <div class="block">
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
-        <li>Every Community Standards file written and committed. ✓ (local branch)</li>
-        <li><strong>Remaining:</strong> push/merge the branch (plus PR #13 for SECURITY.md), then screenshot the green page.</li>
+        <li>Every Community Standards item green on one repo. ✓ (42% &rarr; 100%)</li>
+        <li>Screenshot of the all-green page captured for the journal. ✓</li>
       </ul>
     </div>
   </div>
@@ -300,7 +300,7 @@
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
         <li>Community Profile checked, LICENSE and (absent) CONTRIBUTING.md read and journaled. ✓</li>
-        <li><strong>Remaining:</strong> file the issue + CONTRIBUTING.md PR, queued behind this week's no-push rule.</li>
+        <li><strong>Remaining:</strong> the CONTRIBUTING.md is drafted (strictly distilled from their README + CI, no invented policy) with exact fork-and-PR commands; filing is the one manual step left.</li>
       </ul>
     </div>
   </div>

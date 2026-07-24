@@ -1,7 +1,7 @@
 {
   "id": 7,
   "title": "Security & the Software Supply Chain",
-  "status": "in-progress",
+  "status": "done",
   "deadline": "2026-06-27",
   "report": "/reports/week-07.html",
   "tasks": [
@@ -42,7 +42,7 @@
       "id": "sign-release",
       "type": "sigstore",
       "title": "Sign a Release with Sigstore",
-      "status": "in-progress",
+      "status": "done",
       "why": "Tag a release of one of my repos, sign the artifact with cosign, and document the verify command in the README so anyone can confirm it was not tampered with.",
       "links": [
         {
@@ -66,13 +66,14 @@
           "url": "/reports/week-07.html"
         }
       ],
-      "reflection": "The signing infrastructure is in as PR #14: a release workflow that, on any v* tag, builds the release binary, zips it, signs it with cosign keyless (the job's OIDC token becomes a short-lived Fulcio certificate, logged in Rekor), and attaches artifact plus .cosign.bundle to the GitHub release. The README documents the exact verify-blob command, pinned to this repo's release.yml identity. Exercising the mechanics locally against the v1.1 DMG with a throwaway key caught a real bug before it shipped: cosign v3 removed --output-signature/--output-certificate and requires --bundle, so the workflow as first written would have failed on its first tag. The local demo also proved the point of the whole exercise: the intact DMG verifies OK, and the same DMG with one byte flipped is rejected. Remaining: merge PR #14 and push the v1.2.0 tag; the first signed release comes out the other end.",
+      "reflection": "The signing infrastructure is in as PR #14: a release workflow that, on any v* tag, builds the release binary, zips it, signs it with cosign keyless (the job's OIDC token becomes a short-lived Fulcio certificate, logged in Rekor), and attaches artifact plus .cosign.bundle to the GitHub release. The README documents the exact verify-blob command, pinned to this repo's release.yml identity. Exercising the mechanics locally against the v1.1 DMG with a throwaway key caught a real bug before it shipped: cosign v3 removed --output-signature/--output-certificate and requires --bundle, so the workflow as first written would have failed on its first tag. The local demo also proved the point of the whole exercise: the intact DMG verifies OK, and the same DMG with one byte flipped is rejected. Completed 2026-07-24: PR #14 merged, v1.2.0 tagged, and the release workflow produced the first signed release. Verified for real from a clean download: gh release download v1.2.0, then the README's cosign verify-blob command against the release.yml identity returned Verified OK.",
       "commands": [
         "cosign sign-blob --key cosign.key --yes --bundle MacDirStat-1.1.dmg.cosign.bundle MacDirStat-1.1.dmg",
         "cosign verify-blob --key cosign.pub --bundle ... MacDirStat-1.1.dmg   # Verified OK",
-        "cosign verify-blob --key cosign.pub --bundle ... tampered.dmg          # rejected"
+        "cosign verify-blob --key cosign.pub --bundle ... tampered.dmg          # rejected",
+        "cosign verify-blob --bundle MacDirStat-v1.2.0.zip.cosign.bundle ... MacDirStat-v1.2.0.zip   # Verified OK"
       ],
-      "output": "PR #14: release.yml (keyless cosign on tag push) + README verify section. Local sign/verify/tamper demo passed; signed v1.2.0 release pending merge + tag.",
+      "output": "v1.2.0 released with MacDirStat-v1.2.0.zip + .cosign.bundle; cosign verify-blob against the workflow identity: Verified OK.",
       "screenshot": null,
       "pr": "https://github.com/Ti-03/MacDirStat/pull/14"
     },

@@ -2,6 +2,16 @@
   "updated": "2026-07-06",
   "items": [
     {
+      "id": "react-35395",
+      "kind": "issue",
+      "title": "Perf triage on eslint-plugin-react-hooks: small-repo numbers + TIMING blind spot",
+      "repo": "facebook/react",
+      "status": "open",
+      "date": "2026-07-24",
+      "url": "https://github.com/facebook/react/issues/35395#issuecomment-5067337084",
+      "summary": "Profiled ESLint on a ~20-file Next.js app: eslint-plugin-react-hooks 7.1.1 is 30.7% of lint CPU (0.88s of 2.85s sampled), the largest single consumer, yet ESLint's TIMING=all attributes under 1ms to it, so the cost is invisible to the built-in diagnostic. Posted the numbers, the fixed-cost caveat for small repos, and the NODE_ENV measurement (~3%) as corroborating data on the existing perf issue instead of filing a duplicate."
+    },
+    {
       "id": "palmier-265",
       "kind": "pr",
       "title": "Bound agent tool frame args so an LLM tool call can't overflow Int and crash the app",

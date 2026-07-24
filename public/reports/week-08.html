@@ -171,11 +171,11 @@
     <div class="section-header">
       <span class="section-number">// 01</span>
       <h2>Profile and Fix (Voxa + ESLint)</h2>
-      <span class="tag">In Progress</span>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
     </div>
 
     <div class="callout">
-      <strong>Two halves.</strong> Own code (the brief's fallback option): <a href="https://github.com/voxa-code/voxa" target="_blank">Voxa</a>'s test suite, <strong>33-36s &rarr; 23.7s</strong>. Someone else's repo (the task headline): <strong>ESLint + eslint-plugin-react-hooks</strong>, where the profile found the plugin eating <strong>30.7% of all lint CPU while ESLint's TIMING reports &lt;1ms for it</strong>; issue drafted, filing pending.
+      <strong>Two halves.</strong> Own code (the brief's fallback option): <a href="https://github.com/voxa-code/voxa" target="_blank">Voxa</a>'s test suite, <strong>33-36s &rarr; 23.7s</strong> (<a href="https://github.com/Ti-03/voxa/pull/2" target="_blank">PR #2</a>). Someone else's repo (the task headline): <strong>ESLint + eslint-plugin-react-hooks</strong>, the plugin eats <strong>30.7% of lint CPU while TIMING reports &lt;1ms</strong>; findings posted as a data comment on <a href="https://github.com/facebook/react/issues/35395" target="_blank">facebook/react#35395</a> after the duplicate search found the issue already open.
     </div>
 
     <div class="block">
@@ -198,7 +198,7 @@
     <div class="block">
       <div class="block-title">The external half: ESLint + react-hooks v7</div>
       <div class="reflection">
-        Since the task headline says <em>someone else's repo</em>, I also profiled a third-party tool from my real workflow: ESLint 9 with <code>eslint-config-next</code> on this site. All lint rules together cost ~2ms by ESLint's own <code>TIMING=all</code> accounting, yet the warm run burns 2.7s of CPU. The <code>--cpu-prof</code> capture answered it: <strong>eslint-plugin-react-hooks v7</strong> (the React-Compiler-based rewrite) is the single largest consumer, <strong>0.88s of 2.85s sampled (30.7%)</strong>, more than @babel (11.8%) or typescript-eslint (10.1%), all in compiler passes like <code>inferMutationAliasingRanges</code>. The sharp part: TIMING attributes under 1ms to all react-hooks rules combined, so ESLint's only built-in perf diagnostic actively hides the biggest cost. Two more wrong hypotheses logged: "a misconfigured rule" (2ms total) and "the NODE_ENV development-build selection" (measured: ~3%). Issue drafted with numbers, repro, and the cpuprofile attached (<code>Week 8/issue-draft-eslint-react-hooks.md</code>).
+        Since the task headline says <em>someone else's repo</em>, I also profiled a third-party tool from my real workflow: ESLint 9 with <code>eslint-config-next</code> on this site. All lint rules together cost ~2ms by ESLint's own <code>TIMING=all</code> accounting, yet the warm run burns 2.7s of CPU. The <code>--cpu-prof</code> capture answered it: <strong>eslint-plugin-react-hooks v7</strong> (the React-Compiler-based rewrite) is the single largest consumer, <strong>0.88s of 2.85s sampled (30.7%)</strong>, more than @babel (11.8%) or typescript-eslint (10.1%), all in compiler passes like <code>inferMutationAliasingRanges</code>. The sharp part: TIMING attributes under 1ms to all react-hooks rules combined, so ESLint's only built-in perf diagnostic actively hides the biggest cost. Two more wrong hypotheses logged: "a misconfigured rule" (2ms total) and "the NODE_ENV development-build selection" (measured: ~3%). The duplicate search then earned its keep: <a href="https://github.com/facebook/react/issues/35395" target="_blank">facebook/react#35395</a> already reports the plugin dominating lint time, maintainers engaged, a perf fix already shipped. So instead of filing a duplicate, the findings went where they help: a comment on #35395 with the small-repo numbers and the angle the original lacked, that on 7.1.1 the cost has vanished from TIMING entirely.
       </div>
       <div class="code-block" style="margin-top:16px;">
         <div class="code-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="code-lang">cpu-prof, by module</span></div>
@@ -214,8 +214,8 @@
       <div class="block-title">Definition of done</div>
       <ul class="checklist">
         <li>Real workflows profiled (own + third-party); &gt;50ms costs identified with numbers. ✓</li>
-        <li>Small, safe fix produced on the own-code half: 33-36s &rarr; 23.7s, 1180/1180 green. ✓ (local branch)</li>
-        <li><strong>Remaining:</strong> duplicate-search, then file the drafted issue on facebook/react (blocked by the no-push rule).</li>
+        <li>Small, safe fix produced on the own-code half: 33-36s &rarr; 23.7s, 1180/1180 green, opened as <a href="https://github.com/Ti-03/voxa/pull/2" target="_blank">Ti-03/voxa#2</a>. ✓</li>
+        <li>Findings shared with the project: duplicate found first, corroborating data comment posted on <a href="https://github.com/facebook/react/issues/35395" target="_blank">facebook/react#35395</a>. ✓</li>
       </ul>
     </div>
   </div>

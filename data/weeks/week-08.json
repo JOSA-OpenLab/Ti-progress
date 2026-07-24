@@ -9,9 +9,14 @@
       "id": "profile-fix",
       "type": "profiling",
       "title": "Profile and Fix (Voxa + ESLint)",
-      "status": "in-progress",
+      "status": "done",
       "why": "Profile a real workflow, find the bottleneck with data, fix it, and document the before/after. Subject: Voxa's server test suite (the week's brief explicitly allows 'any of your own slow code'), 1180 tests.",
       "links": [
+        {
+          "type": "doc",
+          "label": "facebook/react#35395 (my comment)",
+          "url": "https://github.com/facebook/react/issues/35395"
+        },
         {
           "type": "doc",
           "label": "py-spy",
@@ -28,7 +33,7 @@
           "url": "/reports/week-08.html"
         }
       ],
-      "reflection": "Hypothesis first, per the soft skill: I assumed the suite was CPU-bound in the websocket/audio paths. The first measurement killed that: 33s wall but only ~40% CPU, so the suite was mostly WAITING. pytest --durations then showed the top 25 tests (2% of 1181) held ~22s of the 33s. Two wait sinks, both proven with a debugger rather than guessed: (1) every /ws test's first connection ran REAL terminal discovery, osascript Apple Events to iTerm and Terminal.app plus tmux shell-outs, ~3.3s cold, and a TTL cache hid it from every later test, which is why it masqueraded as one 'slow test' (a red herring I initially chased as a voice-param bug); (2) six interrupt tests slept through the real 2x0.7s anti-double-esc retry gap, 7s total. Fixes: an autouse fixture stubbing discovery in test_app.py (one helper in the file already did this locally, so the pattern was endorsed), and the 0.7s gap extracted to a class attribute (_interrupt_gap, production default unchanged) that the six tests set to 0. Result: 33-36s -> 23.7s, ~30% faster, 1180/1180 still green, zero production behavior change. Remaining lead journaled honestly: two hook tests cost ~3.1s in a full run but 0.8s in isolation, a cross-test contention effect not yet diagnosed. Work is committed locally on branch perf/faster-test-suite (not pushed, per this week's instruction). REDO ADDENDUM (the task headline says someone else's repo, so the Voxa work covers only the suggested-repos fallback): I profiled ESLint 9 with eslint-config-next on this site's repo, a third-party tool from my real workflow. The finding is better than a slow function: eslint-plugin-react-hooks v7 (the compiler-based one) is the single largest CPU consumer of the whole lint run, 0.88s of 2.85s sampled (30.7%), more than @babel and typescript-eslint, while ESLint's own TIMING=all attributes under 1ms to all react-hooks rules combined, because the compiler analysis runs outside per-rule instrumentation. So the one built-in diagnostic actively hides the biggest cost. Two more wrong hypotheses for the humility journal: 'a misconfigured rule is the cost' (all rules together: ~2ms) and 'the NODE_ENV development-build selection is the cost' (measured: ~3%). Issue drafted with numbers, cpuprofile, and repro (Week 8/issue-draft-eslint-react-hooks.md); filing on facebook/react awaits the no-push rule lifting, with a duplicate-search first.",
+      "reflection": "Hypothesis first, per the soft skill: I assumed the suite was CPU-bound in the websocket/audio paths. The first measurement killed that: 33s wall but only ~40% CPU, so the suite was mostly WAITING. pytest --durations then showed the top 25 tests (2% of 1181) held ~22s of the 33s. Two wait sinks, both proven with a debugger rather than guessed: (1) every /ws test's first connection ran REAL terminal discovery, osascript Apple Events to iTerm and Terminal.app plus tmux shell-outs, ~3.3s cold, and a TTL cache hid it from every later test, which is why it masqueraded as one 'slow test' (a red herring I initially chased as a voice-param bug); (2) six interrupt tests slept through the real 2x0.7s anti-double-esc retry gap, 7s total. Fixes: an autouse fixture stubbing discovery in test_app.py (one helper in the file already did this locally, so the pattern was endorsed), and the 0.7s gap extracted to a class attribute (_interrupt_gap, production default unchanged) that the six tests set to 0. Result: 33-36s -> 23.7s, ~30% faster, 1180/1180 still green, zero production behavior change. Remaining lead journaled honestly: two hook tests cost ~3.1s in a full run but 0.8s in isolation, a cross-test contention effect not yet diagnosed. Work is committed locally on branch perf/faster-test-suite (not pushed, per this week's instruction). REDO ADDENDUM (the task headline says someone else's repo, so the Voxa work covers only the suggested-repos fallback): I profiled ESLint 9 with eslint-config-next on this site's repo, a third-party tool from my real workflow. The finding is better than a slow function: eslint-plugin-react-hooks v7 (the compiler-based one) is the single largest CPU consumer of the whole lint run, 0.88s of 2.85s sampled (30.7%), more than @babel and typescript-eslint, while ESLint's own TIMING=all attributes under 1ms to all react-hooks rules combined, because the compiler analysis runs outside per-rule instrumentation. So the one built-in diagnostic actively hides the biggest cost. Two more wrong hypotheses for the humility journal: 'a misconfigured rule is the cost' (all rules together: ~2ms) and 'the NODE_ENV development-build selection is the cost' (measured: ~3%). The duplicate search (which failed via the API earlier and finally worked via web search) turned out to matter: facebook/react#35395 already reports the plugin dominating lint time, with maintainers engaged and a perf fix shipped. Filing a new issue would have been noise, so the findings went where they are useful: a comment on #35395 with the small-repo numbers and the one angle the original lacked, that on 7.1.1 the cost no longer appears in TIMING at all, making it undiagnosable with ESLint's own tool.",
       "commands": [
         "time .venv/bin/python -m pytest tests -q        # 33-36s, ~40% CPU: the suite is waiting",
         ".venv/bin/python -m pytest tests -q --durations=25",
@@ -38,9 +43,9 @@
         "node --cpu-prof node_modules/eslint/bin/eslint.js .",
         "# profile: eslint-plugin-react-hooks 0.88s/2.85s = 30.7%, TIMING shows <1ms"
       ],
-      "output": "Voxa suite 33-36s -> 23.7s (own-code half). External half: eslint-plugin-react-hooks v7 = 30.7% of lint CPU, invisible to ESLint TIMING; issue drafted for facebook/react, filing pending permission.",
+      "output": "Voxa suite 33-36s -> 23.7s (PR Ti-03/voxa#2). External half: react-hooks v7 = 30.7% of lint CPU, invisible to TIMING on 7.1.1; dup-search found facebook/react#35395, posted corroborating data comment there instead of a duplicate issue.",
       "screenshot": null,
-      "pr": null
+      "pr": "https://github.com/facebook/react/issues/35395"
     },
     {
       "id": "n-plus-one",
