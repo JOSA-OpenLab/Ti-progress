@@ -8,8 +8,8 @@
     {
       "id": "profile-fix",
       "type": "profiling",
-      "title": "Profile and Fix (Voxa)",
-      "status": "done",
+      "title": "Profile and Fix (Voxa + ESLint)",
+      "status": "in-progress",
       "why": "Profile a real workflow, find the bottleneck with data, fix it, and document the before/after. Subject: Voxa's server test suite (the week's brief explicitly allows 'any of your own slow code'), 1180 tests.",
       "links": [
         {
@@ -28,14 +28,17 @@
           "url": "/reports/week-08.html"
         }
       ],
-      "reflection": "Hypothesis first, per the soft skill: I assumed the suite was CPU-bound in the websocket/audio paths. The first measurement killed that: 33s wall but only ~40% CPU, so the suite was mostly WAITING. pytest --durations then showed the top 25 tests (2% of 1181) held ~22s of the 33s. Two wait sinks, both proven with a debugger rather than guessed: (1) every /ws test's first connection ran REAL terminal discovery, osascript Apple Events to iTerm and Terminal.app plus tmux shell-outs, ~3.3s cold, and a TTL cache hid it from every later test, which is why it masqueraded as one 'slow test' (a red herring I initially chased as a voice-param bug); (2) six interrupt tests slept through the real 2x0.7s anti-double-esc retry gap, 7s total. Fixes: an autouse fixture stubbing discovery in test_app.py (one helper in the file already did this locally, so the pattern was endorsed), and the 0.7s gap extracted to a class attribute (_interrupt_gap, production default unchanged) that the six tests set to 0. Result: 33-36s -> 23.7s, ~30% faster, 1180/1180 still green, zero production behavior change. Remaining lead journaled honestly: two hook tests cost ~3.1s in a full run but 0.8s in isolation, a cross-test contention effect not yet diagnosed. Work is committed locally on branch perf/faster-test-suite (not pushed, per this week's instruction).",
+      "reflection": "Hypothesis first, per the soft skill: I assumed the suite was CPU-bound in the websocket/audio paths. The first measurement killed that: 33s wall but only ~40% CPU, so the suite was mostly WAITING. pytest --durations then showed the top 25 tests (2% of 1181) held ~22s of the 33s. Two wait sinks, both proven with a debugger rather than guessed: (1) every /ws test's first connection ran REAL terminal discovery, osascript Apple Events to iTerm and Terminal.app plus tmux shell-outs, ~3.3s cold, and a TTL cache hid it from every later test, which is why it masqueraded as one 'slow test' (a red herring I initially chased as a voice-param bug); (2) six interrupt tests slept through the real 2x0.7s anti-double-esc retry gap, 7s total. Fixes: an autouse fixture stubbing discovery in test_app.py (one helper in the file already did this locally, so the pattern was endorsed), and the 0.7s gap extracted to a class attribute (_interrupt_gap, production default unchanged) that the six tests set to 0. Result: 33-36s -> 23.7s, ~30% faster, 1180/1180 still green, zero production behavior change. Remaining lead journaled honestly: two hook tests cost ~3.1s in a full run but 0.8s in isolation, a cross-test contention effect not yet diagnosed. Work is committed locally on branch perf/faster-test-suite (not pushed, per this week's instruction). REDO ADDENDUM (the task headline says someone else's repo, so the Voxa work covers only the suggested-repos fallback): I profiled ESLint 9 with eslint-config-next on this site's repo, a third-party tool from my real workflow. The finding is better than a slow function: eslint-plugin-react-hooks v7 (the compiler-based one) is the single largest CPU consumer of the whole lint run, 0.88s of 2.85s sampled (30.7%), more than @babel and typescript-eslint, while ESLint's own TIMING=all attributes under 1ms to all react-hooks rules combined, because the compiler analysis runs outside per-rule instrumentation. So the one built-in diagnostic actively hides the biggest cost. Two more wrong hypotheses for the humility journal: 'a misconfigured rule is the cost' (all rules together: ~2ms) and 'the NODE_ENV development-build selection is the cost' (measured: ~3%). Issue drafted with numbers, cpuprofile, and repro (Week 8/issue-draft-eslint-react-hooks.md); filing on facebook/react awaits the no-push rule lifting, with a duplicate-search first.",
       "commands": [
         "time .venv/bin/python -m pytest tests -q        # 33-36s, ~40% CPU: the suite is waiting",
         ".venv/bin/python -m pytest tests -q --durations=25",
         ".venv/bin/python -m cProfile -o test.prof -m pytest tests/test_app.py::test_voice_param_reaches_factory",
-        "time .venv/bin/python -m pytest tests -q        # after: 23.7s, 1180 passed"
+        "time .venv/bin/python -m pytest tests -q        # after: 23.7s, 1180 passed",
+        "TIMING=all npx eslint .                       # all rules ~2ms; wall 1.65s",
+        "node --cpu-prof node_modules/eslint/bin/eslint.js .",
+        "# profile: eslint-plugin-react-hooks 0.88s/2.85s = 30.7%, TIMING shows <1ms"
       ],
-      "output": "Voxa suite 33-36s -> 23.7s (~30%), 1180/1180 green. Root causes: unmocked osascript/tmux terminal discovery (~3.3s cold) + 6 tests sleeping real 1.4s interrupt gaps (7s). Branch perf/faster-test-suite, local only.",
+      "output": "Voxa suite 33-36s -> 23.7s (own-code half). External half: eslint-plugin-react-hooks v7 = 30.7% of lint CPU, invisible to ESLint TIMING; issue drafted for facebook/react, filing pending permission.",
       "screenshot": null,
       "pr": null
     },
