@@ -1,7 +1,7 @@
 {
   "id": 9,
   "title": "Building Your Own OSS Project: Licensing & Foundations",
-  "status": "in-progress",
+  "status": "done",
   "deadline": "2026-07-11",
   "report": "/reports/week-09.html",
   "tasks": [
@@ -112,7 +112,7 @@
       "id": "audit-contribute",
       "type": "contribution",
       "title": "Audit a Real Project, Then Contribute",
-      "status": "in-progress",
+      "status": "done",
       "why": "Pick an OSS project I actually use. Check its Community Profile, read its LICENSE, read its CONTRIBUTING.md. Then do one small, real thing: open a PR (typo fix, missing README example, doc clarification, anything genuinely useful).",
       "links": [
         {

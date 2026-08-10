@@ -189,7 +189,7 @@ function WeekDetail({ week }: { week: Week }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <div>
         <div style={{ fontSize: 9, letterSpacing: 3, color: "#6e7681", textTransform: "uppercase", marginBottom: 8, fontFamily: "monospace" }}>
-          Week {String(week.id).padStart(2, "0")} of 11
+          Week {String(week.id).padStart(2, "0")} of 10
         </div>
         <div style={{ fontSize: 22, fontWeight: 700, color: "#e6edf3", letterSpacing: -0.5, lineHeight: 1.2 }}>
           {week.title}

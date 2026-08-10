@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JOSA OpenLab, Week 10</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1117;
+      --border:  #21262d;
+      --accent:  #00b4d8;
+      --red:     #ff7b72;
+      --green:   #3fb950;
+      --amber:   #f59e0b;
+      --text:    #e6edf3;
+      --muted:   #6e7681;
+      --sub:     #8b949e;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.75; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .hero { padding: 72px 40px 56px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 10px; }
+    .hero h1 span { color: var(--accent); }
+    .hero h2 { font-size: 15px; font-weight: 400; color: var(--muted); margin-bottom: 48px; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
+    .badge { display: flex; border-radius: 4px; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; }
+    .badge-label { background: #161b22; border: 1px solid var(--border); border-right: none; padding: 5px 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-radius: 4px 0 0 4px; }
+    .badge-value { padding: 5px 10px; font-weight: 600; color: #0d1117; border-radius: 0 4px 4px 0; }
+    .badge.blue  .badge-value { background: var(--accent); }
+    .badge.navy  .badge-value { background: #0077b6; }
+    .badge.amber .badge-value { background: var(--amber); }
+    .badge.gray  .badge-value { background: var(--muted); color: var(--text); }
+
+    .meta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+    .meta-item { text-align: center; padding: 0 28px; }
+    .meta-item + .meta-item { border-left: 1px solid var(--border); }
+    .meta-item .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .meta-item .value { font-size: 14px; font-weight: 500; color: var(--text); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 64px 24px 80px; }
+    .section { margin-bottom: 64px; }
+    .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .section-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; }
+    .section-header h2 { font-size: 18px; font-weight: 600; letter-spacing: -.3px; color: var(--text); }
+    .section-header .tag { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; border-radius: 4px; padding: 2px 8px; }
+
+    .block { border-left: 2px solid var(--border); padding: 4px 0 4px 24px; margin-bottom: 32px; }
+    .block-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 32px; font-size: 14px; color: var(--sub); }
+    .callout strong { color: var(--text); font-weight: 500; }
+
+    .reflection { border-left: 2px solid var(--accent); padding: 6px 0 6px 24px; font-size: 15px; line-height: 1.85; color: var(--sub); }
+    .reflection strong { color: var(--text); font-weight: 500; }
+
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .checklist li { list-style: none; font-size: 13px; color: var(--sub); padding-left: 22px; position: relative; line-height: 1.6; }
+    .checklist li::before { content: '○'; position: absolute; left: 0; color: var(--muted); }
+    .checklist li strong { color: var(--text); font-weight: 500; }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .3px; }
+    footer strong { color: var(--sub); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">OpenLab Apprenticeship 2026</div>
+  <h1>JOSA <span>OpenLab</span></h1>
+  <h2>Week 10: Project Research &amp; Ideation</h2>
+
+  <div class="badges">
+    <div class="badge blue">
+      <span class="badge-label">Week</span>
+      <span class="badge-value">10 of 10</span>
+    </div>
+    <div class="badge navy">
+      <span class="badge-label">Target</span>
+      <span class="badge-value">betaflight/betaflight</span>
+    </div>
+    <div class="badge">
+      <span class="badge-label">Status</span>
+      <span class="badge-value" style="background: var(--green);">Completed</span>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="label">Apprentice</div>
+      <div class="value">Qutibah Ananzeh</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cohort</div>
+      <div class="value">OpenLab 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Horizon</div>
+      <div class="value">Next 3 months</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- TASK 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 01</span>
+      <h2>Pick a Project, Write a Contribution Proposal</h2>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
+    </div>
+
+    <div class="callout">
+      <strong>Target:</strong> <a href="https://github.com/betaflight/betaflight" target="_blank">betaflight/betaflight</a> &middot; 11k+ stars, merges PRs almost every day, 349 open issues.
+    </div>
+
+    <div class="block">
+      <div class="block-title">The project</div>
+      <div class="reflection">
+        Betaflight. Open source flight controller firmware for FPV drones, written in C. Basically the standard firmware people fly racing and freestyle quads on.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Why me, why this</div>
+      <div class="reflection">
+        I'm building my own quad right now (Nano flight controller, NRF24 remote), and I already had to debug an IMU sign issue on my own MPU6050. Betaflight is the same problem, just at real scale. Everything else this apprenticeship was Swift, Python, Rust. This is bare metal C and real-time control, the part of robotics I actually want to get good at.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The issue I'm targeting</div>
+      <div class="reflection">
+        <a href="https://github.com/betaflight/betaflight/issues/15526" target="_blank">#15526</a>. A yaw sign got flipped when someone merged two trig calls into one (<a href="https://github.com/betaflight/betaflight/pull/14790" target="_blank">PR #14790</a>). cos didn't care, it's an even function. sin did. Only shows up during GPS rescue when there's no compass on board.
+        <br><br>
+        Picked it because I already know this exact bug from my own IMU, and it's already fully diagnosed, so I can go straight to fixing it instead of hunting for the cause. There's a small second fix in the same area too, an old sin/cos pair left over in <code>sdft.c</code>.
+        <br><br>
+        Also keeping an eye on <a href="https://github.com/betaflight/betaflight/issues/15507" target="_blank">#15507</a>, <a href="https://github.com/betaflight/betaflight/issues/15521" target="_blank">#15521</a>, and <a href="https://github.com/betaflight/betaflight/issues/15527" target="_blank">#15527</a>. Three separate reports of heading going wrong after an update. Might be one bug, might be three unrelated ones. Want to check once I actually understand the code.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">12 weeks</div>
+      <ul class="checklist">
+        <li><strong>1-2:</strong> get it building locally, read the code, read a few old PRs to see how reviews work here</li>
+        <li><strong>3-4:</strong> fix and submit #15526</li>
+        <li><strong>5:</strong> fix the sdft.c leftover</li>
+        <li><strong>6-7:</strong> look into the heading reports</li>
+        <li><strong>8-9:</strong> learn the actual filter Betaflight flies on (Madgwick/Mahony), not just the fallback path I fixed first</li>
+        <li><strong>10:</strong> pick a real issue in that area, once I understand it properly</li>
+        <li><strong>11-12:</strong> ship it, write the whole thing up as a short talk</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Risks</div>
+      <ul class="checklist">
+        <li>small maintainer team, could be slow to review</li>
+        <li>can't fly a real drone to test this, only math and unit tests</li>
+        <li>the heading reports might not be related at all</li>
+        <li>this codebase is way bigger than anything I've touched so far, first PR will take longer than it looks</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Mentorship</div>
+      <ul class="checklist">
+        <li>someone who's actually flown FPV drones or built flight controllers, who can tell me if my fix makes sense in real flight, since I can't test GPS rescue myself</li>
+        <li>someone with a robotics/autopilot background (drones, rovers, whatever) who's worked with IMUs and sensor fusion, to check my math</li>
+        <li>someone plugged into the FPV/drone community who can intro me to a maintainer, or just point me to who's who in this space</li>
+      </ul>
+      <div class="reflection" style="margin-top: 16px;">
+        I already have a few names in mind for some of this, happy to share if the coordinator can't find someone.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Definition of done</div>
+      <ul class="checklist">
+        <li>Research summary written up and submitted in the journal. ✓</li>
+        <li>12-week plan, risks, and mentorship needs included. ✓</li>
+        <li>The fix itself isn't done, just planned. Opening the actual PR for #15526 comes 2-4 weeks from now, once the 12-week plan above starts running.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Jordan Open Source Association &nbsp;&middot;&nbsp; <strong>OpenLab 2026</strong> &nbsp;&middot;&nbsp; Qutibah Ananzeh
+</footer>
+
+</body>
+</html>
