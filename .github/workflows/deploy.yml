@@ -30,11 +30,16 @@ jobs:
 
       - run: npm ci
 
-      - name: weeks/ markdown is in sync with data/weeks
+      - name: progress/ markdown is in sync with data/weeks
         run: |
           npm run docs
-          git diff --exit-code weeks/ || {
-            echo "::error::weeks/*.md is stale. Run 'npm run docs' and commit."
+          git diff --exit-code -- progress/ || {
+            echo "::error::progress/ is stale. Run 'npm run docs' and commit."
+            exit 1
+          }
+          test -z "$(git status --porcelain progress/)" || {
+            echo "::error::progress/ has untracked files. Run 'npm run docs' and commit."
+            git status --short progress/
             exit 1
           }
 

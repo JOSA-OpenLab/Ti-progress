@@ -4,6 +4,8 @@
 
 [Full report on the site](https://josa-openlab.github.io/Ti-progress/reports/week-06.html)
 
+[All weeks](../README.md) · [June 2026](README.md)
+
 ---
 
 ### Ship One Real Docs PR  ✅ done

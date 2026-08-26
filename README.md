@@ -6,27 +6,31 @@ My progress through the JOSA OpenLab apprenticeship, week by week.
   <a href="https://josa-openlab.github.io/Ti-progress">
     <img alt="Visit Website" src="https://img.shields.io/badge/Visit%20Website-%E2%86%92-0ea5e9?style=for-the-badge&labelColor=0a0a0a" />
   </a>
-  <a href="weeks/">
-    <img alt="Read in repo" src="https://img.shields.io/badge/Read%20in%20repo-weeks%2F-22c55e?style=for-the-badge&labelColor=0a0a0a" />
+  <a href="progress/">
+    <img alt="Read in repo" src="https://img.shields.io/badge/Read%20in%20repo-progress%2F-22c55e?style=for-the-badge&labelColor=0a0a0a" />
   </a>
 </p>
 
 ## Weekly log
 
-Prefer reading here instead of the site? Every week is a markdown file:
+Prefer reading here instead of the site? Every week is a markdown file, grouped by month:
 
-| Week | Topic | Status |
-|---|---|---|
-| [01](weeks/week-01.md) | Git Internals & Modern Workflow | ✅ |
-| [02](weeks/week-02.md) | PR Etiquette & Maintainer Friendly Contributions | ✅ |
-| [03](weeks/week-03.md) | Issue Triage & Bug Reproduction | ✅ |
-| [04](weeks/week-04.md) | Code Review & the Maintainer Mindset | ✅ |
-| [05](weeks/week-05.md) | Testing, CI/CD & GitHub Actions | ✅ |
-| [06](weeks/week-06.md) | Documentation as Code & Technical Writing | ✅ |
-| [07](weeks/week-07.md) | Security & the Software Supply Chain | ✅ |
-| [08](weeks/week-08.md) | Performance, Profiling & Debugging | ✅ |
-| [09](weeks/week-09.md) | Building Your Own OSS Project | ✅ |
-| [10](weeks/week-10.md) | Project Research & Ideation | ✅ |
+```
+progress/
+  month-05/   week-01.md  week-02.md  week-03.md
+  month-06/   week-04.md  week-05.md  week-06.md  week-07.md
+  month-07/   week-08.md  week-09.md
+  month-08/   week-10.md
+```
+
+| Month | Weeks |
+|---|---|
+| [May 2026](progress/month-05/) | [01](progress/month-05/week-01.md) Git Internals & Modern Workflow · [02](progress/month-05/week-02.md) PR Etiquette · [03](progress/month-05/week-03.md) Issue Triage |
+| [June 2026](progress/month-06/) | [04](progress/month-06/week-04.md) Code Review · [05](progress/month-06/week-05.md) Testing & CI/CD · [06](progress/month-06/week-06.md) Docs as Code · [07](progress/month-06/week-07.md) Security |
+| [July 2026](progress/month-07/) | [08](progress/month-07/week-08.md) Performance & Profiling · [09](progress/month-07/week-09.md) Own OSS Project |
+| [August 2026](progress/month-08/) | [10](progress/month-08/week-10.md) Project Research & Ideation |
+
+Full index: [progress/README.md](progress/README.md)
 
 <table>
   <tr>

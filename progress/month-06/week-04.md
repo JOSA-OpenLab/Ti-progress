@@ -4,6 +4,8 @@
 
 [Full report on the site](https://josa-openlab.github.io/Ti-progress/reports/week-04.html)
 
+[All weeks](../README.md) · [June 2026](README.md)
+
 ---
 
 ### Two Real Reviews  ✅ done

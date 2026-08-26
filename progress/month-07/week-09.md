@@ -4,6 +4,8 @@
 
 [Full report on the site](https://josa-openlab.github.io/Ti-progress/reports/week-09.html)
 
+[All weeks](../README.md) · [July 2026](README.md)
+
 ---
 
 ### Pick the License  ✅ done

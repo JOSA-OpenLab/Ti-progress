@@ -4,6 +4,8 @@
 
 [Full report on the site](https://josa-openlab.github.io/Ti-progress/reports/week-08.html)
 
+[All weeks](../README.md) · [July 2026](README.md)
+
 ---
 
 ### Profile and Fix (Voxa + ESLint)  ✅ done

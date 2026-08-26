@@ -4,6 +4,8 @@
 
 [Full report on the site](https://josa-openlab.github.io/Ti-progress/reports/week-02.html)
 
+[All weeks](../README.md) · [May 2026](README.md)
+
 ---
 
 ### Two Well-Formed PRs  ✅ done

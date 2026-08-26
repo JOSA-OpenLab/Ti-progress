@@ -4,6 +4,8 @@
 
 [Full report on the site](https://josa-openlab.github.io/Ti-progress/reports/week-10.html)
 
+[All weeks](../README.md) · [August 2026](README.md)
+
 ---
 
 ### Pick a Project, Write a Contribution Proposal  ✅ done
