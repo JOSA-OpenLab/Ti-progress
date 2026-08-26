@@ -4,7 +4,7 @@
 
 [Full report on the site](https://josa-openlab.github.io/Ti-progress/reports/week-09.html)
 
-[All weeks](../README.md) · [July 2026](README.md)
+[All weeks](../PROGRESS.md) · [Month3 (July 2026)](README.md)
 
 ---
 

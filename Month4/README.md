@@ -1,6 +1,6 @@
-# August 2026
+# Month4: August 2026
 
-[All months](../README.md)
+[All months](../PROGRESS.md)
 
 | Week | Topic | Status | Deadline |
 |---|---|---|---|
