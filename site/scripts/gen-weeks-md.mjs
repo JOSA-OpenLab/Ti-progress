@@ -1,11 +1,12 @@
-// Renders data/weeks/*.json into browsable markdown under MonthN/ at the repo root.
+// Renders site/data/weeks/*.json into browsable markdown under MonthN/ at the repo root.
 // ponytail: string concat, no template engine. Add one when the layout outgrows this.
 import { readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const src = join(root, "data", "weeks");
+const siteDir = join(dirname(fileURLToPath(import.meta.url)), "..");
+const root = join(siteDir, "..");
+const src = join(siteDir, "data", "weeks");
 const SITE = "https://josa-openlab.github.io/Ti-progress";
 
 const MONTHS = ["January", "February", "March", "April", "May", "June",

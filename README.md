@@ -33,7 +33,26 @@ Full index: [PROGRESS.md](PROGRESS.md)
 
 <table>
   <tr>
-    <td><img src="public/hero-screenshot.png" alt="Hero page" /></td>
-    <td><img src="public/app-screenshot.png" alt="Dashboard" /></td>
+    <td><img src="site/public/hero-screenshot.png" alt="Hero page" /></td>
+    <td><img src="site/public/app-screenshot.png" alt="Dashboard" /></td>
   </tr>
 </table>
+
+## Repo layout
+
+```
+Month1..Month4/   the weekly log, one markdown file per week
+PROGRESS.md       full index of every week
+site/             the Next.js site behind josa-openlab.github.io/Ti-progress
+```
+
+Both views come from the same source, `site/data/weeks/*.json`. Edit that, then:
+
+```bash
+cd site
+npm run docs    # regenerate Month*/ and PROGRESS.md
+npm run build   # build the site into site/out
+```
+
+CI blocks the deploy if `Month*/` is out of date with the JSON, so the page and the
+repo can never disagree.
