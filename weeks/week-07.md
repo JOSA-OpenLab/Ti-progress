@@ -1,0 +1,117 @@
+# Week 07: Security & the Software Supply Chain
+
+✅ done · deadline 2026-06-27 · 5/5 tasks
+
+[Full report on the site](https://josa-openlab.github.io/Ti-progress/reports/week-07.html)
+
+---
+
+### Add Dependabot  ✅ done
+
+Configure Dependabot for one of my repos, covering both the code ecosystem and github-actions. Pin all Actions to commit SHAs, not tags. Submit as a PR.
+
+**What I did**
+
+Done on MacDirStat as PR #12. dependabot.yml covers both ecosystems the repo actually has: swift (SwiftPM, Package.resolved) and github-actions, weekly. The pinning half was the real lesson: every uses: line in ci.yml and pages.yml moved from a mutable tag (@v4) to the tag's resolved commit SHA with the version kept as a trailing comment, which Dependabot understands and keeps updated. Resolving the SHAs needs two API hops because a tag ref can point at an annotated tag object, not the commit itself. One honest mistake worth recording: my first commit accidentally swept the vale-sync style files into the PR because I staged .github/ wholesale; a follow-up commit dropped them and the PR diff settled at exactly 3 files.
+
+```bash
+gh api repos/actions/checkout/git/ref/tags/v4  # tag -> object sha
+gh api repos/actions/checkout/git/tags/<sha>   # annotated tag -> commit sha
+git push -u origin ci/dependabot-and-sha-pins
+```
+
+```
+PR #12: dependabot.yml (swift + github-actions, weekly) and 6 uses: lines pinned by SHA across ci.yml/pages.yml.
+```
+
+- [MacDirStat PR #12](https://github.com/Ti-03/MacDirStat/pull/12)
+- [Dependabot docs](https://docs.github.com/en/code-security/dependabot)
+- [Week 07 full report](https://josa-openlab.github.io/Ti-progress/reports/week-07.html)
+
+### Sign a Release with Sigstore  ✅ done
+
+Tag a release of one of my repos, sign the artifact with cosign, and document the verify command in the README so anyone can confirm it was not tampered with.
+
+**What I did**
+
+The signing infrastructure is in as PR #14: a release workflow that, on any v* tag, builds the release binary, zips it, signs it with cosign keyless (the job's OIDC token becomes a short-lived Fulcio certificate, logged in Rekor), and attaches artifact plus .cosign.bundle to the GitHub release. The README documents the exact verify-blob command, pinned to this repo's release.yml identity. Exercising the mechanics locally against the v1.1 DMG with a throwaway key caught a real bug before it shipped: cosign v3 removed --output-signature/--output-certificate and requires --bundle, so the workflow as first written would have failed on its first tag. The local demo also proved the point of the whole exercise: the intact DMG verifies OK, and the same DMG with one byte flipped is rejected. Completed 2026-07-24: PR #14 merged, v1.2.0 tagged, and the release workflow produced the first signed release. Verified for real from a clean download: gh release download v1.2.0, then the README's cosign verify-blob command against the release.yml identity returned Verified OK.
+
+```bash
+cosign sign-blob --key cosign.key --yes --bundle MacDirStat-1.1.dmg.cosign.bundle MacDirStat-1.1.dmg
+cosign verify-blob --key cosign.pub --bundle ... MacDirStat-1.1.dmg   # Verified OK
+cosign verify-blob --key cosign.pub --bundle ... tampered.dmg          # rejected
+cosign verify-blob --bundle MacDirStat-v1.2.0.zip.cosign.bundle ... MacDirStat-v1.2.0.zip   # Verified OK
+```
+
+```
+v1.2.0 released with MacDirStat-v1.2.0.zip + .cosign.bundle; cosign verify-blob against the workflow identity: Verified OK.
+```
+
+- [MacDirStat PR #14](https://github.com/Ti-03/MacDirStat/pull/14)
+- [Sigstore](https://www.sigstore.dev)
+- [cosign](https://docs.sigstore.dev/cosign/overview/)
+- [Week 07 full report](https://josa-openlab.github.io/Ti-progress/reports/week-07.html)
+
+### Generate and Read an SBOM  ✅ done
+
+Run Syft on a project to generate an SBOM, then run Grype against it. Write a journal entry on any known CVEs that show up, and pick one to investigate: what it is, what the fix is, and who is affected.
+
+**What I did**
+
+I ran Syft on the JOSA progress site itself (this website), which turned out to be the perfect subject: a 'tiny static site' whose CycloneDX SBOM lists 482 components. Grype against that SBOM found 16 known vulnerabilities across 8 packages, two High. The one I investigated in depth: GHSA-52cp-r559-cp3m in js-yaml 4.1.1, published two days before the scan. It is a quadratic-CPU parsing bug: a YAML document chaining merge keys (<<: *anchor) forces O(N^2) work for O(N) input, so a sub-100KB document can hang the parser for seconds. Who is affected is the interesting part: js-yaml reaches this repo only through eslint and the shadcn CLI, both dev-time tools, and the site is a static export that parses no YAML at runtime, so real exposure here is a malicious YAML file parsed on a developer machine, which is near zero. That judgment (High severity, negligible exposure in this context) is exactly what the soft skill asks for. I fixed what was fixable anyway: npm update bumped js-yaml to 4.3.0 and five other flagged packages; the re-scan went from 16 findings to 1, the leftover being postcss 8.4.31, which Next.js itself pins, Medium, build-time only.
+
+```bash
+syft . -o cyclonedx-json=sbom.json   # 482 components
+grype sbom:sbom.json                 # 16 findings, 2 High
+gh api /advisories/GHSA-52cp-r559-cp3m
+npm ls js-yaml                       # eslint + shadcn -> js-yaml 4.1.1
+npm update js-yaml brace-expansion hono qs body-parser @babel/core
+grype sbom:sbom-after.json           # 1 finding (postcss, pinned by Next)
+```
+
+```
+482-component SBOM; 16 CVE findings -> 1 after targeted npm updates. Deep dive: GHSA-52cp-r559-cp3m (js-yaml merge-key quadratic CPU), dev-time-only exposure here.
+```
+
+- [GHSA-52cp-r559-cp3m](https://github.com/advisories/GHSA-52cp-r559-cp3m)
+- [Syft](https://github.com/anchore/syft)
+- [Grype](https://github.com/anchore/grype)
+- [Week 07 full report](https://josa-openlab.github.io/Ti-progress/reports/week-07.html)
+
+### Run OpenSSF Scorecard  ✅ done
+
+Run Scorecard on any project, including my own, and try to open a PR fixing the lowest-scoring check.
+
+**What I did**
+
+Scorecard on Ti-03/MacDirStat: aggregate 3.0/10, with twelve checks at zero. Reading the full report was the calibration exercise: most zeros are process or settings (branch protection, code review on a solo repo, fuzzing, CII badge) and some are simply not worth fighting on a small app, exactly the pick-your-battles note from this week's soft skill. Two zeros were fixable from inside the repo, so that became PR #13: Token-Permissions (ci.yml had no permissions block, so every job got a default token that can write repo contents; build-and-test needs read-only) and Security-Policy (no SECURITY.md, meaning the only way to report a vulnerability was a public issue). Two more zeros, Dependency-Update-Tool and Pinned-Dependencies, are already addressed by the Dependabot PR #12 from task 1, so the two PRs together should move four checks off zero once merged.
+
+```bash
+export GITHUB_AUTH_TOKEN=$(gh auth token)
+scorecard --repo=github.com/Ti-03/MacDirStat --format=json  # aggregate 3.0
+```
+
+```
+Aggregate 3.0/10, 12 checks at 0. PR #13 fixes Token-Permissions + Security-Policy; PR #12 covers Dependency-Update-Tool + Pinned-Dependencies.
+```
+
+- [MacDirStat PR #13](https://github.com/Ti-03/MacDirStat/pull/13)
+- [OpenSSF Scorecard](https://github.com/ossf/scorecard)
+- [scorecard.dev](https://scorecard.dev)
+- [Week 07 full report](https://josa-openlab.github.io/Ti-progress/reports/week-07.html)
+
+### Soft Skill: Conscientious Skepticism  ✅ done
+
+Practice probing assumptions constructively: phrase concerns as questions, bring data instead of alarm, pick battles that matter, and default to charity about teammates who added a risky dependency while trying to ship.
+
+**What I did**
+
+The week's work gave three real reps of this. First, the js-yaml High from the SBOM scan: the alarmed move is 'drop everything, High CVE'; the data-first move was tracing npm ls to show it only enters via eslint and shadcn at dev time in a static-export site, then fixing it with a one-line update anyway. Severity is not exposure. Second, the Scorecard report is a list of twelve zeros, and treating every zero as a battle would produce noise, not security: branch protection on a solo learning repo is worth less than least-privilege CI tokens, so the PR fixed the two that actually change the threat model. Third, phrasing concerns as questions is easier when the evidence is attached: the PRs this week lead with the incident that motivates them (tj-actions for pinning) rather than with 'this is insecure'. Default to charity closed the loop: my own first Dependabot commit accidentally shipped 41 generated files, the same class of oversight I would be tempted to flag in someone else's PR while they were just trying to ship.
+
+```
+Practiced through the week's real judgment calls: severity vs exposure on GHSA-52cp-r559-cp3m, pick-your-battles on 12 zero-score Scorecard checks, evidence-first PR descriptions.
+```
+
+- [OWASP Threat Modeling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html)
+- [Week 07 full report](https://josa-openlab.github.io/Ti-progress/reports/week-07.html)
+

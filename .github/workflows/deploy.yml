@@ -30,6 +30,14 @@ jobs:
 
       - run: npm ci
 
+      - name: weeks/ markdown is in sync with data/weeks
+        run: |
+          npm run docs
+          git diff --exit-code weeks/ || {
+            echo "::error::weeks/*.md is stale. Run 'npm run docs' and commit."
+            exit 1
+          }
+
       - name: Build
         run: npm run build
         env:
