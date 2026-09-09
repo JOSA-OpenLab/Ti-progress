@@ -1,6 +1,46 @@
 {
-  "updated": "2026-07-06",
+  "updated": "2026-09-09",
   "items": [
+    {
+      "id": "blackbox-tools-75",
+      "kind": "pr",
+      "title": "fix: failsafePhase name table missing comma and stale count",
+      "repo": "betaflight/blackbox-tools",
+      "status": "open",
+      "date": "2026-09-09",
+      "url": "https://github.com/betaflight/blackbox-tools/pull/75",
+      "summary": "A missing comma made C concatenate two string literals, so the failsafe phase table held five entries instead of six and index 3 decoded as \"LANDEDFAILSAFE_RX_LOSS_MONITORING\". The count was also stale at 4, so phases above 3 fell through to a raw integer. This is the default output path, so every log with a failsafe has decoded wrongly since Feb 2018. Proved it by compiling the project's own source and printing the array, confirmed the firmware enum is append-only from v2.5.0 so no version gating is needed, and completed the table with GPS_RESCUE and AUTOPILOT. Approved by a core maintainer 24 minutes after opening; CI green on Linux and macOS."
+    },
+    {
+      "id": "blackbox-tools-72",
+      "kind": "issue",
+      "title": "Flight-mode decode: box IDs shift between firmware versions",
+      "repo": "betaflight/blackbox-tools",
+      "status": "open",
+      "date": "2026-09-06",
+      "url": "https://github.com/betaflight/blackbox-tools/issues/72#issuecomment-5561892894",
+      "summary": "The decoder mislabels every flight mode, and the obvious fix (swap in a current name table) would have been wrong. Blackbox logs boxId_e enum ordinals, not stable MSP identifiers, and those shift between releases: BOXAIRMODE is bit 28 at 3.3.3, 20 across 4.0 to 4.5, and 24 at 2026.6. So the ticket's own claim that bit 24 is AIRMODE holds only for current firmware; on a 4.x log that bit is BOXCAMERA1. Extracted the enum at each release tag to show the drift, proposed a version-gated fix following the repo's existing precedent, and flagged two further defects in the same code. The reporter agreed and asked me to do the port."
+    },
+    {
+      "id": "betaflight-15560",
+      "kind": "issue",
+      "title": "Dead RCC_AHB macro: corrected the ticket's compile analysis",
+      "repo": "betaflight/betaflight",
+      "status": "open",
+      "date": "2026-09-06",
+      "url": "https://github.com/betaflight/betaflight/issues/15560#issuecomment-5558261662",
+      "summary": "A maintainer asked a month earlier whether an unused macro was worth deleting and got no answer. His ticket said it compiles on two MCU families and fails on three; it compiles on none, because the register it expands to is not defined for any supported chip. Proved that with a control search so the negative result could not be a bad path, which also rules out completing the macro as an alternative. Found duplicate RCC_AHB1 definitions in the G4 and F7 arms the ticket missed, and checked the change merges cleanly against two pending platform PRs. The ticket author reacted to the comment."
+    },
+    {
+      "id": "betaflight-15642",
+      "kind": "review",
+      "title": "Review: linux-aarch64 toolchain fix (hardware confirmation)",
+      "repo": "betaflight/betaflight",
+      "status": "open",
+      "date": "2026-09-06",
+      "url": "https://github.com/betaflight/betaflight/pull/15642#issuecomment-5557968883",
+      "summary": "Betaflight cannot build on ARM Linux at all: the makefile has no toolchain entry for linux-aarch64 and the parse-time error stops the build before it reaches a target, including SITL which needs no cross toolchain. A three-line fix was approved by two maintainers but had sat eight days because none of them had the hardware. Reproduced the failure inside ubuntu:24.04 on Apple Silicon, applied the patch, confirmed both SITL binaries build, and posted the result."
+    },
     {
       "id": "react-35395",
       "kind": "issue",
