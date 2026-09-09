@@ -2,6 +2,16 @@
   "updated": "2026-09-09",
   "items": [
     {
+      "id": "betaflight-configurator-5511",
+      "kind": "pr",
+      "title": "fix(blackbox): show all flight mode flags when bit 31 is set",
+      "repo": "betaflight/betaflight-configurator",
+      "status": "open",
+      "date": "2026-09-09",
+      "url": "https://github.com/betaflight/betaflight-configurator/pull/5511",
+      "summary": "The blackbox log viewer walked the flight-mode bitfield with a signed right shift. `>>=` coerces to int32, so once bit 31 was set the value went negative, the loop ended after one iteration, and every remaining flag was dropped with no indication. Bit 31 is a real mode: PREARM on 2025.12, CRASHFLIP on 2026.6. Flying 2025.12 with a toggle PREARM switch, the values panel read \"ARM\" for the whole log, and a frame with only high bits set read \"0\", indistinguishable from no flags at all. Found by reading the source, not from a bug report. Verified the mask reaches the function positive so the truncation is real, that every name table exceeds 32 entries so widening the scan is safe, and that CSV export and the graph annotations were already correct. One-line fix plus a 7-case test that fails on the unpatched code. A maintainer labelled it RN: BUGFIX and scheduled it for the 2026.12 milestone."
+    },
+    {
       "id": "blackbox-tools-75",
       "kind": "pr",
       "title": "fix: failsafePhase name table missing comma and stale count",
