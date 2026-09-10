@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JOSA OpenLab, Week 11</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1117;
+      --border:  #21262d;
+      --accent:  #00b4d8;
+      --red:     #ff7b72;
+      --green:   #3fb950;
+      --amber:   #f59e0b;
+      --text:    #e6edf3;
+      --muted:   #6e7681;
+      --sub:     #8b949e;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.75; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .hero { padding: 72px 40px 56px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 10px; }
+    .hero h1 span { color: var(--accent); }
+    .hero h2 { font-size: 15px; font-weight: 400; color: var(--muted); margin-bottom: 48px; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
+    .badge { display: flex; border-radius: 4px; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; }
+    .badge-label { background: #161b22; border: 1px solid var(--border); border-right: none; padding: 5px 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-radius: 4px 0 0 4px; }
+    .badge-value { padding: 5px 10px; font-weight: 600; color: #0d1117; border-radius: 0 4px 4px 0; }
+    .badge.blue  .badge-value { background: var(--accent); }
+    .badge.navy  .badge-value { background: #0077b6; }
+    .badge.amber .badge-value { background: var(--amber); }
+    .badge.gray  .badge-value { background: var(--muted); color: var(--text); }
+
+    .meta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+    .meta-item { text-align: center; padding: 0 28px; }
+    .meta-item + .meta-item { border-left: 1px solid var(--border); }
+    .meta-item .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .meta-item .value { font-size: 14px; font-weight: 500; color: var(--text); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 64px 24px 80px; }
+    .section { margin-bottom: 64px; }
+    .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .section-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; }
+    .section-header h2 { font-size: 18px; font-weight: 600; letter-spacing: -.3px; color: var(--text); }
+    .section-header .tag { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; border-radius: 4px; padding: 2px 8px; }
+
+    .block { border-left: 2px solid var(--border); padding: 4px 0 4px 24px; margin-bottom: 32px; }
+    .block-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 32px; font-size: 14px; color: var(--sub); }
+    .callout strong { color: var(--text); font-weight: 500; }
+
+    .code-block { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .code-bar { display: flex; align-items: center; gap: 6px; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #ffbd2e; } .dot.g { background: #28c840; }
+    .code-lang { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+    pre { padding: 18px 20px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; color: #c9d1d9; white-space: pre; scrollbar-width: thin; scrollbar-color: #2d333b transparent; }
+    .cm { color: var(--muted); } .cmd { color: #79c0ff; } .out { color: #c9d1d9; } .hsh { color: #f0883e; } .key { color: #ff7b72; } .str { color: #a5d6ff; }
+
+    .reflection { border-left: 2px solid var(--accent); padding: 6px 0 6px 24px; font-size: 15px; line-height: 1.85; color: var(--sub); }
+    .reflection strong { color: var(--text); font-weight: 500; }
+
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .checklist li { list-style: none; font-size: 13px; color: var(--sub); padding-left: 22px; position: relative; line-height: 1.6; }
+    .checklist li::before { content: '○'; position: absolute; left: 0; color: var(--muted); }
+    .checklist li strong { color: var(--text); font-weight: 500; }
+
+    table.ledger { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.ledger th { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-weight: 500; padding: 0 12px 10px 0; border-bottom: 1px solid var(--border); }
+    table.ledger td { padding: 11px 12px 11px 0; border-bottom: 1px solid var(--border); color: var(--sub); vertical-align: top; }
+    table.ledger td.st { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+    .m { color: var(--green); } .o { color: var(--amber); } .n { color: var(--muted); }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .3px; }
+    footer strong { color: var(--sub); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">OpenLab Apprenticeship 2026</div>
+  <h1>JOSA <span>OpenLab</span></h1>
+  <h2>Week 11: Open-Source Contribution Sprint</h2>
+
+  <div class="badges">
+    <div class="badge blue">
+      <span class="badge-label">Week</span>
+      <span class="badge-value">11 of 11</span>
+    </div>
+    <div class="badge navy">
+      <span class="badge-label">Merged</span>
+      <span class="badge-value">configurator#5511</span>
+    </div>
+    <div class="badge">
+      <span class="badge-label">Status</span>
+      <span class="badge-value" style="background: var(--green);">Completed</span>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="label">Apprentice</div>
+      <div class="value">Qutibah Ananzeh</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cohort</div>
+      <div class="value">OpenLab 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Deadline</div>
+      <div class="value">10 Sep 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- LEDGER -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 00</span>
+      <h2>The ledger</h2>
+      <span class="tag" style="color: var(--muted); border-color: var(--muted);">6 items</span>
+    </div>
+
+    <table class="ledger">
+      <thead>
+        <tr><th>Contribution</th><th>Project</th><th>Outcome</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://github.com/betaflight/betaflight-configurator/pull/5511" target="_blank">#5511</a> flight mode flags truncated at bit 31</td>
+          <td>betaflight-configurator</td>
+          <td class="st m">Merged</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/betaflight/blackbox-tools/pull/75" target="_blank">#75</a> failsafe phase table, missing comma</td>
+          <td>blackbox-tools</td>
+          <td class="st o">Approved</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/betaflight/blackbox-tools/issues/72" target="_blank">#72</a> showed the proposed fix would break logs</td>
+          <td>blackbox-tools</td>
+          <td class="st n">Port invited</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/betaflight/betaflight/issues/15560" target="_blank">#15560</a> corrected the ticket's own premise</td>
+          <td>betaflight</td>
+          <td class="st n">Acknowledged</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/betaflight/betaflight/pull/15642" target="_blank">#15642</a> reproduced the linux-aarch64 toolchain gap</td>
+          <td>betaflight</td>
+          <td class="st n">Confirmed</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/sapientinc/PRAXIST/pull/195" target="_blank">#195</a> graduated a module from the type-check excludes</td>
+          <td>sapientinc/PRAXIST</td>
+          <td class="st o">Open</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TASK 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 01</span>
+      <h2>Land a Real Fix in a Real Project</h2>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Merged</span>
+    </div>
+
+    <div class="callout">
+      <strong>Merged:</strong> <a href="https://github.com/betaflight/betaflight-configurator/commit/c5ab3dbafa1044d8c4b353cf2d7bb86bc563bfd8" target="_blank">c5ab3dba</a> on master, 10 September 2026 &middot; label <code>RN: BUGFIX</code> &middot; milestone 2026.12 &middot; betaflight-configurator, 3,308 stars.
+    </div>
+
+    <div class="block">
+      <div class="block-title">The bug</div>
+      <div class="reflection">
+        The blackbox log viewer decodes the flight-mode bitfield by walking it one bit at a time, and it walked it with <code>flags &gt;&gt;= 1</code>. In JavaScript <code>&gt;&gt;</code> coerces its operand to a signed 32-bit integer, so the moment bit 31 is set the value goes negative, the <code>flags &gt; 0</code> loop condition fails after a single iteration, and every remaining flag is silently dropped.
+        <br><br>
+        Bit 31 is not hypothetical. <code>flightModeFlags</code> carries the firmware's <code>rcModeActivationMask</code>, and bit 31 is PREARM on 2025.12 and CRASHFLIP on 2026.6. A pilot flying 2025.12 with a toggle PREARM switch had a values panel reading &ldquo;ARM&rdquo; for the entire log, and any frame where only high bits were set rendered as &ldquo;0&rdquo;, indistinguishable from no flags at all. Nobody reported it. I found it by reading the source.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The fix</div>
+      <div class="code-block">
+        <div class="code-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="code-lang">flightlog_fields_presenter.js</div></div>
+<pre><span class="key">-        flags &gt;&gt;= 1;</span>
+<span class="cm">+        // `&gt;&gt;&gt;` and not `&gt;&gt;`: a signed shift coerces to int32, so a set bit 31</span>
+<span class="cm">+        // would turn the value negative and end the loop, hiding the rest.</span>
+<span class="str">+        flags &gt;&gt;&gt;= 1;</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Proving it, which is where the time went</div>
+      <ul class="checklist">
+        <li>Checked the mask <strong>reaches the function positive</strong>, so the truncation is caused by the shift and not by something upstream.</li>
+        <li>Checked <strong>every resolved name table exceeds 32 entries</strong>, so widening the scan cannot read past the end.</li>
+        <li>Checked the neighbours: <strong>CSV export and the graph annotations were already correct</strong>, so I could not claim the bug was broader than it was.</li>
+        <li>Wrote <strong>7 test cases</strong>, two of which pin the real bit-31 mode name on 2025.12 and 2026.6. Confirmed 5 fail against unpatched code.</li>
+        <li>Caught one of my own tests passing for the wrong reason: I had handed <code>adjustFieldDefsList</code> a string where it wanted a numeric firmware constant, so it silently took the pre-3.3 branch. That was the difference between a test that proves something and a test that looks like it does.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">What review taught me</div>
+      <div class="reflection">
+        blckmn requested one change: new files in this repo must open with the GPL header from <code>DEFAULT_LICENSE.md</code>. That rule lives in <code>AGENTS.md</code>, it is marked as not yet enforced by tooling, CI does not lint <code>test/</code> at all, and <strong>not one of the other 104 files in <code>test/js/</code> has the header</strong>. Two test files had merged without it the day before.
+        <br><br>
+        So grepping for local convention actively told me the opposite of the rule, and only a human who wrote the rule would catch it. I added the header as a separate commit and replied on his thread. He approved within the hour, haslinghuis approved three minutes later, and it merged fourteen minutes after that.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Verification</div>
+      <div class="code-block">
+        <div class="code-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="code-lang">bash</div></div>
+<pre><span class="cmd">$ npx vitest run test/js/blackbox_fields_presenter.test.js</span>
+<span class="out">PASS (7)  FAIL (0)</span>
+
+<span class="cmd">$ npx vitest run</span>
+<span class="out">416/416 suites, 1283/1283 tests</span>
+
+<span class="cmd">$ git log --oneline -1 upstream/master</span>
+<span class="hsh">c5ab3dba</span> <span class="out">fix(blackbox): show all flight mode flags when bit 31 is set (#5511)</span>
+
+<span class="cm"># 2 files, +79 -1  (1 line of fix, 76 of test, 21 of licence header)</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 02</span>
+      <h2>Find Bugs by Reading Code, Not Issue Lists</h2>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
+    </div>
+
+    <div class="callout">
+      Week 10 ended with the lesson that issue lists go stale: five shortlisted issues turned out closed or already claimed. So I stopped shopping the tracker and went into the source instead.
+    </div>
+
+    <div class="block">
+      <div class="block-title">A missing comma, wrong since February 2018</div>
+      <div class="reflection">
+        In <code>blackbox_fielddefs.c</code> the failsafe phase name table was written across lines without a comma after <code>"LANDED"</code>, so C did what C does and concatenated the two adjacent string literals. The table held five entries instead of six, and index 3 decoded as the single string <code>"LANDEDFAILSAFE_RX_LOSS_MONITORING"</code>. The count was also stale at 4, so any phase above 3 fell through to a raw integer.
+        <br><br>
+        This is the <strong>default output path</strong> of the decoder, which means every log containing a failsafe has decoded wrongly for seven years. I proved it by compiling the project's own source and printing the array rather than by reading and asserting, checked the firmware enum is append-only from v2.5.0 so no version gating was needed, and completed the table with GPS_RESCUE and AUTOPILOT. A core maintainer approved it 24 minutes after I opened it.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Proof</div>
+      <div class="code-block">
+        <div class="code-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="code-lang">c</div></div>
+<pre><span class="cmd">$ gcc -o /tmp/probe probe.c src/blackbox_fielddefs.c &amp;&amp; /tmp/probe</span>
+<span class="out">table[0] = </span><span class="str">"IDLE"</span>
+<span class="out">table[1] = </span><span class="str">"RX_LOSS_DETECTED"</span>
+<span class="out">table[2] = </span><span class="str">"LANDING"</span>
+<span class="out">table[3] = </span><span class="key">"LANDEDFAILSAFE_RX_LOSS_MONITORING"</span>  <span class="cm">&lt;-- two literals, one entry</span>
+<span class="out">table[4] = </span><span class="str">"FAILSAFE_RX_LOSS_RECOVERED"</span>
+
+<span class="cm"># FLIGHT_LOG_FAILSAFE_PHASE_COUNT = 4, should be 8</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Arguing against a fix</div>
+      <div class="reflection">
+        Issue #72 reported that flight mode names decode wrongly and proposed a corrected static table. The mislabelling is real, but the proposed fix <strong>would have broken more logs than it repaired</strong>, because blackbox records the <code>boxId_e</code> enum ordinal rather than the stable MSP box ID, and those ordinals shift between firmware releases. I read <code>rc_modes.h</code> at each release tag and posted the table showing where <code>BOXAIRMODE</code> actually lands per version.
+        <br><br>
+        The reporter agreed that a version-aware mapping was what they had meant, and asked me to do the port. That is the piece I have not written yet, and it is first on the list for next week.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Two smaller ones</div>
+      <ul class="checklist">
+        <li><strong>#15560:</strong> corrected the maintainer's own ticket. The dead <code>RCC_AHB</code> macro he described as compiling on three chips compiles on <strong>none</strong>, demonstrated with a control search so a zero result could not be dismissed as a bad path. nerdCopter reacted with a heart.</li>
+        <li><strong>#15642:</strong> reproduced the <code>linux-aarch64</code> toolchain gap that blocks <code>make</code> on ARM Linux and on Docker under Apple Silicon, and confirmed the three-line fix works. It had been approved by two maintainers and sat unmerged for over a week because nobody had the hardware to confirm it.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The habit that keeps paying off</div>
+      <div class="reflection">
+        Check every claim against current master before posting it. It has changed the outcome <strong>every single time</strong>. A count of 648 apparently dead translation keys collapsed to 20 real ones once I accounted for keys built dynamically at runtime. A cleanup I had queued got dropped because the maintainer had asked whether it should be done at all and never got an answer. A decoder fix got dropped because the reference implementation I was told to port from is itself wrong.
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 03</span>
+      <h2>Cadence: What Slipped and Why</h2>
+      <span class="tag" style="color: var(--amber); border-color: var(--amber);">Honest</span>
+    </div>
+
+    <div class="callout">
+      Weeks 1 to 9 were submitted on time, every Saturday. Week 10 landed a month late and this entry is a month after that. The coordinators raised it directly, and a progress log that quietly skips the gap is not a progress log.
+    </div>
+
+    <div class="block">
+      <div class="block-title">The structural half</div>
+      <div class="reflection">
+        The early cadence held because the weekly tasks were self-contained: read a thing, do a thing, write it up. Once the apprenticeship turned into contributing to a live project, the unit of work stopped fitting inside a week. A PR is not done when I push it, it is done when a maintainer with no obligation to me decides to look. #5511 sat a day between opening and merging, which is fast. #75 has been approved and unmerged for a day. #15642 sat approved and unmerged for over a week. None of that is under my control, and I had no way to log progress for a week whose output was &ldquo;waiting&rdquo;.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The honest half</div>
+      <div class="reflection">
+        I was running several other things at the same time and let this one drift. The right move would have been to <strong>log the waiting rather than log nothing</strong>. A week that reads &ldquo;opened two PRs, both in review, here is what I found while waiting&rdquo; is a real week. Silence for a month reads as absence even when the work happened, which is exactly how it was received.
+        <br><br>
+        The fix I am actually applying: record the week on its deadline regardless of whether anything merged, because merge timing belongs to the maintainer and effort belongs to me, and those are two different things to report.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The mistake worth recording</div>
+      <div class="reflection">
+        One contribution outside Betaflight this period. PRAXIST is a 6,319-star agent framework carrying 33 legacy files excluded from its type checker as declared debt, with the documented instruction that each graduates out as it is touched. <code>praxist/core/role_skills.py</code> was already clean, so it could leave the exclusion list with no source change: a single deleted line.
+        <br><br>
+        The work was in proving it, and it is where I got it wrong. My first draft of that PR claimed the type checker reported <strong>17 errors on main. It reports zero.</strong> My 17 were entirely my own environment: I had not synced an optional dependency group, and I was running on macOS where platform narrowing produces three errors CI never sees. I also quoted a file count from a Homebrew-installed linter instead of the version pinned in the lockfile, and test counts polluted by bytecode caches my own earlier command had created.
+        <br><br>
+        Posting &ldquo;17 errors on main&rdquo; to a repo whose public CI log shows zero would have made a maintainer distrust every other line in that PR. The lesson is narrow and permanent: <strong>run the project's tool through the project's lockfile, never the copy on your machine, and reproduce CI's platform before quoting a number to anyone.</strong>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Before and after</div>
+      <div class="code-block">
+        <div class="code-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="code-lang">bash</div></div>
+<pre><span class="cm"># what I nearly published</span>
+<span class="cmd">$ pyrefly check</span>
+<span class="key">17 errors</span>  <span class="cm">&lt;-- all mine, none real</span>
+
+<span class="cm"># after syncing the extras and reproducing CI's platform</span>
+<span class="cmd">$ uv sync --group dev --extra product-usage-server</span>
+<span class="cmd">$ uv run pyrefly check --python-platform linux</span>
+<span class="str">0 errors</span>  <span class="cm">&lt;-- matches CI exactly, before and after the change</span>
+
+<span class="cm"># and the exclusion really was load-bearing, not stale:</span>
+<span class="cm"># with a deliberate type error appended to the module</span>
+<span class="out">main   : 0 errors   (the exclusion hid it)</span>
+<span class="out">patch  : 1 error    (bad-return, role_skills.py:294)</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Next</div>
+      <ul class="checklist">
+        <li>The <a href="https://github.com/betaflight/blackbox-tools/issues/72" target="_blank">#72</a> version-gated mode-name port, which the reporter asked me to write.</li>
+        <li><code>blackbox-log-viewer</code> has the same signed-shift bug I just fixed in the configurator, and its 4.x table omits <code>BOXPARALYZE</code> entirely.</li>
+        <li>Two hardware tests written up for Ghazi, who can fly and bench-test what maintainers cannot: confirm the 3D motor-stop safety fix with props off, and fly a waypoint mission to settle whether the firmware exceeds its own speed cap.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Jordan Open Source Association &nbsp;&middot;&nbsp; <strong>OpenLab 2026</strong> &nbsp;&middot;&nbsp; Qutibah Ananzeh
+</footer>
+
+</body>
+</html>
