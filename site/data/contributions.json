@@ -1,15 +1,25 @@
 {
-  "updated": "2026-09-09",
+  "updated": "2026-09-10",
   "items": [
+    {
+      "id": "praxist-195",
+      "kind": "pr",
+      "title": "Graduate role_skills module from Pyrefly excludes",
+      "repo": "sapientinc/PRAXIST",
+      "status": "open",
+      "date": "2026-09-09",
+      "url": "https://github.com/sapientinc/PRAXIST/pull/195",
+      "summary": "PRAXIST carries 33 legacy files excluded from its Pyrefly type checker as declared type debt, with the instruction that each graduates out of the list as it is touched. praxist/core/role_skills.py, 290 lines, was already clean and could leave with no source change, so the fix is a single deleted line. The work was in proving it: reproducing CI locally needs the product-usage-server extra synced and --python-platform linux, without which the run reports phantom import errors and macOS platform-narrowing noise that have nothing to do with the change. Done properly it is 0 errors before and after, matching CI exactly. Proved the exclusion was load-bearing rather than stale by appending a deliberate type error: main reports it as clean, the patch catches it. Note this repo is Fair Source, source-available but not OSI-approved."
+    },
     {
       "id": "betaflight-configurator-5511",
       "kind": "pr",
       "title": "fix(blackbox): show all flight mode flags when bit 31 is set",
       "repo": "betaflight/betaflight-configurator",
-      "status": "open",
+      "status": "merged",
       "date": "2026-09-09",
       "url": "https://github.com/betaflight/betaflight-configurator/pull/5511",
-      "summary": "The blackbox log viewer walked the flight-mode bitfield with a signed right shift. `>>=` coerces to int32, so once bit 31 was set the value went negative, the loop ended after one iteration, and every remaining flag was dropped with no indication. Bit 31 is a real mode: PREARM on 2025.12, CRASHFLIP on 2026.6. Flying 2025.12 with a toggle PREARM switch, the values panel read \"ARM\" for the whole log, and a frame with only high bits set read \"0\", indistinguishable from no flags at all. Found by reading the source, not from a bug report. Verified the mask reaches the function positive so the truncation is real, that every name table exceeds 32 entries so widening the scan is safe, and that CSV export and the graph annotations were already correct. One-line fix plus a 7-case test that fails on the unpatched code. A maintainer labelled it RN: BUGFIX and scheduled it for the 2026.12 milestone."
+      "summary": "The blackbox log viewer walked the flight-mode bitfield with a signed right shift. `>>=` coerces to int32, so once bit 31 was set the value went negative, the loop ended after one iteration, and every remaining flag was dropped with no indication. Bit 31 is a real mode: PREARM on 2025.12, CRASHFLIP on 2026.6. Flying 2025.12 with a toggle PREARM switch, the values panel read \"ARM\" for the whole log, and a frame with only high bits set read \"0\", indistinguishable from no flags at all. Found by reading the source, not from a bug report. Verified the mask reaches the function positive so the truncation is real, that every name table exceeds 32 entries so widening the scan is safe, and that CSV export and the graph annotations were already correct. One-line fix plus a 7-case test that fails on the unpatched code. Merged to master on 10 September 2026 as c5ab3dba, labelled RN: BUGFIX and shipping in release 2026.12. A maintainer requested one change before approving: new files in this repo must carry the GPL header from DEFAULT_LICENSE.md, a rule documented in AGENTS.md but enforced by no tooling, and contradicted by every other file in test/js/. Added it as a separate commit; both reviewers approved within three minutes of each other and it merged fourteen minutes later."
     },
     {
       "id": "blackbox-tools-75",
@@ -86,7 +96,7 @@
       "kind": "pr",
       "title": "container: add page",
       "repo": "tldr-pages/tldr",
-      "status": "open",
+      "status": "merged",
       "date": "2026-07-05",
       "url": "https://github.com/tldr-pages/tldr/pull/23074",
       "summary": "New tldr page for Apple's container CLI (Linux containers in lightweight VMs on Apple silicon), answering page request #23039. Eight examples verified against the official v1.0.0 command reference; short options kept ungrouped because Swift ArgumentParser does not support combined flags like -it. Follows the tldr style guide and passes tldr-lint."
@@ -96,7 +106,7 @@
       "kind": "pr",
       "title": "Open projects with a corrupt media.json instead of failing",
       "repo": "palmier-io/palmier-pro",
-      "status": "open",
+      "status": "merged",
       "date": "2026-06-29",
       "url": "https://github.com/palmier-io/palmier-pro/pull/224",
       "summary": "A project package keeps the timeline (project.json) and media manifest (media.json) in separate files, so a corrupt media.json made readProjectPackage throw and blocked the whole open even though the timeline was intact. Degrade a bad manifest to 'media offline' (like a missing one) and preserve the original file so the next autosave cannot overwrite it. +9 tests; full 835-test suite green; verified live in the running app."
@@ -276,7 +286,7 @@
       "kind": "review",
       "title": "Review: recurring booking-limit enforcement",
       "repo": "calcom/cal.diy",
-      "status": "open",
+      "status": "closed",
       "date": "2026-06-19",
       "url": "https://github.com/calcom/cal.diy/pull/29603",
       "summary": "Dropped two tempting-but-false 'bugs' after cloning + smoke-testing; left two real questions and genuine praise."
