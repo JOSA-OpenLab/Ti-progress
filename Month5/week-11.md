@@ -83,7 +83,7 @@ Weeks 1 to 9 were submitted on time, every Saturday. Week 10 landed a month late
 
 **What I did**
 
-The early cadence held because the weekly tasks were self-contained: read a thing, do a thing, write it up. Once the apprenticeship turned into contributing to a live project, the unit of work stopped fitting inside a week. A PR is not done when I push it, it is done when a maintainer with no obligation to me decides to look. #5511 sat between opening and merging for a day, which is fast, and #75 has been approved and unmerged for a day, and #15642 sat approved and unmerged for over a week. None of that is under my control, and I had no way of logging progress for a week whose output was "waiting".
+The early cadence held because the weekly tasks were self-contained: read a thing, do a thing, write it up. Once the apprenticeship turned into contributing to a live project, the unit of work stopped fitting inside a week. A PR is not done when I push it, it is done when a maintainer with no obligation to me decides to look. #5511 sat a day between opening and merging, which is fast. #75 was approved 24 minutes after I opened it and is still not merged. #15642 sat approved and unmerged for over a week. None of that is under my control, and I had no way of logging progress for a week whose output was "waiting".
 
 That is the honest half. The other half is that I was running several other things at the same time and let this one drift, and the right move would have been to log the waiting rather than log nothing. A week that reads "opened two PRs, both in review, here is what I found while waiting" is a real week. Silence for a month reads as absence even when the work happened, which is exactly how it was received.
 
