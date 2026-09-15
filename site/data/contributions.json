@@ -1,6 +1,16 @@
 {
-  "updated": "2026-09-10",
+  "updated": "2026-09-15",
   "items": [
+    {
+      "id": "tx-lua-scripts-548",
+      "kind": "pr",
+      "title": "Fix RC Smoothing Mode reading a dead MSP_RX_CONFIG byte",
+      "repo": "betaflight/betaflight-tx-lua-scripts",
+      "status": "open",
+      "date": "2026-09-15",
+      "url": "https://github.com/betaflight/betaflight-tx-lua-scripts/pull/548",
+      "summary": "These Lua scripts let a pilot tune a quad from the radio transmitter instead of a laptop. The Receiver page read the RC Smoothing on/off setting from byte 25 of MSP_RX_CONFIG, but the firmware has written a hardcoded zero there and discarded it on write since API 1.44; the real flag is byte 32. The ON/OFF labels were inverted on top of that. So on every Betaflight 4.3+ quad since 2021 the radio showed the wrong state, and toggling it and saving was a silent no-op that reverted on the next read. Two lines. Proving it is what took the time: I built the firmware as a host binary with Betaflight SITL and spoke MSP to it directly, which showed byte 25 reading zero in both states while byte 32 tracked the setting, and showed the firmware discarding a write to byte 25 while honouring one to byte 32. Cross-checked the offset and the OFF/ON lookup against five release tags, and confirmed every conditional branch in the message writer emits equal widths so the offset cannot depend on which features a board builds. Then ran the tool on real EdgeTX firmware in the WebAssembly simulator: on master the toggle reads OFF against a flight controller that has it ON, and a save reverts; with the fix both behave. Repo had zero open pull requests."
+    },
     {
       "id": "praxist-195",
       "kind": "pr",
