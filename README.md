@@ -20,7 +20,7 @@ Month1/   week-01.md  week-02.md  week-03.md
 Month2/   week-04.md  week-05.md  week-06.md  week-07.md
 Month3/   week-08.md  week-09.md
 Month4/   week-10.md
-Month5/   week-11.md
+Month5/   week-11.md  week-12.md
 ```
 
 | Month | Weeks |
@@ -29,7 +29,7 @@ Month5/   week-11.md
 | [Month2](Month2/) · June 2026 | [04](Month2/week-04.md) Code Review · [05](Month2/week-05.md) Testing & CI/CD · [06](Month2/week-06.md) Docs as Code · [07](Month2/week-07.md) Security |
 | [Month3](Month3/) · July 2026 | [08](Month3/week-08.md) Performance & Profiling · [09](Month3/week-09.md) Own OSS Project |
 | [Month4](Month4/) · August 2026 | [10](Month4/week-10.md) Project Research & Ideation |
-| [Month5](Month5/) · September 2026 | [11](Month5/week-11.md) Open-Source Contribution Sprint |
+| [Month5](Month5/) · September 2026 | [11](Month5/week-11.md) Open-Source Contribution Sprint · [12](Month5/week-12.md) Proving It Without the Hardware |
 
 Full index: [PROGRESS.md](PROGRESS.md)
 

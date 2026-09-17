@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JOSA OpenLab, Week 12</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1117;
+      --border:  #21262d;
+      --accent:  #00b4d8;
+      --red:     #ff7b72;
+      --green:   #3fb950;
+      --amber:   #f59e0b;
+      --text:    #e6edf3;
+      --muted:   #6e7681;
+      --sub:     #8b949e;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.75; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .hero { padding: 72px 40px 56px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 10px; }
+    .hero h1 span { color: var(--accent); }
+    .hero h2 { font-size: 15px; font-weight: 400; color: var(--muted); margin-bottom: 48px; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
+    .badge { display: flex; border-radius: 4px; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; }
+    .badge-label { background: #161b22; border: 1px solid var(--border); border-right: none; padding: 5px 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-radius: 4px 0 0 4px; }
+    .badge-value { padding: 5px 10px; font-weight: 600; color: #0d1117; border-radius: 0 4px 4px 0; }
+    .badge.blue  .badge-value { background: var(--accent); }
+    .badge.navy  .badge-value { background: #0077b6; }
+    .badge.amber .badge-value { background: var(--amber); }
+    .badge.gray  .badge-value { background: var(--muted); color: var(--text); }
+
+    .meta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+    .meta-item { text-align: center; padding: 0 28px; }
+    .meta-item + .meta-item { border-left: 1px solid var(--border); }
+    .meta-item .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .meta-item .value { font-size: 14px; font-weight: 500; color: var(--text); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 64px 24px 80px; }
+    .section { margin-bottom: 64px; }
+    .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .section-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; }
+    .section-header h2 { font-size: 18px; font-weight: 600; letter-spacing: -.3px; color: var(--text); }
+    .section-header .tag { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; border-radius: 4px; padding: 2px 8px; }
+
+    .block { border-left: 2px solid var(--border); padding: 4px 0 4px 24px; margin-bottom: 32px; }
+    .block-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 32px; font-size: 14px; color: var(--sub); }
+    .callout strong { color: var(--text); font-weight: 500; }
+
+    .code-block { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .code-bar { display: flex; align-items: center; gap: 6px; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #ffbd2e; } .dot.g { background: #28c840; }
+    .code-lang { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+    pre { padding: 18px 20px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; color: #c9d1d9; white-space: pre; scrollbar-width: thin; scrollbar-color: #2d333b transparent; }
+    .cm { color: var(--muted); } .cmd { color: #79c0ff; } .out { color: #c9d1d9; } .hsh { color: #f0883e; } .key { color: #ff7b72; } .str { color: #a5d6ff; }
+
+    .reflection { border-left: 2px solid var(--accent); padding: 6px 0 6px 24px; font-size: 15px; line-height: 1.85; color: var(--sub); }
+    .reflection strong { color: var(--text); font-weight: 500; }
+
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .checklist li { list-style: none; font-size: 13px; color: var(--sub); padding-left: 22px; position: relative; line-height: 1.6; }
+    .checklist li::before { content: '○'; position: absolute; left: 0; color: var(--muted); }
+    .checklist li strong { color: var(--text); font-weight: 500; }
+
+    table.ledger { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.ledger th { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-weight: 500; padding: 0 12px 10px 0; border-bottom: 1px solid var(--border); }
+    table.ledger td { padding: 11px 12px 11px 0; border-bottom: 1px solid var(--border); color: var(--sub); vertical-align: top; }
+    table.ledger td.st { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+    .m { color: var(--green); } .o { color: var(--amber); } .n { color: var(--muted); }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .3px; }
+    footer strong { color: var(--sub); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">OpenLab Apprenticeship 2026</div>
+  <h1>JOSA <span>OpenLab</span></h1>
+  <h2>Week 12: Proving It Without the Hardware</h2>
+
+  <div class="badges">
+    <div class="badge blue">
+      <span class="badge-label">Week</span>
+      <span class="badge-value">12 of 12</span>
+    </div>
+    <div class="badge navy">
+      <span class="badge-label">Merged</span>
+      <span class="badge-value">colibri#1557</span>
+    </div>
+    <div class="badge">
+      <span class="badge-label">Status</span>
+      <span class="badge-value" style="background: var(--green);">Completed</span>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="label">Apprentice</div>
+      <div class="value">Qutibah Ananzeh</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cohort</div>
+      <div class="value">OpenLab 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Deadline</div>
+      <div class="value">17 Sep 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- LEDGER -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 00</span>
+      <h2>The ledger</h2>
+      <span class="tag" style="color: var(--muted); border-color: var(--muted);">3 items</span>
+    </div>
+
+    <table class="ledger">
+      <thead>
+        <tr><th>Contribution</th><th>Project</th><th>Stars</th><th>Outcome</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://github.com/JustVugg/colibri/pull/1557" target="_blank">#1557</a> out-of-bounds read from a network prompt</td>
+          <td>JustVugg/colibri</td>
+          <td>33.5k</td>
+          <td class="st m">Merged</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/betaflight/betaflight-tx-lua-scripts/pull/548" target="_blank">#548</a> radio read a dead byte for RC Smoothing</td>
+          <td>betaflight-tx-lua-scripts</td>
+          <td>727</td>
+          <td class="st o">Open</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/PX4/PX4-Autopilot/pull/28716" target="_blank">#28716</a> six-bit mask advertised a maximum of 32</td>
+          <td>PX4/PX4-Autopilot</td>
+          <td>12.6k</td>
+          <td class="st o">Open</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TASK 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 01</span>
+      <h2>A Bug the Radio Never Admitted</h2>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Done</span>
+    </div>
+
+    <div class="callout">
+      <strong>Open:</strong> <a href="https://github.com/betaflight/betaflight-tx-lua-scripts/pull/548" target="_blank">betaflight-tx-lua-scripts#548</a> &middot; two lines &middot; these Lua scripts let a pilot tune a quad from the radio transmitter instead of a laptop.
+    </div>
+
+    <div class="block">
+      <div class="block-title">The bug</div>
+      <div class="reflection">
+        The Receiver page reads the RC Smoothing on/off setting from byte 25 of an MSP message. Since firmware API 1.44 the flight controller writes a hardcoded zero into that byte and <strong>discards it again on write</strong>. The real setting lives at byte 32. The ON/OFF labels were inverted on top of that.
+        <br><br>
+        So on every Betaflight 4.3 and newer quad, <strong>since 2021</strong>, the radio showed the wrong state, and toggling it and saving was a silent no-op that reverted on the next read.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">My first byte count was wrong</div>
+      <div class="reflection">
+        I counted offsets in the firmware's C source and took <strong>both</strong> branches of every <code>#ifdef</code> and <code>#else</code>, which inflated every offset after the first conditional. Redoing it properly put the setting at byte 32.
+        <br><br>
+        The check that actually convinced me was not my arithmetic. It was that <strong>six other fields on that same page</strong>, stick endpoints, camera angle, the cutoffs, all land exactly where the corrected layout predicts. Only the one field misses.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Then I stopped counting and asked the firmware</div>
+      <div class="reflection">
+        Betaflight has a SITL target that compiles the <strong>real firmware as a program you can run on a laptop</strong>, speaking real MSP over TCP. So I ran it and did exactly what the save path does: change one byte, write it back, read it again, and see which bytes the flight controller actually kept.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="code-lang">MSP over TCP 5761</div></div>
+<pre><span class="cmd">TEST 1  byte 25, the byte the radio's script writes</span>
+<span class="out">  wrote byte 25: 0 -&gt; 1</span>
+<span class="key">  bytes that actually changed in the FC: NONE</span>
+<span class="out">  firmware kept it?  NO  (discarded)</span>
+
+<span class="cmd">TEST 2  byte 32, the byte the fix writes</span>
+<span class="out">  wrote byte 32: 1 -&gt; 0</span>
+<span class="str">  bytes that actually changed in the FC: [32]</span>
+<span class="out">  firmware kept it?  YES</span></pre>
+      </div>
+      <div class="reflection" style="margin-top:16px;">
+        That is not an argument about C. That is the firmware answering for itself.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">And then the radio itself</div>
+      <div class="reflection">
+        EdgeTX, the radio firmware, publishes a <strong>WebAssembly build that runs the real thing in a browser</strong>. Uploading the scripts and driving the menus showed the bug as a pilot sees it: a toggle reading OFF against a flight controller that has the setting ON, and a save that reverts.
+        <br><br>
+        One nuance only the simulator could have revealed, and it changed what I wrote in the pull request: on colour radios the field renders as a toggle built from the raw value, so the <strong>inverted labels never show there</strong>. That half of the bug is visible only on the older monochrome radios. Without running it I would have overstated the fix.
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 02</span>
+      <h2>A Memory-Safety Fix, Merged</h2>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Merged</span>
+    </div>
+
+    <div class="callout">
+      <strong>Merged:</strong> <a href="https://github.com/JustVugg/colibri/commit/3b459d079048" target="_blank">3b459d07</a> into <code>dev</code>, 17 September 2026 &middot; <a href="https://github.com/JustVugg/colibri" target="_blank">JustVugg/colibri</a>, 33,519 stars &middot; six lines of logic &middot; merged in under 48 hours, no changes requested.
+    </div>
+
+    <div class="block">
+      <div class="block-title">What colibri is, and why I looked there</div>
+      <div class="reflection">
+        It runs very large mixture-of-experts language models on ordinary hardware, in plain C with no dependencies, by streaming expert weights off disk. It went from nothing to 33.5k stars in about three months. That combination is exactly what is worth searching: <strong>enormous attention, a young codebase, performance-critical C</strong>.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The bug</div>
+      <div class="reflection">
+        The server reads exactly the number of bytes a client advertises into a buffer of that size, then hands them to the tokenizer as prompt text. <strong>Nothing in between checks the bytes are valid UTF-8.</strong>
+        <br><br>
+        If the prompt ends halfway through a character, a clipped emoji, a cut-off Arabic letter, the decoder still reports that character's full length even though the remaining bytes were never sent. The tokenizer walks past the end of the buffer.
+        <br><br>
+        Without a sanitizer it does not crash. It reads whatever sits next in memory, turns it into tokens, and <strong>feeds the model a prompt containing bytes the user never sent</strong>, with no sign anything went wrong.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Why it was easy to argue</div>
+      <div class="reflection">
+        The project had already solved it. The same engine exists twice in that repository, and <strong>the other copy carries the bounds check</strong>, plus a test gating exactly this case under the maintainer's own comment about byte-counted payloads ending mid-character.
+        <br><br>
+        So the pull request was not &ldquo;I think you have a bug&rdquo;. It was <strong>&ldquo;your own test fails against your other engine&rdquo;</strong>, and the fix is that copy ported verbatim.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="code-lang">AddressSanitizer</div></div>
+<pre><span class="cm"># pristine master</span>
+<span class="key">ERROR: AddressSanitizer: stack-buffer-overflow</span>
+<span class="key">READ of size 1</span>
+<span class="out">    #0 utf8_decode qwen36.c:153</span>
+<span class="out">    #1 pretok_end  qwen36.c:206</span>
+
+<span class="cm"># patched, running the sibling engine's own assertions</span>
+<span class="str">utf8_decode -&gt; 0xe2      adv -&gt; 1      pretok_end -&gt; 1      PASS</span>
+
+<span class="cm"># and no change on valid input: 452 lines of decoded output,</span>
+<span class="cm"># twenty text categories, byte-identical before and after</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The process detail worth keeping</div>
+      <div class="reflection">
+        The commit was about to go out under my <strong>university email address</strong>, which is not verified on my GitHub account. It would have landed showing an unlinked author and counted for nothing. I caught it by comparing against the address on an earlier merged commit.
+        <br><br>
+        Git configuration is per-clone, and it can quietly cost you the credit for your own work.
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 03</span>
+      <h2>Measuring Where a Contribution Is Worth Sending</h2>
+      <span class="tag" style="color: var(--amber); border-color: var(--amber);">Corrected</span>
+    </div>
+
+    <div class="callout">
+      Star count says nothing about whether a project will take your work. I wanted a number for how often each candidate actually merges code from people outside the team.
+    </div>
+
+    <div class="block">
+      <div class="block-title">I got it badly wrong the first time</div>
+      <div class="reflection">
+        My method was GitHub's <code>author_association</code> field, which labels a pull request's author as a member, an owner, or an outside contributor. On that basis one project looked extraordinary: <strong>ninety-four of ninety-four merged pull requests from outside contributors, merging in a median of one hour</strong>.
+        <br><br>
+        That statistic is false. <code>author_association</code> reports <em>everyone</em> as a plain contributor when an organisation hides its membership list, and this one does. Counting properly, by whether the branch lived in the repository or in a fork, <strong>eighty-six of those ninety-four were two employees merging their own branches</strong>. Real outside contributions: eight. Across the project's entire history, not one pull request from a fork has ever received a written review.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="code-lang">share of merges from forks</div></div>
+<pre><span class="out">colibri                       </span><span class="str">49%</span>
+<span class="out">VoiceStudio                   </span><span class="out">29%</span>
+<span class="out">PX4-Autopilot                 </span><span class="out">25%</span>
+<span class="out">the one that looked perfect    </span><span class="key">9%</span>   <span class="cm">&lt;- reported as 100%</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">What I actually take from that</div>
+      <div class="reflection">
+        The lesson is not about that project. It is that <strong>I presented a number before I understood what it measured</strong>, and the number happened to flatter the conclusion I was already leaning toward.
+        <br><br>
+        The fix is the same discipline as everywhere else this month: find a second, independent way to measure the same thing, and check whether the two agree.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">And a deliberately small fix to PX4</div>
+      <div class="reflection">
+        PX4 is the drone autopilot next door to Betaflight. A u-blox GPS parameter declares six configuration bits, so its range is 0 to 63, but it advertises a maximum of <strong>32</strong>, the value of the top bit on its own. One line.
+        <br><br>
+        My first draft claimed it blocked a valid configuration. Checking showed PX4 <strong>never compiles parameter ranges into the firmware at all</strong>, so nothing is blocked and the real effect is a wrong bound shown to operators. The pull request says that, not the louder version.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="code-lang">generated metadata, before vs after</div></div>
+<pre><span class="out">two files, 40,032 lines each</span>
+<span class="str">line 22021:  &lt;max&gt;32&lt;/max&gt;  -&gt;  &lt;max&gt;63&lt;/max&gt;</span>
+<span class="cm">every other line identical</span></pre>
+      </div>
+      <div class="reflection" style="margin-top:16px;">
+        PX4 also requires that any AI assistance be <strong>disclosed in the commit</strong>, and states plainly that &ldquo;the AI wrote it&rdquo; is never an acceptable answer in review. That is the right bar, and one I want to be held to.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Next</div>
+      <ul class="checklist">
+        <li>The <a href="https://github.com/betaflight/blackbox-tools/issues/72" target="_blank">blackbox-tools#72</a> version-gated mode-name port, which the reporter asked me to write.</li>
+        <li>Two verified but unfiled configurator bugs: a missing <code>PARALYZE</code> entry that my own merged fix made visible, and two slow-frame tables that have been stale since firmware 4.3.</li>
+        <li>A second colibri finding, an out-of-bounds read in the grammar parser, already reproduced under AddressSanitizer.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Jordan Open Source Association &nbsp;&middot;&nbsp; <strong>OpenLab 2026</strong> &nbsp;&middot;&nbsp; Qutibah Ananzeh
+</footer>
+
+</body>
+</html>

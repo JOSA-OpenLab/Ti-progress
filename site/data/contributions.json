@@ -1,6 +1,26 @@
 {
-  "updated": "2026-09-15",
+  "updated": "2026-09-17",
   "items": [
+    {
+      "id": "px4-28716",
+      "kind": "pr",
+      "title": "fix(gps): correct GPS_UBX_CFG_INTF bitmask max to 63",
+      "repo": "PX4/PX4-Autopilot",
+      "status": "open",
+      "date": "2026-09-16",
+      "url": "https://github.com/PX4/PX4-Autopilot/pull/28716",
+      "summary": "PX4 is the drone autopilot that Betaflight's world sits next to, 12.6k stars. A u-blox GPS parameter declares six configuration bits, so its valid range is 0 to 63, but it advertised a maximum of 32. That is the value of the top bit on its own, not all bits set, so every setting from 33 upward was published to ground stations as out of range. One line. The work was in bounding the claim honestly: PX4 never compiles parameter minimums and maximums into the firmware at all, so runtime behaviour cannot change, and in QGroundControl the checkbox path does no validation while only manual numeric entry refuses the value. An earlier draft of mine claimed it blocked a valid configuration; verification showed that was wrong and the PR says what is actually true. The evidence is a before-and-after of the generated metadata through PX4's own generator: two 40,032-line files differing on exactly one line. The project had already made this identical correction on the two sibling parameters in the same file when their sixth bit was added, which is why the fix is uncontroversial."
+    },
+    {
+      "id": "colibri-1557",
+      "kind": "pr",
+      "title": "fix(qwen36): a truncated multibyte tail made the tokenizer read past the prompt",
+      "repo": "JustVugg/colibri",
+      "status": "merged",
+      "date": "2026-09-16",
+      "url": "https://github.com/JustVugg/colibri/pull/1557",
+      "summary": "colibri is an inference engine for large mixture-of-experts models written in plain C, 33.5k stars in its first three months. Its server reads exactly the advertised number of bytes from a network prompt into a buffer of that size and hands them straight to the tokenizer, with nothing in between checking the bytes are well-formed UTF-8. If the prompt ended mid-character, a clipped emoji or a cut-off Arabic letter, the decoder reported the character's full length even though the remaining bytes were not there, so the tokenizer walked past the end of the allocation. Without a sanitizer it does not crash: it silently tokenizes whatever sits next in the heap and feeds the model a prompt containing memory the user never sent. The fix is six lines, a verbatim port of the bounds check the project's own sibling engine already had. That sibling even ships a test gating exactly this case, so the argument was not 'I think you have a bug' but 'your own test fails against your other engine'. Proved it with AddressSanitizer on pristine master (heap-buffer-overflow READ, with line numbers), then showed a 452-line differential harness over twenty text categories producing byte-identical output, so valid input is untouched. Merged in under 48 hours with no changes requested."
+    },
     {
       "id": "tx-lua-scripts-548",
       "kind": "pr",
