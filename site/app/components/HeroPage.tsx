@@ -49,6 +49,17 @@ const statusColor: Record<string, string> = {
 // the exit below carries it the rest of the way while Impact fades up underneath.
 const LEAD_MS = 480
 
+const REPO_URL = "https://github.com/JOSA-OpenLab/Ti-progress"
+
+// lucide-react 1.x dropped brand icons, so the mark is inline.
+function GitHubMark() {
+  return (
+    <svg width="19" height="19" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+    </svg>
+  )
+}
+
 export function HeroPage({ onStats }: { onEnter?: () => void; onStats: () => void }) {
   // Flying into the sphere, then handing over to Impact mid-zoom.
   const [launching, setLaunching] = useState(false)
@@ -189,6 +200,22 @@ export function HeroPage({ onStats }: { onEnter?: () => void; onStats: () => voi
           >
             Impact
           </BgAnimateButton>
+
+          {/* Repo. A real anchor rather than BgAnimateButton: that component's
+              asChild path feeds two children to a Radix Slot, which throws.
+              Mirrors its markup so the two sit as a matched pair. */}
+          <a
+            href={REPO_URL}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="View the repository on GitHub"
+            className="group relative inline-block overflow-hidden cursor-pointer rounded-full transition-all duration-200 ease-out hover:scale-[1.04] active:scale-95 hover:shadow-[0_0_28px_-4px_rgba(0,180,216,0.65)]"
+          >
+            <span className="absolute inset-[-1000%] m-auto block animate-[spin_8s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#00b4d8_0%,#0077b6_50%,#00b4d8_100%)]" />
+            <div className="relative flex items-center justify-center rounded-full bg-zinc-950 px-7 py-3 text-white transition-colors duration-200 ease-in-out group-hover:bg-zinc-800 group-hover:text-cyan-50">
+              <GitHubMark />
+            </div>
+          </a>
         </motion.div>
 
         {/* Progress rail — replaces the old dot grid + legend */}
@@ -198,20 +225,13 @@ export function HeroPage({ onStats }: { onEnter?: () => void; onStats: () => voi
           transition={{ duration: 0.6, delay: 0.5 }}
           style={{ marginTop: 48, width: "min(300px, 76vw)" }}
         >
-          {/* Caption — single centered line */}
+          {/* Caption — the week, and nothing after it */}
           <div style={{
-            display: "flex", justifyContent: "center", alignItems: "center", gap: 12,
+            display: "flex", justifyContent: "center", alignItems: "center",
             fontFamily: MONO, fontSize: 10, letterSpacing: 2.5, textTransform: "uppercase",
-            marginBottom: 15,
+            color: "#6e7681", marginBottom: 15,
           }}>
-            <span style={{ color: "#6e7681" }}>
-              Week {String(leadIndex + 1).padStart(2, "0")} <span style={{ color: "#3d444d" }}>/ {TOTAL}</span>
-            </span>
-            <span style={{ color: "#2d333b" }}>·</span>
-            <span style={{ color: currentIndex >= 0 ? AMBER : GREEN, display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ width: 5, height: 5, borderRadius: "50%", background: currentIndex >= 0 ? AMBER : GREEN }} />
-              {currentIndex >= 0 ? "In Progress" : `${doneCount} Done`}
-            </span>
+            Week {String(leadIndex + 1).padStart(2, "0")}
           </div>
 
           {/* Track + fill + ticks */}
