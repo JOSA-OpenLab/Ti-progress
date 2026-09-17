@@ -11,7 +11,7 @@ import contributions from "../../data/contributions.json"
 
 const MONO = "'JetBrains Mono', monospace"
 const SERIF = "'Fraunces', Georgia, serif"
-const CYAN = "#00b4d8"
+const CYAN = "#019EC3"
 
 type Kind = "pr" | "review" | "issue" | "analysis" | "bisect"
 type Status = "merged" | "open" | "closed"
@@ -54,7 +54,7 @@ const items = contributions.items as Item[]
 
 const KIND = {
   pr:       { label: "Pull Requests", short: "PRs",      icon: GitPullRequest,      color: "#a371f7" },
-  review:   { label: "Reviews",       short: "Reviews",  icon: MessageSquareText,   color: "#00b4d8" },
+  review:   { label: "Reviews",       short: "Reviews",  icon: MessageSquareText,   color: "#019EC3" },
   issue:    { label: "Issues & Triage", short: "Issues", icon: CircleDot,           color: "#3fb950" },
   analysis: { label: "Analyses",      short: "Analysis", icon: FileSearch,          color: "#f59e0b" },
   bisect:   { label: "Bisects",       short: "Bisect",   icon: GitCommitHorizontal, color: "#ec6547" },
@@ -182,7 +182,7 @@ export function StatsPage({ onNavigate, from = "graph" }: { onNavigate: (v: "her
               padding: "5px 11px", color: "#8b949e", fontFamily: MONO, fontSize: 11,
               transition: "color .2s, border-color .2s",
             }}
-            onMouseEnter={e => { e.currentTarget.style.color = CYAN; e.currentTarget.style.borderColor = "#284b54" }}
+            onMouseEnter={e => { e.currentTarget.style.color = CYAN; e.currentTarget.style.borderColor = "#0A3847" }}
             onMouseLeave={e => { e.currentTarget.style.color = "#8b949e"; e.currentTarget.style.borderColor = "#21262d" }}
           >
             <ArrowLeft size={13} /> {backLabel}
@@ -219,7 +219,7 @@ export function StatsPage({ onNavigate, from = "graph" }: { onNavigate: (v: "her
             Open-source{" "}
             <span style={{
               fontStyle: "italic",
-              backgroundImage: "linear-gradient(180deg,#5fd0ec,#00b4d8 55%,#0090b5)",
+              backgroundImage: "linear-gradient(180deg,#4DBBD5,#019EC3 55%,#017692)",
               WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent",
             }}>impact</span>
           </h1>
@@ -245,7 +245,7 @@ export function StatsPage({ onNavigate, from = "graph" }: { onNavigate: (v: "her
                   flex: "1 1 200px", maxWidth: 260,
                   textAlign: "left", cursor: clickable ? "pointer" : "default",
                   background: active ? "rgba(0,180,216,0.06)" : "linear-gradient(180deg,#0e1014,#0b0d11)",
-                  border: `1px solid ${active ? "#284b54" : "#1b1f27"}`,
+                  border: `1px solid ${active ? "#0A3847" : "#1b1f27"}`,
                   borderRadius: 14, padding: "16px 16px 14px", position: "relative", overflow: "hidden",
                 }}
               >
@@ -361,7 +361,7 @@ export function StatsPage({ onNavigate, from = "graph" }: { onNavigate: (v: "her
                           style={{
                             display: "inline-flex", alignItems: "center", gap: 6, marginTop: 12,
                             fontFamily: MONO, fontSize: 11, color: CYAN, textDecoration: "none",
-                            border: "1px solid #284b54", borderRadius: 7, padding: "6px 11px",
+                            border: "1px solid #0A3847", borderRadius: 7, padding: "6px 11px",
                           }}
                         >
                           View on GitHub <ExternalLink size={12} />

@@ -157,7 +157,7 @@ export function Graph({ weeks, onNavigate }: { weeks: Week[]; onNavigate?: (v: "
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span style={{ fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "#00b4d8", fontFamily: "monospace" }}>
+          <span style={{ fontSize: 11, letterSpacing: 3, textTransform: "uppercase", color: "#019EC3", fontFamily: "monospace" }}>
             JOSA OpenLab
           </span>
           <span style={{ width: 1, height: 12, background: "#21262d" }} />
@@ -181,7 +181,7 @@ export function Graph({ weeks, onNavigate }: { weeks: Week[]; onNavigate?: (v: "
                 background: "#111318", border: "1px solid #21262d",
                 padding: "5px 13px", borderRadius: 6, transition: "color .2s, border-color .2s",
               }}
-              onMouseEnter={e => { e.currentTarget.style.color = "#00b4d8"; e.currentTarget.style.borderColor = "#284b54" }}
+              onMouseEnter={e => { e.currentTarget.style.color = "#019EC3"; e.currentTarget.style.borderColor = "#0A3847" }}
               onMouseLeave={e => { e.currentTarget.style.color = "#8b949e"; e.currentTarget.style.borderColor = "#21262d" }}
             >
               Impact ↗
@@ -218,7 +218,7 @@ export function Graph({ weeks, onNavigate }: { weeks: Week[]; onNavigate?: (v: "
             fontFamily: "monospace", letterSpacing: 3, textTransform: "uppercase",
             textDecoration: "none", transition: "color 0.2s", pointerEvents: "auto",
           }}
-          onMouseEnter={e => (e.currentTarget.style.color = "#00b4d8")}
+          onMouseEnter={e => (e.currentTarget.style.color = "#019EC3")}
           onMouseLeave={e => (e.currentTarget.style.color = "#3d444d")}
         >
           Qutibah Ananzeh · ti0.me ↗

@@ -32,7 +32,11 @@ const fillPct = (leadIndex / (TOTAL - 1)) * 100
 
 const MONO = "'JetBrains Mono', monospace"
 const SERIF = "'Fraunces', Georgia, serif"
-const CYAN = "#00b4d8"
+// Sampled off the JOSA logos: CYAN is the star in the wordmark lockup, and the
+// two JOSA_* values are the ends of the square mark's diagonal gradient.
+const CYAN = "#019EC3"
+const JOSA_GREEN = "#41AF92"
+const JOSA_BLUE = "#2F93AA"
 const GREEN = "#3fb950"
 const AMBER = "#f59e0b"
 
@@ -89,7 +93,7 @@ export function HeroPage({ onStats }: { onEnter?: () => void; onStats: () => voi
       >
         <Dithering
           colorBack="#000000"
-          colorFront="#00b4d8"
+          colorFront="#019EC3"
           shape="sphere"
           type="4x4"
           size={2}
@@ -175,7 +179,7 @@ export function HeroPage({ onStats }: { onEnter?: () => void; onStats: () => voi
           JOSA{" "}
           <span style={{
             fontStyle: "italic",
-            backgroundImage: "linear-gradient(180deg, #5fd0ec 0%, #00b4d8 55%, #0090b5 100%)",
+            backgroundImage: "linear-gradient(180deg, #4DBBD5 0%, #019EC3 55%, #017692 100%)",
             WebkitBackgroundClip: "text",
             backgroundClip: "text",
             color: "transparent",
@@ -211,7 +215,7 @@ export function HeroPage({ onStats }: { onEnter?: () => void; onStats: () => voi
             aria-label="View the repository on GitHub"
             className="group relative inline-block overflow-hidden cursor-pointer rounded-full transition-all duration-200 ease-out hover:scale-[1.04] active:scale-95 hover:shadow-[0_0_28px_-4px_rgba(0,180,216,0.65)]"
           >
-            <span className="absolute inset-[-1000%] m-auto block animate-[spin_8s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#00b4d8_0%,#0077b6_50%,#00b4d8_100%)]" />
+            <span className="absolute inset-[-1000%] m-auto block animate-[spin_8s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#019EC3_0%,#015F75_50%,#019EC3_100%)]" />
             <div className="relative flex items-center justify-center rounded-full bg-zinc-950 px-7 py-3 text-white transition-colors duration-200 ease-in-out group-hover:bg-zinc-800 group-hover:text-cyan-50">
               <GitHubMark />
             </div>
@@ -245,7 +249,9 @@ export function HeroPage({ onStats }: { onEnter?: () => void; onStats: () => voi
               transition={{ duration: 0.9, delay: 0.6, ease: [0.2, 0.7, 0.2, 1] }}
               style={{
                 position: "absolute", left: 0, height: 2, borderRadius: 2,
-                background: `linear-gradient(90deg, ${GREEN}, ${CYAN})`,
+                // The JOSA mark's own gradient, sampled off the square logo:
+                // green at the bottom-left corner, blue at the top-right.
+                background: `linear-gradient(90deg, ${JOSA_GREEN}, ${JOSA_BLUE})`,
                 boxShadow: `0 0 10px ${CYAN}`,
               }}
             />
@@ -302,7 +308,7 @@ export function HeroPage({ onStats }: { onEnter?: () => void; onStats: () => voi
           target="_blank"
           rel="noopener noreferrer"
           style={{ fontSize: 10, color: "#3d444d", textDecoration: "none", transition: "color 0.2s" }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#00b4d8")}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "#019EC3")}
           onMouseLeave={(e) => (e.currentTarget.style.color = "#3d444d")}
         >
           Qutibah Ananzeh · ti0.me ↗

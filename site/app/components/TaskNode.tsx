@@ -10,7 +10,7 @@ export type TaskNodeData = {
 };
 
 const typeConfig: Record<string, { label: string; color: string }> = {
-  archaeology:  { label: "GIT",        color: "#00b4d8" },
+  archaeology:  { label: "GIT",        color: "#019EC3" },
   reflog:       { label: "RECOVERY",   color: "#f59e0b" },
   rebase:       { label: "REBASE",     color: "#3fb950" },
   "soft-skill": { label: "SOFT SKILL", color: "#8b5cf6" },

@@ -27,7 +27,7 @@ const innerSpanVariants = cva("absolute inset-[-1000%] m-auto block", {
       "spin-fast": "animate-[spin_2s_linear_infinite]",
     },
     gradient: {
-      cyan: "bg-[conic-gradient(from_90deg_at_50%_50%,#00b4d8_0%,#0077b6_50%,#00b4d8_100%)]",
+      cyan: "bg-[conic-gradient(from_90deg_at_50%_50%,#019EC3_0%,#015F75_50%,#019EC3_100%)]",
       nebula: "bg-[conic-gradient(from_90deg_at_50%_50%,#A77BFE_0%,#8860D0_50%,#A77BFE_100%)]",
       default: "bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]",
     },

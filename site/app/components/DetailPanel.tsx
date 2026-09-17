@@ -63,8 +63,8 @@ type Week = { id: number; title: string; status: string; deadline: string; repor
 type Selected = { kind: "week"; week: Week } | { kind: "task"; task: Task; week: Week }
 
 const typeColor: Record<string, string> = {
-  archaeology: "#00b4d8", reflog: "#f59e0b", rebase: "#3fb950", "soft-skill": "#8b5cf6",
-  pr: "#00b4d8", review: "#3fb950", triage: "#f59e0b", mcve: "#ff7b72", bisect: "#3fb950",
+  archaeology: "#019EC3", reflog: "#f59e0b", rebase: "#3fb950", "soft-skill": "#8b5cf6",
+  pr: "#019EC3", review: "#3fb950", triage: "#f59e0b", mcve: "#ff7b72", bisect: "#3fb950",
 }
 const statusColor: Record<string, string> = {
   done: "#3fb950", "in-progress": "#f59e0b", pending: "#6e7681",
@@ -83,7 +83,7 @@ const linkMeta: Record<string, { icon: typeof GitPullRequest; color: string; def
   review:  { icon: MessageSquareText,    color: "#58a6ff", defaultLabel: "Review" },
   issue:   { icon: CircleDot,            color: "#3fb950", defaultLabel: "Issue" },
   repo:    { icon: FolderGit2,           color: "#8b949e", defaultLabel: "Repository" },
-  report:  { icon: FileText,             color: "#00b4d8", defaultLabel: "Full report" },
+  report:  { icon: FileText,             color: "#019EC3", defaultLabel: "Full report" },
   commit:  { icon: GitCommitHorizontal,  color: "#ec6547", defaultLabel: "Commit" },
   article: { icon: BookOpen,             color: "#f59e0b", defaultLabel: "Reference" },
   doc:     { icon: BookOpen,             color: "#f59e0b", defaultLabel: "Docs" },
