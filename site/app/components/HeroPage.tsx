@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "motion/react"
 import { BgAnimateButton } from "./ui/bg-animate-button"
 import { BottomBlur } from "./ui/edge-blur"
@@ -41,12 +42,40 @@ const statusColor: Record<string, string> = {
   pending: "rgba(255,255,255,0.14)",
 }
 
-export function HeroPage({ onEnter, onStats }: { onEnter: () => void; onStats: () => void }) {
-  return (
-    <div style={{ position: "relative", width: "100%", height: "100vh", overflow: "hidden", background: "#000", display: "flex", flexDirection: "column" }}>
+// The progress view is reachable from the repo's Month*/ markdown instead, so
+// the hero offers one way in. `onEnter` is kept in the prop type so page.tsx
+// can keep wiring it up for when the view comes back.
+// The zoom runs in two halves: this long while the hero is still mounted, then
+// the exit below carries it the rest of the way while Impact fades up underneath.
+const LEAD_MS = 480
 
-      {/* Dithering sphere — the signature atmosphere */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 0, opacity: 0.22 }}>
+export function HeroPage({ onStats }: { onEnter?: () => void; onStats: () => void }) {
+  // Flying into the sphere, then handing over to Impact mid-zoom.
+  const [launching, setLaunching] = useState(false)
+
+  const launch = () => {
+    if (launching) return
+    setLaunching(true)
+    window.setTimeout(onStats, LEAD_MS)
+  }
+
+  return (
+    <motion.div
+      // Coming back from Impact, the hero pulls out of the sphere rather than
+      // appearing: it starts held at the scale the exit finished on.
+      initial={{ opacity: 0, scale: 1.35 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 2.6 }}
+      transition={{ duration: 0.72, ease: [0.22, 0.61, 0.24, 1] }}
+      style={{ position: "absolute", inset: 0, zIndex: 20, overflow: "hidden", background: "#000", display: "flex", flexDirection: "column", willChange: "transform, opacity" }}
+    >
+
+      {/* Dithering sphere — the signature atmosphere, and the thing we fly into */}
+      <motion.div
+        animate={launching ? { scale: 4.2, opacity: 0.85 } : { scale: 1, opacity: 0.22 }}
+        transition={{ duration: 1.1, ease: [0.62, 0, 0.78, 0] }}
+        style={{ position: "absolute", inset: 0, zIndex: 0, transformOrigin: "50% 46%", willChange: "transform, opacity" }}
+      >
         <Dithering
           colorBack="#000000"
           colorFront="#00b4d8"
@@ -57,7 +86,20 @@ export function HeroPage({ onEnter, onStats }: { onEnter: () => void; onStats: (
           scale={0.82}
           style={{ width: "100%", height: "100%" }}
         />
-      </div>
+      </motion.div>
+
+      {/* Atmosphere igniting as the sphere fills the frame */}
+      {launching && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.9, ease: "easeIn" }}
+          style={{
+            position: "absolute", inset: 0, zIndex: 3, pointerEvents: "none",
+            background: "radial-gradient(circle at 50% 46%, rgba(0,180,216,0.55) 0%, rgba(0,180,216,0.12) 38%, transparent 68%)",
+          }}
+        />
+      )}
 
       {/* Vignette so edges fall to pure black */}
       <div style={{
@@ -74,12 +116,17 @@ export function HeroPage({ onEnter, onStats }: { onEnter: () => void; onStats: (
       }} />
 
       {/* Content — centered on the sphere (footer is absolute so it doesn't shift this) */}
-      <div style={{
-        position: "absolute", inset: 0, zIndex: 10,
-        display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
-        padding: "0 32px", textAlign: "center",
-      }}>
+      <motion.div
+        animate={launching ? { opacity: 0, scale: 1.14, filter: "blur(14px)" } : { opacity: 1, scale: 1, filter: "blur(0px)" }}
+        transition={{ duration: 0.55, ease: [0.4, 0, 1, 1] }}
+        style={{
+          position: "absolute", inset: 0, zIndex: 10,
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          padding: "0 32px", textAlign: "center",
+          pointerEvents: launching ? "none" : "auto",
+        }}
+      >
 
         {/* Eyebrow — slash motif borrowed from the JOSA decks */}
         <motion.div
@@ -138,16 +185,7 @@ export function HeroPage({ onEnter, onStats }: { onEnter: () => void; onStats: (
             animation="spin-slow"
             rounded="full"
             size="lg"
-            onClick={onEnter}
-          >
-            View Progress
-          </BgAnimateButton>
-          <BgAnimateButton
-            gradient="cyan"
-            animation="spin-slow"
-            rounded="full"
-            size="lg"
-            onClick={onStats}
+            onClick={launch}
           >
             Impact
           </BgAnimateButton>
@@ -226,7 +264,7 @@ export function HeroPage({ onEnter, onStats }: { onEnter: () => void; onStats: (
           </div>
         </motion.div>
 
-      </div>
+      </motion.div>
 
       {/* Footer credit */}
       <motion.div
@@ -252,6 +290,6 @@ export function HeroPage({ onEnter, onStats }: { onEnter: () => void; onStats: (
       </motion.div>
 
       <BottomBlur height={80} />
-    </div>
+    </motion.div>
   )
 }

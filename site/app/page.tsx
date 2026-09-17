@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { AnimatePresence } from "motion/react"
 import { HeroPage } from "./components/HeroPage"
 import { Graph } from "./components/Graph"
 import { StatsPage } from "./components/StatsPage"
@@ -31,7 +32,16 @@ export default function Home() {
     setView(next)
   }
 
-  if (view === "graph") return <Graph weeks={weeks as never} onNavigate={go} />
-  if (view === "stats") return <StatsPage onNavigate={go} from={prev} />
-  return <HeroPage onEnter={() => go("graph")} onStats={() => go("stats")} />
+  // Views overlap while swapping: the one leaving keeps animating on top while
+  // the one arriving fades up underneath, so there is no frame where the screen
+  // cuts. Each root is absolutely positioned for that to work.
+  return (
+    <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden", background: "#000" }}>
+      <AnimatePresence initial={false}>
+        {view === "graph" && <Graph key="graph" weeks={weeks as never} onNavigate={go} />}
+        {view === "stats" && <StatsPage key="stats" onNavigate={go} from={prev} />}
+        {view === "hero" && <HeroPage key="hero" onEnter={() => go("graph")} onStats={() => go("stats")} />}
+      </AnimatePresence>
+    </div>
+  )
 }

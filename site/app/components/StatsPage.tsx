@@ -150,8 +150,20 @@ export function StatsPage({ onNavigate, from = "graph" }: { onNavigate: (v: "her
     { label: "Issues & Triage", value: stats.issue, icon: CircleDot, color: KIND.issue.color, sub: "reported & reproduced", filter: "issue" },
   ]
 
+  // Arrives out of the hero's zoom: settles back from the sphere's scale
+  // rather than snapping in.
   return (
-    <div style={{ width: "100vw", height: "100vh", overflowY: "auto", background: "#0a0a0a", position: "relative" }}>
+    <motion.div
+      // Emerges from inside the hero's zoom, and on the way back shrinks away
+      // so the hero can be seen pulling out of it.
+      // Opacity only, deliberately: this page has a position:fixed header, and
+      // a scaling ancestor would re-anchor it to the transformed box.
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 0.61, 0.24, 1] }}
+      style={{ position: "absolute", inset: 0, zIndex: 10, overflowY: "auto", background: "#0a0a0a", willChange: "transform, opacity" }}
+    >
       <TopBlur height={64} />
       <BottomBlur height={56} />
 
@@ -375,6 +387,6 @@ export function StatsPage({ onNavigate, from = "graph" }: { onNavigate: (v: "her
           </a>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
