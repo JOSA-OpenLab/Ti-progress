@@ -1,6 +1,26 @@
 {
-  "updated": "2026-09-17",
+  "updated": "2026-09-18",
   "items": [
+    {
+      "id": "configurator-5537",
+      "kind": "pr",
+      "title": "fix(blackbox-viewer): name PARALYZE in the flight mode tables",
+      "repo": "betaflight/betaflight-configurator",
+      "status": "merged",
+      "date": "2026-09-18",
+      "url": "https://github.com/betaflight/betaflight-configurator/pull/5537",
+      "summary": "A direct consequence of my own earlier merged fix. PR #5511 stopped the log viewer dropping every flight mode above bit 31; once that bit became visible it turned out the name table had no entry for PARALYZE, so on firmware 4.0 through 4.5, where that mode lands exactly on bit 31, the viewer labelled it USER1. Every name after the gap was shifted down one. PARALYZE is a sticky mode, latched until power cycle, so a log did not flicker the wrong name once, it carried it for the whole flight, in the status bar and as an annotation on the chart. Two inserted lines. The work was proving the insert is safe everywhere else: I resolved the table for every release from 3.3 to 2026.6 and diffed it index by index against the firmware enum parsed from rc_modes.h at each tag. Bits 0 to 31 match at all of them afterwards, and the pre-3.3 table is deliberately untouched because that firmware has no such mode. Merged two hours after opening."
+    },
+    {
+      "id": "betaflight-15719",
+      "kind": "pr",
+      "title": "fix(blackbox): honour blackbox_disable_servos",
+      "repo": "betaflight/betaflight",
+      "status": "open",
+      "date": "2026-09-18",
+      "url": "https://github.com/betaflight/betaflight/pull/15719",
+      "summary": "A setting in the flight controller firmware that silently did nothing. The blackbox logger decides which fields to record by testing a bitmask the pilot configures, and the servo case read `hasServos() && (FIELD_SELECT(SERVO))`. That second operand is an enum constant, 15, not a check, so the expression was always true and the mask was never consulted. Of the twenty selector checks in that function, nineteen wrap it in isFieldEnabled() and this one did not. So blackbox_disable_servos, and the matching Servo checkbox in the Configurator, have never worked: eight servo fields stayed in the log header and in every frame on the aircraft where log bandwidth actually matters, fixed wings and tricopters. One line. Proved it by compiling against the firmware's own header with a static assertion that the operand is non-zero, and confirmed the header and the frame writers read one cached bit so the fix cannot desync a log from its own declaration. It was introduced in 2024 by the same commit that added the setting."
+    },
     {
       "id": "px4-28716",
       "kind": "pr",
