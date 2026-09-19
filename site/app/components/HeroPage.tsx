@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { motion } from "motion/react"
 import { BgAnimateButton } from "./ui/bg-animate-button"
-import { BottomBlur } from "./ui/edge-blur"
 import { Dithering } from "@paper-design/shaders-react"
 import week01 from "../../data/weeks/week-01.json"
 import week02 from "../../data/weeks/week-02.json"
@@ -314,8 +313,6 @@ export function HeroPage({ onStats }: { onEnter?: () => void; onStats: () => voi
           Qutibah Ananzeh · ti0.me ↗
         </a>
       </motion.div>
-
-      <BottomBlur height={80} />
     </motion.div>
   )
 }

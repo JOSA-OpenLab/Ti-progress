@@ -7,7 +7,6 @@ import {
   GitCommitHorizontal, ExternalLink, Terminal, ChevronRight, MessageSquareText,
 } from "lucide-react"
 import { CodeBlock } from "./ui/code-block"
-import { EdgeBlur } from "./ui/edge-blur"
 import { BorderBeamButton } from "./ui/border-beam-button"
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? ""
@@ -152,7 +151,6 @@ export function DetailPanel({ selected, onClose }: { selected: Selected | null; 
                 overflowY: "auto",
               }}
             >
-              <EdgeBlur position="bottom" height={60} />
               <div style={{ padding: "32px 28px 80px" }}>
                 <button
                   onClick={onClose}

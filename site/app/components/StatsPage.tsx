@@ -6,7 +6,7 @@ import {
   GitPullRequest, MessageSquareText, CircleDot, FileSearch,
   GitCommitHorizontal, GitMerge, ArrowLeft, ExternalLink, LayoutGrid,
 } from "lucide-react"
-import { TopBlur, BottomBlur } from "./ui/edge-blur"
+import { TopBlur } from "./ui/edge-blur"
 import contributions from "../../data/contributions.json"
 
 const MONO = "'JetBrains Mono', monospace"
@@ -164,8 +164,9 @@ export function StatsPage({ onNavigate, from = "graph" }: { onNavigate: (v: "her
       transition={{ duration: 0.6, ease: [0.22, 0.61, 0.24, 1] }}
       style={{ position: "absolute", inset: 0, zIndex: 10, overflowY: "auto", background: "#0a0a0a", willChange: "transform, opacity" }}
     >
+      {/* Top only: it softens content sliding under the fixed header. A bottom
+          one has no UI beneath it, so it just blurs card text into mush. */}
       <TopBlur height={64} />
-      <BottomBlur height={56} />
 
       {/* Header */}
       <div style={{

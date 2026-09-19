@@ -11,7 +11,7 @@ import "@xyflow/react/dist/style.css"
 import { WeekNode, type WeekNodeData } from "./WeekNode"
 import { TaskNode, type TaskNodeData } from "./TaskNode"
 import { DetailPanel } from "./DetailPanel"
-import { TopBlur, BottomBlur } from "./ui/edge-blur"
+import { TopBlur } from "./ui/edge-blur"
 
 const nodeTypes = { week: WeekNode, task: TaskNode }
 
@@ -148,7 +148,6 @@ export function Graph({ weeks, onNavigate }: { weeks: Week[]; onNavigate?: (v: "
     <div style={{ width: "100vw", height: "100vh", background: "#0a0a0a" }}>
       {/* EdgeBlur — below header */}
       <TopBlur height={64} />
-      <BottomBlur height={64} />
 
       {/* Header — z-50 to sit above the blur (z-40) */}
       <div style={{
