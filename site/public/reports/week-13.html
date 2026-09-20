@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JOSA OpenLab, Week 13</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1117;
+      --border:  #21262d;
+      --accent:  #019EC3;
+      --red:     #ff7b72;
+      --green:   #3fb950;
+      --amber:   #f59e0b;
+      --text:    #e6edf3;
+      --muted:   #6e7681;
+      --sub:     #8b949e;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.75; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .hero { padding: 72px 40px 56px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 10px; }
+    .hero h1 span { color: var(--accent); }
+    .hero h2 { font-size: 15px; font-weight: 400; color: var(--muted); margin-bottom: 48px; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
+    .badge { display: flex; border-radius: 4px; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; }
+    .badge-label { background: #161b22; border: 1px solid var(--border); border-right: none; padding: 5px 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-radius: 4px 0 0 4px; }
+    .badge-value { padding: 5px 10px; font-weight: 600; color: #0d1117; border-radius: 0 4px 4px 0; }
+    .badge.blue  .badge-value { background: var(--accent); }
+    .badge.navy  .badge-value { background: #015F75; }
+    .badge.amber .badge-value { background: var(--amber); }
+    .badge.gray  .badge-value { background: var(--muted); color: var(--text); }
+
+    .meta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+    .meta-item { text-align: center; padding: 0 28px; }
+    .meta-item + .meta-item { border-left: 1px solid var(--border); }
+    .meta-item .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .meta-item .value { font-size: 14px; font-weight: 500; color: var(--text); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 64px 24px 80px; }
+    .section { margin-bottom: 64px; }
+    .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .section-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; }
+    .section-header h2 { font-size: 18px; font-weight: 600; letter-spacing: -.3px; color: var(--text); }
+    .section-header .tag { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; border-radius: 4px; padding: 2px 8px; }
+
+    .block { border-left: 2px solid var(--border); padding: 4px 0 4px 24px; margin-bottom: 32px; }
+    .block-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 32px; font-size: 14px; color: var(--sub); }
+    .callout strong { color: var(--text); font-weight: 500; }
+
+    .code-block { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .code-bar { display: flex; align-items: center; gap: 6px; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #ffbd2e; } .dot.g { background: #28c840; }
+    .code-lang { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+    pre { padding: 18px 20px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; color: #c9d1d9; white-space: pre; scrollbar-width: thin; scrollbar-color: #2d333b transparent; }
+    .cm { color: var(--muted); } .cmd { color: #79c0ff; } .out { color: #c9d1d9; } .hsh { color: #f0883e; } .key { color: #ff7b72; } .str { color: #a5d6ff; }
+
+    .reflection { border-left: 2px solid var(--accent); padding: 6px 0 6px 24px; font-size: 15px; line-height: 1.85; color: var(--sub); }
+    .reflection strong { color: var(--text); font-weight: 500; }
+
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .checklist li { list-style: none; font-size: 13px; color: var(--sub); padding-left: 22px; position: relative; line-height: 1.6; }
+    .checklist li::before { content: '○'; position: absolute; left: 0; color: var(--muted); }
+    .checklist li strong { color: var(--text); font-weight: 500; }
+
+    table.ledger { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.ledger th { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-weight: 500; padding: 0 12px 10px 0; border-bottom: 1px solid var(--border); }
+    table.ledger td { padding: 11px 12px 11px 0; border-bottom: 1px solid var(--border); color: var(--sub); vertical-align: top; }
+    table.ledger td.st { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+    .m { color: var(--green); } .o { color: var(--amber); } .n { color: var(--muted); }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .3px; }
+    footer strong { color: var(--sub); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">OpenLab Apprenticeship 2026</div>
+  <h1>JOSA <span>OpenLab</span></h1>
+  <h2>Week 13: The Work After the Pull Request</h2>
+
+  <div class="badges">
+    <div class="badge blue">
+      <span class="badge-label">Week</span>
+      <span class="badge-value">13</span>
+    </div>
+    <div class="badge navy">
+      <span class="badge-label">Merged</span>
+      <span class="badge-value">configurator#5537</span>
+    </div>
+    <div class="badge">
+      <span class="badge-label">Status</span>
+      <span class="badge-value" style="background: var(--amber);">In progress</span>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="label">Apprentice</div>
+      <div class="value">Qutibah Ananzeh</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cohort</div>
+      <div class="value">OpenLab 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Deadline</div>
+      <div class="value">24 Sep 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- LEDGER -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 00</span>
+      <h2>The ledger</h2>
+      <span class="tag" style="color: var(--muted); border-color: var(--muted);">2 items</span>
+    </div>
+
+    <table class="ledger">
+      <thead>
+        <tr><th>Contribution</th><th>Project</th><th>Stars</th><th>Outcome</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://github.com/betaflight/betaflight-configurator/pull/5537" target="_blank">#5537</a> log viewer named the wrong flight mode on bit 31</td>
+          <td>betaflight-configurator</td>
+          <td>3.3k</td>
+          <td class="st m">Merged</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/betaflight/betaflight/pull/15719" target="_blank">#15719</a> firmware ignored <code>blackbox_disable_servos</code></td>
+          <td>betaflight/betaflight</td>
+          <td>11.6k</td>
+          <td class="st o">Open</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TASK 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 01</span>
+      <h2>The Bug My Own Fix Uncovered</h2>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Merged</span>
+    </div>
+
+    <div class="callout">
+      <strong>Merged:</strong> <a href="https://github.com/betaflight/betaflight-configurator/pull/5537" target="_blank">betaflight-configurator#5537</a> &middot; two inserted lines &middot; merged one hour and fifty-five minutes after opening.
+    </div>
+
+    <div class="block">
+      <div class="block-title">A positional table with a hole in it</div>
+      <div class="reflection">
+        The blackbox log viewer turns a flight recording into a chart a pilot can read. Part of that is translating a bitmask of active flight modes into names. The viewer keeps its own name tables, one per firmware era, and reads them <strong>by position</strong>: bit 0 is the first name, bit 1 the second.
+        <br><br>
+        The table had no entry for <code>PARALYZE</code>. Because the lookup is positional, a missing entry does not produce a blank, it shifts every name after the gap down by one. On firmware 4.0 through 4.5, where <code>PARALYZE</code> lands exactly on bit 31, the viewer labelled it <code>USER1</code>.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Why nobody had seen it</div>
+      <div class="reflection">
+        That bit was invisible until last week. My earlier merged fix, <a href="https://github.com/betaflight/betaflight-configurator/pull/5511" target="_blank">#5511</a>, stopped the viewer dropping every flight mode above bit 31. <strong>Making bit 31 readable is what exposed the wrong name behind it.</strong> One fix created the conditions to see the next.
+        <br><br>
+        And this was not a flicker. <code>PARALYZE</code> is a sticky mode, latched until the quad is power cycled, so a log that entered it carried the wrong name for the rest of the flight, in the status bar and as an annotation on the chart.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Two lines in, and then the actual work</div>
+      <div class="reflection">
+        A positional table is exactly the kind of thing where a correct fix in one era silently breaks another, so the insert had to be proved harmless everywhere else. I resolved the table for <strong>every release from 3.3 to 2026.6</strong> and diffed it index by index against the firmware's own mode enum, parsed from <code>rc_modes.h</code> at each tag.
+        <br><br>
+        Bits 0 to 31 match at all of them afterwards. The pre-3.3 table is deliberately untouched, because that firmware has no such mode.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="code-lang">viewer table vs firmware enum</div></div>
+<pre><span class="cmd">Firmware 4.0 - 4.5, bit 31</span>
+<span class="key">  before:  USER1</span>      <span class="cm">&lt;- wrong, and sticky for the whole flight</span>
+<span class="str">  after :  PARALYZE</span>
+
+<span class="cmd">Index-by-index check, bits 0-31, after the fix</span>
+<span class="out">  3.3   match      4.4     match</span>
+<span class="out">  3.4   match      4.5     match</span>
+<span class="out">  4.0   match      2026.6  match</span>
+<span class="cm">  pre-3.3 table deliberately untouched (no such mode)</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 02</span>
+      <h2>A Setting the Firmware Never Read</h2>
+      <span class="tag" style="color: var(--amber); border-color: var(--amber);">Open, approved</span>
+    </div>
+
+    <div class="callout">
+      <strong>Open:</strong> <a href="https://github.com/betaflight/betaflight/pull/15719" target="_blank">betaflight#15719</a> &middot; one line, plus a regression test &middot; this is the firmware that actually flies the quad, not the tooling around it.
+    </div>
+
+    <div class="block">
+      <div class="block-title">The bug</div>
+      <div class="reflection">
+        Blackbox logging lets a pilot switch individual groups of fields off, to save space or to log faster. One of those switches is <code>blackbox_disable_servos</code>.
+        <br><br>
+        The firmware decides whether to log the servo fields with one expression. It asked whether the aircraft has servos, and then tested the field selector <em>constant itself</em> instead of asking whether that selector is enabled. The constant is 15, which is not zero, so that half of the expression was always true. The whole condition collapsed to just &ldquo;does this aircraft have servos&rdquo;. <strong>Setting <code>blackbox_disable_servos</code> did nothing at all.</strong>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Why it was easy to argue</div>
+      <div class="reflection">
+        The surrounding code already disagrees with itself. That same function performs <strong>twenty</strong> of these selector checks. <strong>Nineteen</strong> wrap the selector in <code>isFieldEnabled()</code>. One did not.
+        <br><br>
+        So the pull request is not &ldquo;I think this is wrong&rdquo;, it is &ldquo;make the twentieth look like the other nineteen&rdquo;. One line.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The review is the part worth writing down</div>
+      <div class="reflection">
+        Two maintainers approved it within hours. Then the review bot asked for a regression test, and the shape it suggested would have roughly <strong>tripled the size of the change</strong> to a file that flies aircraft. A bigger diff is not a better answer to &ldquo;please prove this&rdquo;.
+        <br><br>
+        The smaller version was to make the existing test harness able to see the bug at all. The function is file-local, so I exposed it through the project's own <code>STATIC_UNIT_TESTED</code> macro, which expands to nothing under the test build and to <code>static</code> everywhere else, so <strong>the shipped firmware is unchanged</strong>. The harness stubbed <code>hasServos()</code> to a constant false, which meant the path could never be reached, so I made the stub settable. One test, three cases: the selector clear, the selector set, and no servo mixer at all.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The control that makes it mean something</div>
+      <div class="reflection">
+        I put the old one-line expression back while keeping the new test. The suite fails on exactly one case, the one where the selector is set, and the other eleven tests still pass. With the fix, twelve of twelve.
+        <br><br>
+        <strong>A test that does not fail against the unpatched code is not evidence of anything.</strong>
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="code-lang">negative control</div></div>
+<pre><span class="cmd">UNPATCHED  (old expression, new test)</span>
+<span class="key">  [  FAILED  ] BlackboxTest.Test_servo_field_disable</span>
+<span class="out">    Value of: testBlackboxConditionUncached(...CONDITION_SERVOS)</span>
+<span class="key">      Actual: true</span>
+<span class="str">    Expected: false</span>
+<span class="out">  11 other tests: PASSED</span>
+
+<span class="cmd">PATCHED</span>
+<span class="str">  [  PASSED  ] 12 tests</span>
+
+<span class="cmd">Firmware build, STM32F405, -Werror</span>
+<span class="str">  exit 0, warnings: 0</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Where it stands</div>
+      <div class="reflection">
+        Both human approvals survived the rebase and force-push, and the bot's next pass came back with <strong>approval recommended and no unresolved findings</strong>. Still open, waiting on a merge.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="code-lang">review state</div></div>
+<pre><span class="str">  haslinghuis   APPROVED</span>
+<span class="str">  blckmn        APPROVED</span>   <span class="cm">(both survived the force-push)</span>
+<span class="out">  copilot       approval recommended, no unresolved findings</span></pre>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Next</div>
+      <ul class="checklist">
+        <li>The <a href="https://github.com/betaflight/blackbox-tools/issues/72" target="_blank">blackbox-tools#72</a> version-gated mode-name port, which the reporter asked me to write.</li>
+        <li>A <code>Math.min</code> fix in voicebox, verified and unfiled, in a repository with 54.8k stars.</li>
+        <li>Two configurator tables stale since firmware 4.3. Verified, but the fix needs a maintainer decision first, so it goes to an issue before a pull request.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Jordan Open Source Association &nbsp;&middot;&nbsp; <strong>OpenLab 2026</strong> &nbsp;&middot;&nbsp; Qutibah Ananzeh
+</footer>
+
+</body>
+</html>
