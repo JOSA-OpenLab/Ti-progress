@@ -1,7 +1,7 @@
 {
   "id": 13,
   "title": "The Work After the Pull Request",
-  "status": "in-progress",
+  "status": "done",
   "deadline": "2026-09-24",
   "report": "/reports/week-13.html",
   "tasks": [
@@ -51,7 +51,7 @@
       "links": [
         {
           "type": "pr",
-          "label": "betaflight#15719",
+          "label": "betaflight#15719 (MERGED)",
           "url": "https://github.com/betaflight/betaflight/pull/15719"
         },
         {
@@ -65,13 +65,13 @@
           "url": "/reports/week-13.html"
         }
       ],
-      "reflection": "Blackbox logging lets a pilot switch individual groups of fields off, to save space or to log faster. One of those switches is blackbox_disable_servos.\n\nThe firmware decides whether to log the servo fields with one expression. It asked whether the aircraft has servos, and then tested the field selector constant itself instead of asking whether that selector is enabled. The constant is 15, which is not zero, so that half of the expression was always true. The whole condition collapsed to just 'does this aircraft have servos'. Setting blackbox_disable_servos did nothing at all.\n\nWhat made it easy to argue is that the surrounding code already disagrees with itself. That same function performs twenty of these selector checks. Nineteen wrap the selector in isFieldEnabled(). One did not. The fix is to make the twentieth look like the other nineteen: one line.\n\nThe review is the part worth writing down. Two maintainers approved it within hours. Then the review bot asked for a regression test, and the shape it suggested would have roughly tripled the size of the change to a file that flies aircraft. A bigger diff is not a better answer to 'please prove this'.\n\nThe smaller version was to make the existing test harness able to see the bug at all. The function is file-local, so I exposed it through the project's own STATIC_UNIT_TESTED macro, which expands to nothing under the test build and to static everywhere else, so the shipped firmware is unchanged. The test harness stubbed hasServos() to a constant false, which meant the path could never be reached, so I made the stub settable. One test, three cases: the selector clear, the selector set, and no servo mixer at all.\n\nThen the control that makes it mean something. I put the old one-line expression back while keeping the new test, and the suite fails on exactly one case, the one where the selector is set: Actual true, Expected false. The other eleven tests still pass. With the fix, twelve of twelve. A test that does not fail against the unpatched code is not evidence of anything.\n\nBoth human approvals survived the rebase and force-push, and the bot's next pass came back with approval recommended and no unresolved findings. Still open, waiting on a merge.",
+      "reflection": "Blackbox logging lets a pilot switch individual groups of fields off, to save space or to log faster. One of those switches is blackbox_disable_servos.\n\nThe firmware decides whether to log the servo fields with one expression. It asked whether the aircraft has servos, and then tested the field selector constant itself instead of asking whether that selector is enabled. The constant is 15, which is not zero, so that half of the expression was always true. The whole condition collapsed to just 'does this aircraft have servos'. Setting blackbox_disable_servos did nothing at all.\n\nWhat made it easy to argue is that the surrounding code already disagrees with itself. That same function performs twenty of these selector checks. Nineteen wrap the selector in isFieldEnabled(). One did not. The fix is to make the twentieth look like the other nineteen: one line.\n\nThe review is the part worth writing down. Two maintainers approved it within hours. Then the review bot asked for a regression test, and the shape it suggested would have roughly tripled the size of the change to a file that flies aircraft. A bigger diff is not a better answer to 'please prove this'.\n\nThe smaller version was to make the existing test harness able to see the bug at all. The function is file-local, so I exposed it through the project's own STATIC_UNIT_TESTED macro, which expands to nothing under the test build and to static everywhere else, so the shipped firmware is unchanged. The test harness stubbed hasServos() to a constant false, which meant the path could never be reached, so I made the stub settable. One test, three cases: the selector clear, the selector set, and no servo mixer at all.\n\nThen the control that makes it mean something. I put the old one-line expression back while keeping the new test, and the suite fails on exactly one case, the one where the selector is set: Actual true, Expected false. The other eleven tests still pass. With the fix, twelve of twelve. A test that does not fail against the unpatched code is not evidence of anything.\n\nBoth human approvals survived the rebase and force-push, and the bot's next pass came back with approval recommended and no unresolved findings. Merged by haslinghuis on 2026-09-23, five days after opening.",
       "commands": [
         "make test_blackbox_unittest              # 12/12 with the fix",
         "# put back ONLY the old expression, keep the exposure and the test, then re-run",
         "make STM32F405 EXTRA_FLAGS=-Werror       # exit 0, zero warnings"
       ],
-      "output": "UNPATCHED (old expression, new test)\n  [  FAILED  ] BlackboxTest.Test_servo_field_disable\n    Value of: testBlackboxConditionUncached(FLIGHT_LOG_FIELD_CONDITION_SERVOS)\n      Actual: true\n    Expected: false\n  11 other tests: PASSED\n\nPATCHED\n  [  PASSED  ] 12 tests\n\nFirmware build, STM32F405, -Werror\n  exit 0, warnings: 0\n\nReview\n  haslinghuis   APPROVED\n  blckmn        APPROVED   (both survived the force-push)\n  copilot       approval recommended, no unresolved findings",
+      "output": "UNPATCHED (old expression, new test)\n  [  FAILED  ] BlackboxTest.Test_servo_field_disable\n    Value of: testBlackboxConditionUncached(FLIGHT_LOG_FIELD_CONDITION_SERVOS)\n      Actual: true\n    Expected: false\n  11 other tests: PASSED\n\nPATCHED\n  [  PASSED  ] 12 tests\n\nFirmware build, STM32F405, -Werror\n  exit 0, warnings: 0\n\nReview\n  haslinghuis   APPROVED\n  blckmn        APPROVED   (both survived the force-push)\n  copilot       approval recommended, no unresolved findings\n\nMERGED 2026-09-23 17:31 UTC by haslinghuis",
       "screenshot": null,
       "pr": "https://github.com/betaflight/betaflight/pull/15719"
     }

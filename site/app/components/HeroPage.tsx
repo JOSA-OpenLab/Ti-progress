@@ -17,12 +17,13 @@ import week10 from "../../data/weeks/week-10.json"
 import week11 from "../../data/weeks/week-11.json"
 import week12 from "../../data/weeks/week-12.json"
 import week13 from "../../data/weeks/week-13.json"
+import week14 from "../../data/weeks/week-14.json"
 
 // Single source of truth — derived from the week data files so the hero
 // can never drift out of sync with the graph again. (Every new week-NN.json
 // must be added here AND in page.tsx, or the hero shows it as pending.)
-const TOTAL = 13
-const known = [week01.status, week02.status, week03.status, week04.status, week05.status, week06.status, week07.status, week08.status, week09.status, week10.status, week11.status, week12.status, week13.status]
+const TOTAL = 14
+const known = [week01.status, week02.status, week03.status, week04.status, week05.status, week06.status, week07.status, week08.status, week09.status, week10.status, week11.status, week12.status, week13.status, week14.status]
 const weeks = Array.from({ length: TOTAL }, (_, i) => known[i] ?? "pending")
 
 const doneCount = weeks.filter((s) => s === "done").length

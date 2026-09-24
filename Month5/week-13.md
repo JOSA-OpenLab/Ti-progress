@@ -1,6 +1,6 @@
 # Week 13: The Work After the Pull Request
 
-🟡 in progress · deadline 2026-09-24 · 2/2 tasks
+✅ done · deadline 2026-09-24 · 2/2 tasks
 
 [Full report on the site](https://josa-openlab.github.io/Ti-progress/reports/week-13.html)
 
@@ -69,7 +69,7 @@ The smaller version was to make the existing test harness able to see the bug at
 
 Then the control that makes it mean something. I put the old one-line expression back while keeping the new test, and the suite fails on exactly one case, the one where the selector is set: Actual true, Expected false. The other eleven tests still pass. With the fix, twelve of twelve. A test that does not fail against the unpatched code is not evidence of anything.
 
-Both human approvals survived the rebase and force-push, and the bot's next pass came back with approval recommended and no unresolved findings. Still open, waiting on a merge.
+Both human approvals survived the rebase and force-push, and the bot's next pass came back with approval recommended and no unresolved findings. Merged by haslinghuis on 2026-09-23, five days after opening.
 
 ```bash
 make test_blackbox_unittest              # 12/12 with the fix
@@ -95,9 +95,11 @@ Review
   haslinghuis   APPROVED
   blckmn        APPROVED   (both survived the force-push)
   copilot       approval recommended, no unresolved findings
+
+MERGED 2026-09-23 17:31 UTC by haslinghuis
 ```
 
-- [betaflight#15719](https://github.com/betaflight/betaflight/pull/15719)
+- [betaflight#15719 (MERGED)](https://github.com/betaflight/betaflight/pull/15719)
 - [betaflight/betaflight](https://github.com/betaflight/betaflight)
 - [Week 13 full report](https://josa-openlab.github.io/Ti-progress/reports/week-13.html)
 
