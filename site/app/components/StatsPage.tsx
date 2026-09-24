@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import {
   GitPullRequest, MessageSquareText, CircleDot, FileSearch,
-  GitCommitHorizontal, GitMerge, ArrowLeft, ExternalLink, LayoutGrid,
+  GitCommitHorizontal, GitMerge, ArrowLeft, ExternalLink, LayoutGrid, Star,
 } from "lucide-react"
 import { TopBlur } from "./ui/edge-blur"
 import contributions from "../../data/contributions.json"
@@ -51,6 +51,9 @@ function RepoAvatar({ repo }: { repo: string }) {
 }
 
 const items = contributions.items as Item[]
+// ponytail: star snapshot from contributions.json, refresh by hand; live fetch would blow the 60/hr anon API limit
+const STARS = contributions.stars as Record<string, number>
+const fmtStars = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : `${n}`
 
 const KIND = {
   pr:       { label: "Pull Requests", short: "PRs",      icon: GitPullRequest,      color: "#a371f7" },
@@ -341,7 +344,13 @@ export function StatsPage({ onNavigate, from = "graph" }: { onNavigate: (v: "her
                     {it.title}
                   </div>
                   <div style={{ fontFamily: MONO, fontSize: 11, color: "#6e7681" }}>
-                    {it.repo} <span style={{ color: "#3d444d" }}>· {fmtDate(it.date)}</span>
+                    {it.repo}
+                    {STARS[it.repo] != null && (
+                      <span title={`${STARS[it.repo].toLocaleString()} stars`} style={{ color: "#d29922", marginLeft: 6, display: "inline-flex", alignItems: "center", gap: 3, verticalAlign: "-1px" }}>
+                        <Star size={10} fill="currentColor" /> {fmtStars(STARS[it.repo])}
+                      </span>
+                    )}
+                    <span style={{ color: "#3d444d" }}> · {fmtDate(it.date)}</span>
                   </div>
 
                   <AnimatePresence initial={false}>

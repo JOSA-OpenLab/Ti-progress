@@ -1,6 +1,16 @@
 {
-  "updated": "2026-09-18",
+  "updated": "2026-09-24",
   "items": [
+    {
+      "id": "betaflight-15751",
+      "kind": "pr",
+      "title": "fix(cms): show failsafe landing time in seconds",
+      "repo": "betaflight/betaflight",
+      "status": "open",
+      "date": "2026-09-23",
+      "url": "https://github.com/betaflight/betaflight/pull/15751",
+      "summary": "The OSD menu was showing the failsafe landing time ten times too small. failsafe_landing_time has been whole seconds (0 to 250) since #13816, but its CMS entry kept the 0.1 s float format of the old failsafe_off_delay it replaced, so the default 60 s rendered as 6.0 and anything above 200 was unreachable from the goggles. One line: the entry becomes OME_UINT8 with the CLI range. The work was confirming that OME_UINT8 and OME_FLOAT share the same key handler, so only the displayed value changes and the stored setting is untouched. Affects 2025.12.0 onward, 4.5.x is fine. Built for STM32F405, F722 and H743 with -Werror, cms and failsafe unit tests pass. Approved by two maintainers (haslinghuis, blckmn) within a day."
+    },
     {
       "id": "configurator-5537",
       "kind": "pr",
@@ -16,7 +26,7 @@
       "kind": "pr",
       "title": "fix(blackbox): honour blackbox_disable_servos",
       "repo": "betaflight/betaflight",
-      "status": "open",
+      "status": "merged",
       "date": "2026-09-18",
       "url": "https://github.com/betaflight/betaflight/pull/15719",
       "summary": "A setting in the flight controller firmware that silently did nothing. The blackbox logger decides which fields to record by testing a bitmask the pilot configures, and the servo case read `hasServos() && (FIELD_SELECT(SERVO))`. That second operand is an enum constant, 15, not a check, so the expression was always true and the mask was never consulted. Of the twenty selector checks in that function, nineteen wrap it in isFieldEnabled() and this one did not. So blackbox_disable_servos, and the matching Servo checkbox in the Configurator, have never worked: eight servo fields stayed in the log header and in every frame on the aircraft where log bandwidth actually matters, fixed wings and tricopters. One line. Proved it by compiling against the firmware's own header with a static assertion that the operand is non-zero, and confirmed the header and the frame writers read one cached bit so the fix cannot desync a log from its own declaration. It was introduced in 2024 by the same commit that added the setting."
@@ -421,5 +431,23 @@
       "url": "https://github.com/paperclipai/paperclip/issues/2978",
       "summary": "Answered another user on a 71k-star OSS project: where completed agent runs save files (the 'Working dir' path), with a screenshot."
     }
-  ]
+  ],
+  "stars": {
+    "ancsemi/Haven": 550,
+    "betaflight/betaflight": 11577,
+    "betaflight/betaflight-configurator": 3323,
+    "betaflight/betaflight-tx-lua-scripts": 727,
+    "betaflight/blackbox-tools": 98,
+    "calcom/cal.diy": 48637,
+    "excalidraw/excalidraw": 132797,
+    "facebook/react": 250690,
+    "httpie/cli": 38576,
+    "JustVugg/colibri": 37493,
+    "palmier-io/palmier-pro": 14454,
+    "paperclipai/paperclip": 81992,
+    "PX4/PX4-Autopilot": 12693,
+    "sapientinc/PRAXIST": 6753,
+    "t3-oss/create-t3-app": 29143,
+    "tldr-pages/tldr": 63735
+  }
 }
