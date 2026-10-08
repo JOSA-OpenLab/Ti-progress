@@ -1,6 +1,6 @@
 # Week 14: Ten Times Too Small
 
-🟡 in progress · deadline 2026-09-30 · 0/1 tasks
+✅ done · deadline 2026-09-30 · 1/1 tasks
 
 [Full report on the site](https://josa-openlab.github.io/Ti-progress/reports/week-14.html)
 
@@ -8,7 +8,7 @@
 
 ---
 
-### A Menu Still Speaking the Old Units  🟡 in progress
+### A Menu Still Speaking the Old Units  ✅ done
 
 Week 13 ended with two Betaflight fixes merged, one in the log viewer and one in the firmware. This one is in the part of the firmware a pilot actually touches in the field: the on-screen menu in their goggles, where a wrong number is not a log curiosity but a setting someone changes before a flight.
 
@@ -20,7 +20,7 @@ In #13816 the setting replaced the older failsafe_off_delay and became whole sec
 
 The fix is one line: the entry becomes OME_UINT8 with the CLI's own range. The work was making sure that line only changes what is displayed. OME_UINT8 and OME_FLOAT go through the same key handler, which steps the underlying integer by one per press either way, so the stored value and what the firmware does with it are untouched. Only the rendering was ever wrong.
 
-It affects 2025.12.0 onward; 4.5.x predates the change and is fine. Built for STM32F405, F722 and H743 with -Werror, and the cms and failsafe unit tests pass. Approved by both maintainers, haslinghuis and blckmn, the same day it was opened. Waiting on a merge.
+It affects 2025.12.0 onward; 4.5.x predates the change and is fine. Built for STM32F405, F722 and H743 with -Werror, and the cms and failsafe unit tests pass. Approved by both maintainers, haslinghuis and blckmn, the same day it was opened. Merged by haslinghuis on 2026-09-24, one day after opening.
 
 ```bash
 make STM32F405 EXTRA_FLAGS=-Werror
@@ -44,9 +44,11 @@ Review
   blckmn        APPROVED
   coderabbit    APPROVED
   copilot       approval recommended, no findings
+
+MERGED 2026-09-24 18:01 UTC by haslinghuis
 ```
 
-- [betaflight#15751](https://github.com/betaflight/betaflight/pull/15751)
+- [betaflight#15751 (MERGED)](https://github.com/betaflight/betaflight/pull/15751)
 - [betaflight#13816, where the setting changed units](https://github.com/betaflight/betaflight/pull/13816)
 - [betaflight/betaflight](https://github.com/betaflight/betaflight)
 - [Week 14 full report](https://josa-openlab.github.io/Ti-progress/reports/week-14.html)

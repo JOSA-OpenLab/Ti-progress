@@ -1,0 +1,52 @@
+# Week 15: Proving a Crash Without Flying
+
+🟡 in progress · deadline 2026-10-14 · 0/1 tasks
+
+[Full report on the site](https://josa-openlab.github.io/Ti-progress/reports/week-15.html)
+
+[All weeks](../PROGRESS.md) · [Month6 (October 2026)](README.md)
+
+---
+
+### One Step Past the End of a Menu  🟡 in progress
+
+After two weeks off, I wanted a method that finds work faster than reading code by hand. Five agents searched Betaflight from different angles and a separate skeptic tried to refute each finding. That produced 23 candidates. This one was the most serious, so before filing it, six more agents each tried to break it a different way, including running the real code.
+
+**What I did**
+
+Feedforward averaging smooths stick input over the last few radio packets. It has four settings, OFF, 2_POINT, 3_POINT and 4_POINT, stored as 0 to 3. The menu in the pilot's goggles allowed a maximum of 4. In that menu code the number is the highest allowed value, not the number of options, so one press right from 4_POINT reached a fifth value that does not exist.
+
+Two things then go wrong. The menu reads the label from one slot past the end of the name table. On the three boards I built that slot happens to point at the word OFF, so the pilot sees OFF while the firmware runs 5-point averaging. Then rc.c sizes the averaging window as value + 1 = 5 inside a buffer of 4 floats, so every update writes into the next axis's filter and, for yaw, past the end of the array.
+
+I did not want to file a memory bug on reading alone. AddressSanitizer on the real menu code reported the out-of-bounds read the moment the value reached 4. On the real filter code it reported the out-of-bounds write. The real firmware, run as SITL with that value forced in, crashed within a quarter of a second of stick input. The same tests with the fix were clean every time.
+
+The history explains it. In 2021 the option list shrank from five entries to four and the menu maximum was never updated, so it has shipped in every release since 4.3.0. The fix is one line: the literal 4 becomes FEEDFORWARD_AVERAGING_4_POINT. The PR description is three sentences, a lesson from the PX4 review.
+
+```bash
+make test_cmsff_unittest      # scratch gtest on the real cms.c, -fsanitize=address
+make test_rc_ffavg_unittest   # scratch gtest on the real rc.c + filter.c, -fsanitize=address -fno-common
+make TARGET=SITL              # real firmware, value forced to 4, sticks driven over UDP
+make STM32F405 EXTRA_FLAGS=-Werror
+```
+
+```
+Menu, real cms.c under ASan
+  RIGHT x3  [4_POINT]
+  RIGHT x4  ERROR: AddressSanitizer: global-buffer-overflow, READ of size 8
+            cmsDrawMenuEntry cms.c:469, 0 bytes after 'lookupTableFeedforwardAveraging'
+  saved on exit: feedforward_averaging = 4
+
+Filter, real rc.c under ASan
+  value 4, sticks moving: out-of-bounds WRITE in laggedMovingAverageUpdate, crash at frame 4
+  value 3: clean
+
+SITL, value forced to 4, sticks moving: process killed by SIGBUS within 0.25 s
+
+With the fix: value stops at 4_POINT, no ASan reports, F405 -Werror build exit 0
+```
+
+- [betaflight#15814](https://github.com/betaflight/betaflight/pull/15814)
+- [betaflight#10727, where the option list shrank](https://github.com/betaflight/betaflight/pull/10727)
+- [betaflight/betaflight](https://github.com/betaflight/betaflight)
+- [Week 15 full report](https://josa-openlab.github.io/Ti-progress/reports/week-15.html)
+

@@ -1,12 +1,22 @@
 {
-  "updated": "2026-09-24",
+  "updated": "2026-10-08",
   "items": [
+    {
+      "id": "betaflight-15814",
+      "kind": "pr",
+      "title": "fix(cms): limit FF AVERAGING to the four table entries",
+      "repo": "betaflight/betaflight",
+      "status": "open",
+      "date": "2026-10-08",
+      "url": "https://github.com/betaflight/betaflight/pull/15814",
+      "summary": "A memory-safety bug in the goggles menu, found in a multi-agent sweep of the firmware and proved by running the real code. The FF AVERAGING entry allowed a maximum of 4, but the setting only has four values (0 to 3). One press right from 4_POINT read past the end of the name table and saved 4, which rc.c turns into a 5-sample window inside a 4-float buffer, so every update wrote into the next axis filter. AddressSanitizer on the real menu and filter code reported the out-of-bounds read and write, the real firmware crashed under SITL within a quarter second of stick input, and the same tests with the fix were clean. It came from a 2021 change that shrank the option list from five to four and missed the menu, so it shipped in every release since 4.3.0. One line: the literal 4 becomes FEEDFORWARD_AVERAGING_4_POINT."
+    },
     {
       "id": "betaflight-15751",
       "kind": "pr",
       "title": "fix(cms): show failsafe landing time in seconds",
       "repo": "betaflight/betaflight",
-      "status": "open",
+      "status": "merged",
       "date": "2026-09-23",
       "url": "https://github.com/betaflight/betaflight/pull/15751",
       "summary": "The OSD menu was showing the failsafe landing time ten times too small. failsafe_landing_time has been whole seconds (0 to 250) since #13816, but its CMS entry kept the 0.1 s float format of the old failsafe_off_delay it replaced, so the default 60 s rendered as 6.0 and anything above 200 was unreachable from the goggles. One line: the entry becomes OME_UINT8 with the CLI range. The work was confirming that OME_UINT8 and OME_FLOAT share the same key handler, so only the displayed value changes and the stored setting is untouched. Affects 2025.12.0 onward, 4.5.x is fine. Built for STM32F405, F722 and H743 with -Werror, cms and failsafe unit tests pass. Approved by two maintainers (haslinghuis, blckmn) within a day."
@@ -139,7 +149,7 @@
       "status": "open",
       "date": "2026-07-06",
       "url": "https://github.com/palmier-io/palmier-pro/pull/265",
-      "summary": "Frame-valued agent tool args (startFrame, atFrame, toFrame, durationFrames) were only lower-bounded, so an LLM-generated tool call with a value near Int.max decoded cleanly into Int (it is finite, so it passed the finiteness check) and then trapped the whole app on startFrame + durationFrames — an arithmetic trap the tool executor's do/catch cannot intercept. Added a shared maxToolFrame ceiling plus a requireFrameInBounds helper applied next to the existing guards in add_clips, insert_clips, move_clips, set_clip_properties, add_texts, and apply_layout. Same class as the earlier #201 fix. 23 source lines across 4 files, plus 5 end-to-end regression tests driving each tool at Int.max; full 948-test suite green."
+      "summary": "Frame-valued agent tool args (startFrame, atFrame, toFrame, durationFrames) were only lower-bounded, so an LLM-generated tool call with a value near Int.max decoded cleanly into Int (it is finite, so it passed the finiteness check) and then trapped the whole app on startFrame + durationFrames, an arithmetic trap the tool executor's do/catch cannot intercept. Added a shared maxToolFrame ceiling plus a requireFrameInBounds helper applied next to the existing guards in add_clips, insert_clips, move_clips, set_clip_properties, add_texts, and apply_layout. Same class as the earlier #201 fix. 23 source lines across 4 files, plus 5 end-to-end regression tests driving each tool at Int.max; full 948-test suite green."
     },
     {
       "id": "palmier-264",
@@ -433,21 +443,21 @@
     }
   ],
   "stars": {
-    "ancsemi/Haven": 550,
-    "betaflight/betaflight": 11577,
-    "betaflight/betaflight-configurator": 3323,
-    "betaflight/betaflight-tx-lua-scripts": 727,
+    "ancsemi/Haven": 588,
+    "betaflight/betaflight": 11625,
+    "betaflight/betaflight-configurator": 3330,
+    "betaflight/betaflight-tx-lua-scripts": 730,
     "betaflight/blackbox-tools": 98,
-    "calcom/cal.diy": 48637,
-    "excalidraw/excalidraw": 132797,
-    "facebook/react": 250690,
-    "httpie/cli": 38576,
-    "JustVugg/colibri": 37493,
-    "palmier-io/palmier-pro": 14454,
-    "paperclipai/paperclip": 81992,
-    "PX4/PX4-Autopilot": 12693,
-    "sapientinc/PRAXIST": 6753,
-    "t3-oss/create-t3-app": 29143,
-    "tldr-pages/tldr": 63735
+    "calcom/cal.diy": 48916,
+    "excalidraw/excalidraw": 133678,
+    "facebook/react": 250939,
+    "httpie/cli": 38743,
+    "JustVugg/colibri": 40432,
+    "palmier-io/palmier-pro": 14531,
+    "paperclipai/paperclip": 98655,
+    "PX4/PX4-Autopilot": 12758,
+    "sapientinc/PRAXIST": 5448,
+    "t3-oss/create-t3-app": 29154,
+    "tldr-pages/tldr": 63845
   }
 }
