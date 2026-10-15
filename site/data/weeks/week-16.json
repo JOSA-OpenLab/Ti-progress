@@ -1,0 +1,48 @@
+{
+  "id": 16,
+  "title": "Closing a Ticket I Corrected",
+  "status": "done",
+  "deadline": "2026-10-21",
+  "report": "/reports/week-16.html",
+  "tasks": [
+    {
+      "id": "rcc-ahb-cleanup",
+      "type": "pr",
+      "title": "Dead Code Nobody Could Compile",
+      "status": "done",
+      "why": "In September I corrected a maintainer's ticket instead of fixing it, and offered to send the PR. A month later the ticket was about to close as stale. Then the maintainer re-checked it, his result matched my correction, and he left it open for anyone to take. Following through on my own offer was the obvious next contribution.",
+      "links": [
+        {
+          "type": "pr",
+          "label": "betaflight#15820 (MERGED)",
+          "url": "https://github.com/betaflight/betaflight/pull/15820"
+        },
+        {
+          "type": "issue",
+          "label": "betaflight#15560, the ticket I corrected in September",
+          "url": "https://github.com/betaflight/betaflight/issues/15560"
+        },
+        {
+          "type": "repo",
+          "label": "betaflight/betaflight",
+          "url": "https://github.com/betaflight/betaflight"
+        },
+        {
+          "type": "report",
+          "label": "Week 16 full report",
+          "url": "/reports/week-16.html"
+        }
+      ],
+      "reflection": "The firmware turns on each chip peripheral's clock through a table of tags, one set per chip family. One tag, RCC_AHB, and its five macros were left over from older chips that had a single AHB clock register. The original ticket said they would fail to compile on three families. In September I showed they could not compile on any family, because the register name they expand to does not exist on any supported chip. In October the maintainer re-checked it with his own tools and got the same answer.\n\nThis time I used several AI models as independent authors and reviewers. Three models each wrote a fix without seeing the others, and all three arrived at the same 11-line deletion: the dead tag, its five macros, and four duplicated defines left behind by a 2023 copy-paste.\n\nThe one real risk was that removing a tag renumbers the tags after it on the F4 and H7 chips. Three more reviewers, each on a different model from the author it was checking, built up to 40 targets with and without the change and compared the firmware itself, not just whether it compiled. Eight chip families came out byte-identical. On F4 and H7 every changed byte was exactly that renumbering, with the same code size and the same symbols, and nothing stores or transmits these numbers. 1362 unit tests passed, and the CI-style builds with warnings as errors were clean.\n\nThree maintainers approved it and haslinghuis merged it two days after I opened it. It carries the RN: IGNORE label, which only means it is left out of the release notes: deleting dead code changes nothing a pilot can see.",
+      "commands": [
+        "make STM32F405 STM32F722 STM32G474 STM32H743 APM32F405 AT32F435G EXTRA_FLAGS=-Werror",
+        "make checks",
+        "make test",
+        "python3 cmp.py base/ patched/   # per-target firmware comparison, build stamps pinned"
+      ],
+      "output": "src/platform/common/stm32/platform/rcc.h  11 deletions, 0 additions\n\nFirmware, base vs patched (up to 40 targets per reviewer)\n  F7, G4, H5, C5, N6, AT32, APM32, X32   byte-identical\n  F4, H7   same size, same symbols; every changed byte = tag renumbering (-32, switch -1)\n\nUnit tests   1362 passed\n-Werror      6 families, 0 warnings\nmake checks  ok\n\nReview\n  blckmn, haslinghuis, betaflight-admin   APPROVED\n  56/56 CI checks passed\n  MERGED 2026-10-12 17:22 UTC by haslinghuis",
+      "screenshot": null,
+      "pr": "https://github.com/betaflight/betaflight/pull/15820"
+    }
+  ]
+}

@@ -20,7 +20,7 @@ Two things then go wrong. The menu reads the label from one slot past the end of
 
 I did not want to file a memory bug on reading alone. AddressSanitizer on the real menu code reported the out-of-bounds read the moment the value reached 4. On the real filter code it reported the out-of-bounds write. The real firmware, run as SITL with that value forced in, crashed within a quarter of a second of stick input. The same tests with the fix were clean every time.
 
-The history explains it. In 2021 the option list shrank from five entries to four and the menu maximum was never updated, so it has shipped in every release since 4.3.0. The fix is one line: the literal 4 becomes FEEDFORWARD_AVERAGING_4_POINT. The PR description is three sentences, a lesson from the PX4 review.
+The history explains it. In 2021 the option list shrank from five entries to four and the menu maximum was never updated, so it has shipped in every release since 4.3.0. The fix is one line: the literal 4 becomes FEEDFORWARD_AVERAGING_4_POINT. The PR description is three sentences, a lesson from the PX4 review. haslinghuis approved it the same day and labelled it RN: BUGFIX; it is waiting on a merge.
 
 ```bash
 make test_cmsff_unittest      # scratch gtest on the real cms.c, -fsanitize=address
@@ -43,6 +43,11 @@ Filter, real rc.c under ASan
 SITL, value forced to 4, sticks moving: process killed by SIGBUS within 0.25 s
 
 With the fix: value stops at 4_POINT, no ASan reports, F405 -Werror build exit 0
+
+Review
+  haslinghuis   APPROVED (2026-10-08)
+  coderabbit    APPROVED
+  55/55 CI checks passed
 ```
 
 - [betaflight#15814](https://github.com/betaflight/betaflight/pull/15814)

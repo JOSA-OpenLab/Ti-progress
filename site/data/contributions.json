@@ -1,6 +1,16 @@
 {
-  "updated": "2026-10-08",
+  "updated": "2026-10-15",
   "items": [
+    {
+      "id": "betaflight-15820",
+      "kind": "pr",
+      "title": "chore(rcc): remove dead RCC_AHB tag and macros, and duplicate macros",
+      "repo": "betaflight/betaflight",
+      "status": "merged",
+      "date": "2026-10-10",
+      "url": "https://github.com/betaflight/betaflight/pull/15820",
+      "summary": "The follow-through on my September correction to issue #15560. A maintainer had filed an AI-generated ticket claiming a dead clock macro was a compile hazard on three chip families; I showed it could not compile on any of them. In October he re-checked, his result matched my correction, and he left the issue open for anyone to take. Three models wrote a fix independently and all arrived at the same 11-line deletion: the dead RCC_AHB enum tag, its five macros, and four copy-pasted duplicate defines. Three cross-model reviewers then built up to 40 targets with and without it: eight chip families came out byte-identical, and on F4 and H7 every changed byte was the tag renumbering, with code size and symbols unchanged. 1362 unit tests passed. Approved by three maintainers and merged in two days."
+    },
     {
       "id": "betaflight-15814",
       "kind": "pr",
@@ -46,7 +56,7 @@
       "kind": "pr",
       "title": "fix(gps): correct GPS_UBX_CFG_INTF bitmask max to 63",
       "repo": "PX4/PX4-Autopilot",
-      "status": "open",
+      "status": "merged",
       "date": "2026-09-16",
       "url": "https://github.com/PX4/PX4-Autopilot/pull/28716",
       "summary": "PX4 is the drone autopilot that Betaflight's world sits next to, 12.6k stars. A u-blox GPS parameter declares six configuration bits, so its valid range is 0 to 63, but it advertised a maximum of 32. That is the value of the top bit on its own, not all bits set, so every setting from 33 upward was published to ground stations as out of range. One line. The work was in bounding the claim honestly: PX4 never compiles parameter minimums and maximums into the firmware at all, so runtime behaviour cannot change, and in QGroundControl the checkbox path does no validation while only manual numeric entry refuses the value. An earlier draft of mine claimed it blocked a valid configuration; verification showed that was wrong and the PR says what is actually true. The evidence is a before-and-after of the generated metadata through PX4's own generator: two 40,032-line files differing on exactly one line. The project had already made this identical correction on the two sibling parameters in the same file when their sixth bit was added, which is why the fix is uncontroversial."
