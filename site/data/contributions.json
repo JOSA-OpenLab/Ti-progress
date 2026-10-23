@@ -1,6 +1,16 @@
 {
-  "updated": "2026-10-15",
+  "updated": "2026-10-23",
   "items": [
+    {
+      "id": "betaflight-15891",
+      "kind": "pr",
+      "title": "fix(cms): name the tenths timer precision in the OSD timers menu",
+      "repo": "betaflight/betaflight",
+      "status": "open",
+      "date": "2026-10-23",
+      "url": "https://github.com/betaflight/betaflight/pull/15891",
+      "summary": "A second out-of-bounds read in the goggles menu, the same kind as #15814. OSD timers have three precisions, seconds, hundredths and tenths, but the menu's name table only had two names while the menu allowed index 2. So a pilot who picks Tenth in the configurator and then opens the OSD menu's TIMERS page makes the firmware read past the end of the table and draw whatever pointer sits next in memory; on an F405 that is a pointer to an unrelated RC-preview variable. It came from #8290 in 2019, which added tenths and never updated the menu, so it is in every release since 4.1. AddressSanitizer on the real cms.c and the real TIMERS menu reported a global-buffer-overflow 0 bytes after the table on master and was clean with the fix, which draws SCND, HDTH and TNTH. A compile-time size check added with the fix fails the real F405 build on master. 9 ARM targets built clean, make checks passed and all 1383 unit tests passed. Two lines: the missing name plus that check."
+    },
     {
       "id": "betaflight-15820",
       "kind": "pr",
@@ -76,10 +86,10 @@
       "kind": "pr",
       "title": "Fix RC Smoothing Mode reading a dead MSP_RX_CONFIG byte",
       "repo": "betaflight/betaflight-tx-lua-scripts",
-      "status": "open",
+      "status": "merged",
       "date": "2026-09-15",
       "url": "https://github.com/betaflight/betaflight-tx-lua-scripts/pull/548",
-      "summary": "These Lua scripts let a pilot tune a quad from the radio transmitter instead of a laptop. The Receiver page read the RC Smoothing on/off setting from byte 25 of MSP_RX_CONFIG, but the firmware has written a hardcoded zero there and discarded it on write since API 1.44; the real flag is byte 32. The ON/OFF labels were inverted on top of that. So on every Betaflight 4.3+ quad since 2021 the radio showed the wrong state, and toggling it and saving was a silent no-op that reverted on the next read. Two lines. Proving it is what took the time: I built the firmware as a host binary with Betaflight SITL and spoke MSP to it directly, which showed byte 25 reading zero in both states while byte 32 tracked the setting, and showed the firmware discarding a write to byte 25 while honouring one to byte 32. Cross-checked the offset and the OFF/ON lookup against five release tags, and confirmed every conditional branch in the message writer emits equal widths so the offset cannot depend on which features a board builds. Then ran the tool on real EdgeTX firmware in the WebAssembly simulator: on master the toggle reads OFF against a flight controller that has it ON, and a save reverts; with the fix both behave. Repo had zero open pull requests."
+      "summary": "These Lua scripts let a pilot tune a quad from the radio transmitter instead of a laptop. The Receiver page read the RC Smoothing on/off setting from byte 25 of MSP_RX_CONFIG, but the firmware has written a hardcoded zero there and discarded it on write since API 1.44; the real flag is byte 32. The ON/OFF labels were inverted on top of that. So on every Betaflight 4.3+ quad since 2021 the radio showed the wrong state, and toggling it and saving was a silent no-op that reverted on the next read. Two lines. Proving it is what took the time: I built the firmware as a host binary with Betaflight SITL and spoke MSP to it directly, which showed byte 25 reading zero in both states while byte 32 tracked the setting, and showed the firmware discarding a write to byte 25 while honouring one to byte 32. Cross-checked the offset and the OFF/ON lookup against five release tags, and confirmed every conditional branch in the message writer emits equal widths so the offset cannot depend on which features a board builds. Then ran the tool on real EdgeTX firmware in the WebAssembly simulator: on master the toggle reads OFF against a flight controller that has it ON, and a save reverts; with the fix both behave. Repo had zero open pull requests. Approved and merged by haslinghuis on 2026-10-22, five weeks after opening."
     },
     {
       "id": "praxist-195",

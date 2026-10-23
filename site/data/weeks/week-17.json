@@ -1,0 +1,49 @@
+{
+  "id": 17,
+  "title": "A Name Missing Since 2019",
+  "status": "in-progress",
+  "deadline": "2026-10-28",
+  "report": "/reports/week-17.html",
+  "tasks": [
+    {
+      "id": "cms-timer-precision",
+      "type": "pr",
+      "title": "Three Settings, Two Names",
+      "status": "in-progress",
+      "why": "Week 15's fix was a menu that read one step past the end of a table. That kind of bug comes from a habit, not a one-off slip: someone adds an option to an enum and forgets the menu that lists it. So I went looking for other tables in the goggles menu that had fallen behind their enums, checked every open issue first so I would not duplicate anyone, and required proof on real code before filing.",
+      "links": [
+        {
+          "type": "pr",
+          "label": "betaflight#15891",
+          "url": "https://github.com/betaflight/betaflight/pull/15891"
+        },
+        {
+          "type": "pr",
+          "label": "betaflight#8290, where tenths was added in 2019",
+          "url": "https://github.com/betaflight/betaflight/pull/8290"
+        },
+        {
+          "type": "repo",
+          "label": "betaflight/betaflight",
+          "url": "https://github.com/betaflight/betaflight"
+        },
+        {
+          "type": "report",
+          "label": "Week 17 full report",
+          "url": "/reports/week-17.html"
+        }
+      ],
+      "reflection": "Before picking anything I went through every open Betaflight issue. Most of the small ones already had a pull request, one maintainer had already fixed another locally, and the rest needed a design decision from a maintainer. So the best target came from my own shortlist, re-checked against the latest master.\n\nThe OSD timers can count in seconds, hundredths or tenths. Tenths was added in 2019 by #8290, which updated the timer code and its test but not the goggles menu. The menu's name table still had two names, while the menu allowed values up to 2. A pilot who picks Tenth in the configurator and then opens the OSD menu's TIMERS page makes the firmware read a third name that does not exist, so it draws whatever pointer sits next in memory. On an F405 that is a pointer to an unrelated RC-preview variable. It has been in every release since 4.1.\n\nTesting caught two of my own mistakes. Betaflight's SITL build, which I used in earlier weeks, compiles the OSD menus out entirely, so a SITL test would have proved nothing; I switched to real ARM builds. And my first unit test failed for the wrong reason: the menu kept its state between runs, so the second and third runs never re-read the setting. I fixed the test, not the firmware, and only trusted the result once each run showed the value it was given.\n\nThe proof has three parts. A compile-time size check stops the real F405 firmware build on master and passes with the fix. AddressSanitizer on the real menu code reports a read 0 bytes past the end of the table on master, and with the fix the menu draws SCND, HDTH and TNTH cleanly. Then 9 ARM targets, make checks and all 1383 unit tests pass. The fix is two lines: the missing name, plus that size check, using the same pattern the firmware already uses elsewhere so a future option cannot be added without its name.\n\nThe same week, the radio-script fix from Week 12, betaflight-tx-lua-scripts#548, was approved and merged by haslinghuis after five weeks open.",
+      "commands": [
+        "make STM32F405 -j16                       # with the size check, on master and on the fix",
+        "make ../../obj/test/cms_timer_scratch_unittest/cms_timer_scratch_unittest COVERAGE_FLAGS=\"--coverage -fsanitize=address\"",
+        "make STM32F411 STM32F722 STM32F745 STM32G474 STM32H723 STM32H743 AT32F435G AT32F435M",
+        "make checks",
+        "make test"
+      ],
+      "output": "Size check, real STM32F405 build\n  master:  error: static assertion failed: \"timer_precision_names_cover_every_precision\"\n  fixed :  builds, hex produced\n\nReal cms.c + real TIMERS menu under ASan, timer set to Tenths\n  master:  ERROR: AddressSanitizer: global-buffer-overflow\n           cmsDrawMenuEntry cms.c:470\n           0 bytes after global variable 'osdTimerPrecisionNames' (size 16)\n  fixed :  1 PREC  SCND / HDTH / TNTH, no reports\n\nsrc/main/cms/cms_menu_osd.c  +2 -1\n\n9 ARM targets   0 errors\nmake checks     ok\nUnit tests      1383 passed, 0 failed\n\nAlso this week\n  betaflight-tx-lua-scripts#548  MERGED 2026-10-22 by haslinghuis",
+      "screenshot": null,
+      "pr": "https://github.com/betaflight/betaflight/pull/15891"
+    }
+  ]
+}

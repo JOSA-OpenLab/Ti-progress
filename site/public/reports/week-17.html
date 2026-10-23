@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JOSA OpenLab, Week 17</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d1117;
+      --border:  #21262d;
+      --accent:  #019EC3;
+      --red:     #ff7b72;
+      --green:   #3fb950;
+      --amber:   #f59e0b;
+      --text:    #e6edf3;
+      --muted:   #6e7681;
+      --sub:     #8b949e;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.75; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--accent); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .hero { padding: 72px 40px 56px; text-align: center; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(30px, 5vw, 52px); font-weight: 700; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 10px; }
+    .hero h1 span { color: var(--accent); }
+    .hero h2 { font-size: 15px; font-weight: 400; color: var(--muted); margin-bottom: 48px; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 48px; }
+    .badge { display: flex; border-radius: 4px; overflow: hidden; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; }
+    .badge-label { background: #161b22; border: 1px solid var(--border); border-right: none; padding: 5px 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; border-radius: 4px 0 0 4px; }
+    .badge-value { padding: 5px 10px; font-weight: 600; color: #0d1117; border-radius: 0 4px 4px 0; }
+    .badge.blue  .badge-value { background: var(--accent); }
+    .badge.navy  .badge-value { background: #015F75; }
+    .badge.amber .badge-value { background: var(--amber); }
+    .badge.gray  .badge-value { background: var(--muted); color: var(--text); }
+
+    .meta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+    .meta-item { text-align: center; padding: 0 28px; }
+    .meta-item + .meta-item { border-left: 1px solid var(--border); }
+    .meta-item .label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .meta-item .value { font-size: 14px; font-weight: 500; color: var(--text); }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 64px 24px 80px; }
+    .section { margin-bottom: 64px; }
+    .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .section-number { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 1px; }
+    .section-header h2 { font-size: 18px; font-weight: 600; letter-spacing: -.3px; color: var(--text); }
+    .section-header .tag { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; border-radius: 4px; padding: 2px 8px; }
+
+    .block { border-left: 2px solid var(--border); padding: 4px 0 4px 24px; margin-bottom: 32px; }
+    .block-title { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 4px 0 4px 20px; margin-bottom: 32px; font-size: 14px; color: var(--sub); }
+    .callout strong { color: var(--text); font-weight: 500; }
+
+    .code-block { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .code-bar { display: flex; align-items: center; gap: 6px; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; } .dot.y { background: #ffbd2e; } .dot.g { background: #28c840; }
+    .code-lang { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+    pre { padding: 18px 20px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; color: #c9d1d9; white-space: pre; scrollbar-width: thin; scrollbar-color: #2d333b transparent; }
+    .cm { color: var(--muted); } .cmd { color: #79c0ff; } .out { color: #c9d1d9; } .hsh { color: #f0883e; } .key { color: #ff7b72; } .str { color: #a5d6ff; }
+
+    .reflection { border-left: 2px solid var(--accent); padding: 6px 0 6px 24px; font-size: 15px; line-height: 1.85; color: var(--sub); }
+    .reflection strong { color: var(--text); font-weight: 500; }
+
+    .checklist { display: flex; flex-direction: column; gap: 10px; }
+    .checklist li { list-style: none; font-size: 13px; color: var(--sub); padding-left: 22px; position: relative; line-height: 1.6; }
+    .checklist li::before { content: '○'; position: absolute; left: 0; color: var(--muted); }
+    .checklist li strong { color: var(--text); font-weight: 500; }
+
+    table.ledger { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.ledger th { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-weight: 500; padding: 0 12px 10px 0; border-bottom: 1px solid var(--border); }
+    table.ledger td { padding: 11px 12px 11px 0; border-bottom: 1px solid var(--border); color: var(--sub); vertical-align: top; }
+    table.ledger td.st { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+    .m { color: var(--green); } .o { color: var(--amber); } .n { color: var(--muted); }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .3px; }
+    footer strong { color: var(--sub); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">OpenLab Apprenticeship 2026</div>
+  <h1>JOSA <span>OpenLab</span></h1>
+  <h2>Week 17: A Name Missing Since 2019</h2>
+
+  <div class="badges">
+    <div class="badge blue">
+      <span class="badge-label">Week</span>
+      <span class="badge-value">17</span>
+    </div>
+    <div class="badge navy">
+      <span class="badge-label">Opened</span>
+      <span class="badge-value">betaflight#15891</span>
+    </div>
+    <div class="badge navy">
+      <span class="badge-label">Merged</span>
+      <span class="badge-value">tx-lua-scripts#548</span>
+    </div>
+    <div class="badge amber">
+      <span class="badge-label">Status</span>
+      <span class="badge-value">In Review</span>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="label">Apprentice</div>
+      <div class="value">Qutibah Ananzeh</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cohort</div>
+      <div class="value">OpenLab 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Deadline</div>
+      <div class="value">28 Oct 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- LEDGER -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 00</span>
+      <h2>The ledger</h2>
+      <span class="tag" style="color: var(--muted); border-color: var(--muted);">2 items</span>
+    </div>
+
+    <table class="ledger">
+      <thead>
+        <tr><th>Contribution</th><th>Project</th><th>Stars</th><th>Outcome</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="https://github.com/betaflight/betaflight/pull/15891" target="_blank">#15891</a> goggles menu read past its timer-precision names</td>
+          <td>betaflight/betaflight</td>
+          <td>11.6k</td>
+          <td class="st o">Open</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/betaflight/betaflight-tx-lua-scripts/pull/548" target="_blank">#548</a> radio read a dead byte for RC Smoothing (from Week 12)</td>
+          <td>betaflight-tx-lua-scripts</td>
+          <td>727</td>
+          <td class="st m">Merged</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TASK 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 01</span>
+      <h2>Three Settings, Two Names</h2>
+      <span class="tag" style="color: var(--amber); border-color: var(--amber);">In Review</span>
+    </div>
+
+    <div class="callout">
+      <strong>Open:</strong> <a href="https://github.com/betaflight/betaflight/pull/15891" target="_blank">betaflight#15891</a> &middot; two lines &middot; the same kind of bug as Week 15's <code>#15814</code>, a menu table that fell behind its enum.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Choosing the target</div>
+      <div class="reflection">
+        Week 15's fix was a menu that read one step past the end of a table. That kind of bug comes from a habit, not a one-off slip: someone adds an option to an enum and forgets the menu that lists it. So I looked for other goggles-menu tables that had fallen behind.
+        <br><br>
+        First I went through every open Betaflight issue, so I would not duplicate anyone. Most of the small ones already had a pull request, one maintainer had already fixed another locally, and the rest needed a design decision from a maintainer. So the target came from my own shortlist, <strong>re-checked against the latest master</strong> the same day.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The bug</div>
+      <div class="reflection">
+        The OSD timers can count in seconds, hundredths or tenths. Tenths was added in 2019 by <a href="https://github.com/betaflight/betaflight/pull/8290" target="_blank">#8290</a>, which updated the timer code and its test but not the goggles menu. The menu's name table still had <strong>two names while the menu allowed three values</strong>.
+        <br><br>
+        So a pilot who picks Tenth in the configurator and then opens the OSD menu's TIMERS page makes the firmware read a third name that does not exist, and draw whatever pointer sits next in memory. On an F405 that is a pointer to an unrelated RC-preview variable. It has been in every release since 4.1.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">Two mistakes testing caught</div>
+      <div class="reflection">
+        Betaflight's SITL build, which I used in earlier weeks, <strong>compiles the OSD menus out entirely</strong>, so a SITL test would have proved nothing. I switched to real ARM builds.
+        <br><br>
+        My first unit test also failed for the wrong reason: the menu kept its state between runs, so the second and third runs never re-read the setting. I fixed the test, not the firmware, and only trusted the result once each run showed the value it was given.
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-title">The proof</div>
+      <div class="reflection">
+        The fix is two lines: the missing name, plus a compile-time size check, using the same pattern the firmware already uses elsewhere, so a future option cannot be added without its name.
+      </div>
+      <div class="code-block" style="margin-top:16px;">
+        <div class="code-bar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div><div class="code-lang">evidence</div></div>
+<pre><span class="cmd">Size check, real STM32F405 build</span>
+<span class="key">  master:  static assertion failed</span>
+<span class="str">  fixed :  builds, hex produced</span>
+
+<span class="cmd">Real cms.c + real TIMERS menu under ASan, timer = Tenths</span>
+<span class="key">  master:  global-buffer-overflow, cmsDrawMenuEntry cms.c:470</span>
+<span class="cm">           0 bytes after 'osdTimerPrecisionNames' (size 16)</span>
+<span class="str">  fixed :  1 PREC  SCND / HDTH / TNTH, no reports</span>
+
+<span class="cmd">src/main/cms/cms_menu_osd.c</span>  <span class="out">+2 -1</span>
+
+<span class="cmd">9 ARM targets</span>   <span class="str">0 errors</span>
+<span class="cmd">make checks</span>     <span class="str">ok</span>
+<span class="cmd">Unit tests</span>      <span class="str">1383 passed, 0 failed</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">// 02</span>
+      <h2>An Old Fix Lands</h2>
+      <span class="tag" style="color: var(--green); border-color: var(--green);">Merged</span>
+    </div>
+
+    <div class="callout">
+      <strong>Merged:</strong> <a href="https://github.com/betaflight/betaflight-tx-lua-scripts/pull/548" target="_blank">betaflight-tx-lua-scripts#548</a> &middot; approved and merged by haslinghuis on 22 Oct 2026, five weeks after opening.
+    </div>
+
+    <div class="block">
+      <div class="block-title">Why it matters</div>
+      <div class="reflection">
+        This was Week 12's fix to the Lua scripts that run on a pilot's radio. The Receiver page read RC Smoothing from a byte the firmware ignores, so on every Betaflight 4.3+ quad since 2021 the radio showed the wrong state and saving did nothing. It was proved without a radio or a quad, by running the real firmware as SITL and the real radio firmware in a browser. That repo merges slowly, so the five-week wait was expected, and the fix went in unchanged.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Jordan Open Source Association &nbsp;&middot;&nbsp; <strong>OpenLab 2026</strong> &nbsp;&middot;&nbsp; Qutibah Ananzeh
+</footer>
+
+</body>
+</html>
+

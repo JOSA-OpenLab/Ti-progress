@@ -21,8 +21,9 @@ import week13 from "../data/weeks/week-13.json"
 import week14 from "../data/weeks/week-14.json"
 import week15 from "../data/weeks/week-15.json"
 import week16 from "../data/weeks/week-16.json"
+import week17 from "../data/weeks/week-17.json"
 
-const weeks = [week01, week02, week03, week04, week05, week06, week07, week08, week09, week10, week11, week12, week13, week14, week15, week16]
+const weeks = [week01, week02, week03, week04, week05, week06, week07, week08, week09, week10, week11, week12, week13, week14, week15, week16, week17]
 
 type View = "hero" | "graph" | "stats"
 

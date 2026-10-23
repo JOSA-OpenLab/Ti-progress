@@ -24,6 +24,8 @@ Then I stopped counting and asked the firmware. Betaflight has a SITL target tha
 
 The last gap was the radio. EdgeTX, the radio firmware, publishes a WebAssembly build that runs the real thing in a browser. Uploading the scripts to it and driving the menus showed the bug as a pilot sees it: a toggle reading OFF against a flight controller that has the setting ON, and a save that reverts. One nuance only the simulator could have revealed, which changed what I wrote in the pull request: on colour radios the field renders as a toggle from the raw value, so the inverted labels never show there. The label half of the bug is only visible on the older monochrome radios.
 
+Approved and merged by haslinghuis on 2026-10-22, five weeks after opening.
+
 ```bash
 obj/main/betaflight_SITL.elf   # real firmware, MSP on TCP 5761
 python3 msp_prove.py           # read, mutate one byte, write back, re-read
@@ -43,9 +45,13 @@ TEST 2  byte 32, the byte the fix writes
 And through the real Lua, with real firmware payloads:
   master: rc_smoothing=0 -> radio shows ON   (wrong)
   fixed : rc_smoothing=0 -> radio shows OFF  (correct)
+
+Review
+  haslinghuis   APPROVED
+  MERGED 2026-10-22 15:27 UTC by haslinghuis
 ```
 
-- [betaflight-tx-lua-scripts#548](https://github.com/betaflight/betaflight-tx-lua-scripts/pull/548)
+- [betaflight-tx-lua-scripts#548 (MERGED)](https://github.com/betaflight/betaflight-tx-lua-scripts/pull/548)
 - [betaflight/betaflight-tx-lua-scripts](https://github.com/betaflight/betaflight-tx-lua-scripts)
 - [Week 12 full report](https://josa-openlab.github.io/Ti-progress/reports/week-12.html)
 
