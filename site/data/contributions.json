@@ -136,20 +136,20 @@
       "kind": "issue",
       "title": "Dead RCC_AHB macro: corrected the ticket's compile analysis",
       "repo": "betaflight/betaflight",
-      "status": "open",
+      "status": "closed",
       "date": "2026-09-06",
       "url": "https://github.com/betaflight/betaflight/issues/15560#issuecomment-5558261662",
-      "summary": "A maintainer asked a month earlier whether an unused macro was worth deleting and got no answer. His ticket said it compiles on two MCU families and fails on three; it compiles on none, because the register it expands to is not defined for any supported chip. Proved that with a control search so the negative result could not be a bad path, which also rules out completing the macro as an alternative. Found duplicate RCC_AHB1 definitions in the G4 and F7 arms the ticket missed, and checked the change merges cleanly against two pending platform PRs. The ticket author reacted to the comment."
+      "summary": "A maintainer asked a month earlier whether an unused macro was worth deleting and got no answer. His ticket said it compiles on two MCU families and fails on three; it compiles on none, because the register it expands to is not defined for any supported chip. Proved that with a control search so the negative result could not be a bad path, which also rules out completing the macro as an alternative. Found duplicate RCC_AHB1 definitions in the G4 and F7 arms the ticket missed, and checked the change merges cleanly against two pending platform PRs. The ticket author reacted to the comment. Closed on 2026-10-12 by my own follow-up fix, #15820."
     },
     {
       "id": "betaflight-15642",
       "kind": "review",
       "title": "Review: linux-aarch64 toolchain fix (hardware confirmation)",
       "repo": "betaflight/betaflight",
-      "status": "open",
+      "status": "merged",
       "date": "2026-09-06",
       "url": "https://github.com/betaflight/betaflight/pull/15642#issuecomment-5557968883",
-      "summary": "Betaflight cannot build on ARM Linux at all: the makefile has no toolchain entry for linux-aarch64 and the parse-time error stops the build before it reaches a target, including SITL which needs no cross toolchain. A three-line fix was approved by two maintainers but had sat eight days because none of them had the hardware. Reproduced the failure inside ubuntu:24.04 on Apple Silicon, applied the patch, confirmed both SITL binaries build, and posted the result."
+      "summary": "Betaflight cannot build on ARM Linux at all: the makefile has no toolchain entry for linux-aarch64 and the parse-time error stops the build before it reaches a target, including SITL which needs no cross toolchain. A three-line fix was approved by two maintainers but had sat eight days because none of them had the hardware. Reproduced the failure inside ubuntu:24.04 on Apple Silicon, applied the patch, confirmed both SITL binaries build, and posted the result. The fix was merged on 2026-09-21."
     },
     {
       "id": "react-35395",
@@ -206,7 +206,7 @@
       "kind": "issue",
       "title": "Corrupt media.json makes the entire project unopenable",
       "repo": "palmier-io/palmier-pro",
-      "status": "open",
+      "status": "closed",
       "date": "2026-06-29",
       "url": "https://github.com/palmier-io/palmier-pro/issues/223",
       "summary": "Reported the bug PR #224 fixes, issue-first per their CONTRIBUTING: a corrupt media.json throws fileReadCorruptFile and blocks opening the project, even though the timeline lives in a separate, intact file."
@@ -356,7 +356,7 @@
       "kind": "review",
       "title": "Review: invalid-hex feedback (minimal fix)",
       "repo": "excalidraw/excalidraw",
-      "status": "open",
+      "status": "closed",
       "date": "2026-06-19",
       "url": "https://github.com/excalidraw/excalidraw/pull/11510",
       "summary": "Accessibility suggestion + useMemo nit + praise. Verified every claim against the real source before posting."
@@ -366,7 +366,7 @@
       "kind": "review",
       "title": "Review: invalid-hex feedback (thorough fix)",
       "repo": "excalidraw/excalidraw",
-      "status": "open",
+      "status": "closed",
       "date": "2026-06-19",
       "url": "https://github.com/excalidraw/excalidraw/pull/11514",
       "summary": "Message-accuracy + test-gap notes. A tinycolor smoke test killed a wrong comment before I posted it."
