@@ -1,15 +1,25 @@
 {
-  "updated": "2026-10-23",
+  "updated": "2026-11-05",
   "items": [
+    {
+      "id": "betaflight-15932",
+      "kind": "pr",
+      "title": "fix(cms): match the LQ and RSSI dBm alarm limits to the CLI",
+      "repo": "betaflight/betaflight",
+      "status": "open",
+      "date": "2026-10-30",
+      "url": "https://github.com/betaflight/betaflight/pull/15932",
+      "summary": "The goggles menu still let a pilot set a LINK QUALITY alarm up to 300 and an RSSI dBm alarm up to +20, limits the CLI dropped in #9698 and #11062. On a CRSF link those alarms can never clear, so the warning stays on even at a perfect link. Two lines now give the menu the CLI limits, including the LQ minimum of 0 a maintainer asked for. I enabled the OSD, menus and CRSF in throwaway SITL builds and drove the real menu with a simulated radio and goggles: on master LQ reached 300 and dBm reached +20, with the fix they stop at 100 and 0 and the warning clears at a strong link. The same run showed the menu's step can wrap an alarm set from the CLI to a value not on the step, for example 3 becomes 65534. I wrote a clamp, then split it out at the maintainer's request for a separate PR. Approved by haslinghuis and nerdCopter, not yet merged. Simulated, not flown on hardware."
+    },
     {
       "id": "betaflight-15891",
       "kind": "pr",
       "title": "fix(cms): name the tenths timer precision in the OSD timers menu",
       "repo": "betaflight/betaflight",
-      "status": "open",
+      "status": "merged",
       "date": "2026-10-23",
       "url": "https://github.com/betaflight/betaflight/pull/15891",
-      "summary": "A second out-of-bounds read in the goggles menu, the same kind as #15814. OSD timers have three precisions, seconds, hundredths and tenths, but the menu's name table only had two names while the menu allowed index 2. So a pilot who picks Tenth in the configurator and then opens the OSD menu's TIMERS page makes the firmware read past the end of the table and draw whatever pointer sits next in memory; on an F405 that is a pointer to an unrelated RC-preview variable. It came from #8290 in 2019, which added tenths and never updated the menu, so it is in every release since 4.1. AddressSanitizer on the real cms.c and the real TIMERS menu reported a global-buffer-overflow 0 bytes after the table on master and was clean with the fix, which draws SCND, HDTH and TNTH. A compile-time size check added with the fix fails the real F405 build on master. 9 ARM targets built clean, make checks passed and all 1383 unit tests passed. Two lines: the missing name plus that check."
+      "summary": "A second out-of-bounds read in the goggles menu, the same kind as #15814. OSD timers have three precisions, seconds, hundredths and tenths, but the menu's name table only had two names while the menu allowed index 2. So a pilot who picks Tenth in the configurator and then opens the OSD menu's TIMERS page makes the firmware read past the end of the table and draw whatever pointer sits next in memory; on an F405 that is a pointer to an unrelated RC-preview variable. It came from #8290 in 2019, which added tenths and never updated the menu, so it is in every release since 4.1. AddressSanitizer on the real cms.c and the real TIMERS menu reported a global-buffer-overflow 0 bytes after the table on master and was clean with the fix, which draws SCND, HDTH and TNTH. A compile-time size check added with the fix fails the real F405 build on master. 9 ARM targets built clean, make checks passed and all 1383 unit tests passed. Two lines: the missing name plus that check. Approved by three maintainers and merged by haslinghuis on 26 Oct 2026."
     },
     {
       "id": "betaflight-15820",

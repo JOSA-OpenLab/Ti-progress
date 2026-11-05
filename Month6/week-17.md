@@ -1,6 +1,6 @@
 # Week 17: A Name Missing Since 2019
 
-🟡 in progress · deadline 2026-10-28 · 0/1 tasks
+✅ done · deadline 2026-10-28 · 1/1 tasks
 
 [Full report on the site](https://josa-openlab.github.io/Ti-progress/reports/week-17.html)
 
@@ -8,7 +8,7 @@
 
 ---
 
-### Three Settings, Two Names  🟡 in progress
+### Three Settings, Two Names  ✅ done
 
 Week 15's fix was a menu that read one step past the end of a table. That kind of bug comes from a habit, not a one-off slip: someone adds an option to an enum and forgets the menu that lists it. So I went looking for other tables in the goggles menu that had fallen behind their enums, checked every open issue first so I would not duplicate anyone, and required proof on real code before filing.
 
@@ -23,6 +23,8 @@ Testing caught two of my own mistakes. Betaflight's SITL build, which I used in 
 The proof has three parts. A compile-time size check stops the real F405 firmware build on master and passes with the fix. AddressSanitizer on the real menu code reports a read 0 bytes past the end of the table on master, and with the fix the menu draws SCND, HDTH and TNTH cleanly. Then 9 ARM targets, make checks and all 1383 unit tests pass. The fix is two lines: the missing name, plus that size check, using the same pattern the firmware already uses elsewhere so a future option cannot be added without its name.
 
 The same week, the radio-script fix from Week 12, betaflight-tx-lua-scripts#548, was approved and merged by haslinghuis after five weeks open.
+
+#15891 itself was approved by haslinghuis, blckmn and betaflight-admin, and haslinghuis merged it on 26 Oct 2026, three days after I opened it.
 
 ```bash
 make STM32F405 -j16                       # with the size check, on master and on the fix
@@ -49,7 +51,8 @@ src/main/cms/cms_menu_osd.c  +2 -1
 make checks     ok
 Unit tests      1383 passed, 0 failed
 
-Also this week
+Outcome
+  betaflight#15891               MERGED 2026-10-26 by haslinghuis
   betaflight-tx-lua-scripts#548  MERGED 2026-10-22 by haslinghuis
 ```
 
