@@ -20,13 +20,16 @@ Two things then go wrong. The menu reads the label from one slot past the end of
 
 I did not want to file a memory bug on reading alone. AddressSanitizer on the real menu code reported the out-of-bounds read the moment the value reached 4. On the real filter code it reported the out-of-bounds write. The real firmware, run as SITL with that value forced in, crashed within a quarter of a second of stick input. The same tests with the fix were clean every time.
 
-The history explains it. In 2021 the option list shrank from five entries to four and the menu maximum was never updated, so it has shipped in every release since 4.3.0. The fix is one line: the literal 4 becomes FEEDFORWARD_AVERAGING_4_POINT. The PR description is three sentences, a lesson from the PX4 review. haslinghuis approved it the same day and labelled it RN: BUGFIX; it is waiting on a merge.
+The history explains it. In 2021 the option list shrank from five entries to four and the menu maximum was never updated, so it has shipped in every release since 4.3.0. The menu fix is one line: the literal 4 becomes FEEDFORWARD_AVERAGING_4_POINT. The PR description is short, a lesson from the PX4 review. haslinghuis approved it the same day and labelled it RN: BUGFIX.
+
+The review was not over. On 29 Oct haslinghuis asked for a rebase, and CodeRabbit pointed out that a pilot who had already saved the bad value with the old menu would keep it after updating. I added a second commit that clamps a saved value above 4_POINT in validateAndFixConfig(), which runs when the config loads. nerdCopter and haslinghuis approved the new head on 4 Nov. On 10 Nov I checked that commit in SITL with the value 4 saved in the config: master aborts at boot with "buffer overflow detected", and the PR boots and reads 4_POINT on 3 of 3 boots. I added one sentence about the clamp to the PR description. It is waiting on a merge.
 
 ```bash
 make test_cmsff_unittest      # scratch gtest on the real cms.c, -fsanitize=address
 make test_rc_ffavg_unittest   # scratch gtest on the real rc.c + filter.c, -fsanitize=address -fno-common
 make TARGET=SITL              # real firmware, value forced to 4, sticks driven over UDP
 make STM32F405 EXTRA_FLAGS=-Werror
+python3 ffread.py              # SITL boots with feedforward_averaging = 4 saved in eeprom.bin
 ```
 
 ```
@@ -44,10 +47,16 @@ SITL, value forced to 4, sticks moving: process killed by SIGBUS within 0.25 s
 
 With the fix: value stops at 4_POINT, no ASan reports, F405 -Werror build exit 0
 
+Second commit 550f3fc (29 Oct): clamp a saved value above 4_POINT
+  SITL, value 4 saved in the config
+  master   aborts at boot: buffer overflow detected
+  this PR  boots, reads 4_POINT (3 of 3 boots)
+
 Review
-  haslinghuis   APPROVED (2026-10-08)
+  haslinghuis   APPROVED (2026-10-08, again 2026-11-04 on the new head)
+  nerdCopter    APPROVED (2026-11-04)
   coderabbit    APPROVED
-  55/55 CI checks passed
+  56/56 CI checks passed on the current head
 ```
 
 - [betaflight#15814](https://github.com/betaflight/betaflight/pull/15814)
